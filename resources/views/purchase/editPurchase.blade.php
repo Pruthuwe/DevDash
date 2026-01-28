@@ -5,18 +5,19 @@
 <!-- Header with breadcrumb -->
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
     <div>
-        <h6 class="fw-semibold mb-2">Add Purchase</h6>
+        <h6 class="fw-semibold mb-2">Edit Purchase</h6>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Add Purchase</li>
+                <li class="breadcrumb-item"><a href="{{ route('purchases.index') }}">Purchases</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit Purchase</li>
             </ol>
         </nav>
     </div>
     <div class="d-flex gap-2">
-        <a href="{{ route('purchases.index') }}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
-            <iconify-icon icon="solar:arrow-left-outline"></iconify-icon>
-            Back to Purchases
+        <a href="{{ route('purchases.show', $purchase->id) }}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+            <iconify-icon icon="solar:eye-outline"></iconify-icon>
+            View Purchase
         </a>
     </div>
 </div>
@@ -26,9 +27,9 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="mb-0 text-lg">New Purchase Order</h6>
+                <h6 class="mb-0 text-lg">Edit Purchase Order #{{ $purchase->reference_number }}</h6>
                 <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-success-light text-success">Adding</span>
+                    <span class="badge bg-warning-light text-warning">Editing</span>
                 </div>
             </div>
 
@@ -54,8 +55,9 @@
                     </div>
                 @endif
 
-                <form action="{{ route('purchases.store') }}" method="POST" id="purchaseForm">
+                <form action="{{ route('purchases.update', $purchase->id) }}" method="POST" id="purchaseForm">
                     @csrf
+                    @method('PUT')
 
                     <!-- Purchase Information -->
                     <div class="row gy-3 mb-4">
@@ -64,7 +66,7 @@
                             <select class="form-select" id="supplier_id" name="supplier_id" required>
                                 <option value="">Select Supplier</option>
                                 @foreach($suppliers as $supplier)
-                                    <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                                    <option value="{{ $supplier->id }}" {{ old('supplier_id', $purchase->supplier_id) == $supplier->id ? 'selected' : '' }}>
                                         {{ $supplier->name }}
                                     </option>
                                 @endforeach
@@ -76,8 +78,8 @@
 
                         <div class="col-md-3">
                             <label for="purchase_date" class="form-label">Purchase Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="purchase_date" name="purchase_date" 
-                                   value="{{ old('purchase_date', date('Y-m-d')) }}" required>
+                            <input type="date" class="form-control" id="purchase_date" name="purchase_date"
+                                   value="{{ old('purchase_date', $purchase->purchase_date->format('Y-m-d')) }}" required>
                             @error('purchase_date')
                                 <div class="text-danger mt-1">{{ $message }}</div>
                             @enderror
@@ -85,8 +87,8 @@
 
                         <div class="col-md-3">
                             <label for="reference_number" class="form-label">Reference Number</label>
-                            <input type="text" class="form-control" id="reference_number" name="reference_number" 
-                                   value="{{ old('reference_number', $referenceNumber) }}" placeholder="Auto-generated">
+                            <input type="text" class="form-control" id="reference_number" name="reference_number"
+                                   value="{{ old('reference_number', $purchase->reference_number) }}" placeholder="Auto-generated">
                             @error('reference_number')
                                 <div class="text-danger mt-1">{{ $message }}</div>
                             @enderror
@@ -95,9 +97,9 @@
                         <div class="col-md-3">
                             <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                             <select class="form-select" id="status" name="status" required>
-                                <option value="pending" {{ old('status', 'pending') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="completed" {{ old('status') == 'completed' ? 'selected' : '' }}>Completed</option>
-                                <option value="cancelled" {{ old('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                <option value="pending" {{ old('status', $purchase->status) == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="completed" {{ old('status', $purchase->status) == 'completed' ? 'selected' : '' }}>Completed</option>
+                                <option value="cancelled" {{ old('status', $purchase->status) == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                             </select>
                             @error('status')
                                 <div class="text-danger mt-1">{{ $message }}</div>
@@ -108,7 +110,7 @@
                     <!-- Product Selection Section -->
                     <div class="card border mb-4">
                         <div class="card-header bg-light">
-                            <h6 class="mb-0">Select Products for Purchase</h6>
+                            <h6 class="mb-0">Edit Products for Purchase</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -124,46 +126,50 @@
                                         </tr>
                                     </thead>
                                     <tbody id="productRows">
+                                        @foreach($purchase->purchaseItems as $index => $item)
                                         <tr class="product-row">
                                             <td>
-                                                <select class="form-control product-select" name="products[0][product_id]" required>
+                                                <select class="form-control product-select" name="products[{{ $index }}][product_id]" required>
                                                     <option value="">Select Product</option>
                                                     @foreach($products as $product)
                                                         <option value="{{ $product->id }}"
                                                                 data-sku="{{ $product->sku }}"
-                                                                data-price="{{ $product->cost_price ?? $product->price }}">
+                                                                data-price="{{ $product->cost_price ?? $product->price }}"
+                                                                {{ $item->product_id == $product->id ? 'selected' : '' }}>
                                                             {{ $product->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control product-sku" readonly>
+                                                <input type="text" class="form-control product-sku" value="{{ $item->product->sku ?? '' }}" readonly>
                                             </td>
                                             <td>
-                                                <input type="number" class="form-control unit-price" 
-                                                       name="products[0][unit_price]" step="0.01" min="0" 
-                                                       placeholder="0.00" required>
+                                                <input type="number" class="form-control unit-price"
+                                                       name="products[{{ $index }}][unit_price]" step="0.01" min="0"
+                                                       value="{{ old('products.' . $index . '.unit_price', $item->unit_price) }}" required>
                                             </td>
                                             <td>
-                                                <input type="number" class="form-control quantity" 
-                                                       name="products[0][quantity]" min="1" value="1" required>
+                                                <input type="number" class="form-control quantity"
+                                                       name="products[{{ $index }}][quantity]" min="1"
+                                                       value="{{ old('products.' . $index . '.quantity', $item->quantity) }}" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control row-total" 
-                                                       readonly value="0.00">
+                                                <input type="text" class="form-control row-total"
+                                                       readonly value="{{ number_format($item->quantity * $item->unit_price, 2) }}">
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-sm btn-danger remove-row" disabled>
-                                                    <iconify-icon icon="ic:outline-delete"></iconify-icon>
+                                                    <iconify-icon icon="solar:trash-bin-trash-outline"></iconify-icon>
                                                 </button>
                                             </td>
                                         </tr>
+                                        @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <td colspan="4" class="text-end"><strong>Grand Total:</strong></td>
-                                            <td><strong id="grandTotal">0.00</strong></td>
+                                            <td><strong id="grandTotal">{{ number_format($purchase->total_amount, 2) }}</strong></td>
                                             <td>
                                                 <button type="button" class="btn btn-sm btn-success" id="addRowBtn">
                                                     <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
@@ -180,8 +186,8 @@
                     <div class="row gy-3 mb-4">
                         <div class="col-12">
                             <label for="notes" class="form-label">Notes</label>
-                            <textarea class="form-control" id="notes" name="notes" rows="3" 
-                                      placeholder="Enter any additional notes...">{{ old('notes') }}</textarea>
+                            <textarea class="form-control" id="notes" name="notes" rows="3"
+                                      placeholder="Enter any additional notes...">{{ old('notes', $purchase->notes) }}</textarea>
                             @error('notes')
                                 <div class="text-danger mt-1">{{ $message }}</div>
                             @enderror
@@ -193,9 +199,9 @@
                         <a href="{{ route('purchases.index') }}" class="btn btn-outline-secondary">
                             Cancel
                         </a>
-                        <button type="submit" class="btn btn-primary d-flex align-items-center gap-1">
+                        <button type="submit" class="btn btn-primary">
                             <iconify-icon icon="solar:check-circle-outline" class="me-1"></iconify-icon>
-                            Create Purchase
+                            Update Purchase
                         </button>
                     </div>
                 </form>
@@ -214,8 +220,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('change', e => {
         if (e.target.classList.contains('product-select')) {
             const row = e.target.closest('tr');
-            row.querySelector('.product-sku').value = e.target.selectedOptions[0].dataset.sku || '';
-            row.querySelector('.unit-price').value = e.target.selectedOptions[0].dataset.price || 0;
+            const option = e.target.selectedOptions[0];
+            row.querySelector('.product-sku').value = option.dataset.sku || '';
+            row.querySelector('.unit-price').value = option.dataset.price || 0;
             calculate();
         }
     });
@@ -239,21 +246,21 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ADD ROW */
     const addRowBtn = document.getElementById('addRowBtn');
     const productRows = document.getElementById('productRows');
-    
+
     addRowBtn.onclick = () => {
         const rowCount = document.querySelectorAll('.product-row').length;
         const row = document.querySelector('.product-row').cloneNode(true);
-        
+
         // Update field names with correct index
         row.querySelector('.product-select').name = `products[${rowCount}][product_id]`;
         row.querySelector('.unit-price').name = `products[${rowCount}][unit_price]`;
         row.querySelector('.quantity').name = `products[${rowCount}][quantity]`;
-        
+
         // Clear values
         row.querySelectorAll('input').forEach(i => i.value = '');
         row.querySelector('.quantity').value = 1;
         row.querySelector('select').value = '';
-        
+
         productRows.appendChild(row);
         updateRemoveButtons();
     };
@@ -266,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateRemoveButtons();
         }
     });
-    
+
     function updateRemoveButtons() {
         const rows = document.querySelectorAll('.product-row');
         rows.forEach(row => {
@@ -274,10 +281,10 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = rows.length === 1;
         });
     }
-    
+
     // Initial setup
     updateRemoveButtons();
-    
+
     // Initial calculation
     calculate();
 

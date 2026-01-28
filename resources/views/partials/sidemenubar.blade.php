@@ -136,7 +136,7 @@
             {{-- Purchase Section --}}
             <li class="dropdown">
                 <a href="javascript:void(1)">
-                    <iconify-icon icon="eos-icons:products-outlined" class="menu-icon"></iconify-icon>
+                    <iconify-icon icon="solar:cart-outline" class="menu-icon"></iconify-icon>
                     <span>Purchase Section</span>
                 </a>
                 <ul class="sidebar-submenu">

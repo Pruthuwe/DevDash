@@ -1,7 +1,5 @@
 @extends('layouts.main')
 
-@section('title', 'Edit Quotation - devPOS')
-
 @section('content')
 
 {{-- Page Header --}}

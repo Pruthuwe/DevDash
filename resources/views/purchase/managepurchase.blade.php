@@ -151,17 +151,17 @@
                             </td>
                             <td>
                                 @if($purchase->status === 'completed')
-                                    <span class="badge bg-success-light text-success">
+                                    <span class="badge bg-success-light text-success d-flex align-items-center gap-2">
                                         <iconify-icon icon="solar:check-circle-outline"></iconify-icon>
                                         Completed
                                     </span>
                                 @elseif($purchase->status === 'pending')
-                                    <span class="badge bg-warning-light text-warning">
+                                    <span class="badge bg-warning-light text-warning d-flex align-items-center gap-2">
                                         <iconify-icon icon="solar:clock-circle-outline"></iconify-icon>
                                         Pending
                                     </span>
                                 @else
-                                    <span class="badge bg-danger-light text-danger">
+                                    <span class="badge bg-danger-light text-danger d-flex align-items-center gap-2">
                                         <iconify-icon icon="solar:close-circle-outline"></iconify-icon>
                                         Cancelled
                                     </span>
@@ -179,7 +179,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
-                                            <iconify-icon icon="solar:trash-bin-trash-outline"></iconify-icon>
+                                            <iconify-icon icon="ic:outline-delete"></iconify-icon>
                                         </button>
                                     </form>
                                 </div>
