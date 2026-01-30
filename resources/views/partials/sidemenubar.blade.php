@@ -195,8 +195,23 @@
                     </li>
                     <li>
                         <a href="{{ route('add.supplier') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>Add Supplier</a>
-                    </li>
+                    </li>   
                 </ul>
+            </li>
+            {{-- Blog Management --}}
+            <li>
+                <a href="{{ route('manage.blogs') }}">
+                    <iconify-icon icon="solar:document-text-outline" class="menu-icon"></iconify-icon>
+                    <span>Blog Management</span>
+                </a>
+            </li>
+            
+            {{-- Service Management --}}
+            <li>
+                <a href="{{ route('manage.services') }}">
+                    <iconify-icon icon="solar:settings-outline" class="menu-icon"></iconify-icon>
+                    <span>Service Management</span>
+                </a>
             </li>
             
             <!-- {{-- Sales & Transactions --}}

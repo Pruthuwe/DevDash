@@ -13,6 +13,54 @@ class ProductController extends Controller
 {
     public function index()
     {
+        if (request()->is('api/*')) {
+            $products = Product::with(['category', 'subcategory'])->latest()->get();
+            $products = $products->map(function ($product) {
+                if ($product->main_image) {
+                    $product->main_image_url = url($product->main_image);
+                    unset($product->main_image);
+                }
+                if ($product->gallery_images) {
+                    $product->gallery_image_urls = array_map(function ($image) {
+                        return url($image);
+                    }, $product->gallery_images);
+                    unset($product->gallery_images);
+                }
+                // Transform category images
+                if ($product->category) {
+                    if ($product->category->banner_image) {
+                        $product->category->banner_image_url = url($product->category->banner_image);
+                        unset($product->category->banner_image);
+                    }
+                    if ($product->category->thumbnail_image) {
+                        $product->category->thumbnail_image_url = url($product->category->thumbnail_image);
+                        unset($product->category->thumbnail_image);
+                    }
+                    if ($product->category->icon_image) {
+                        $product->category->icon_image_url = url($product->category->icon_image);
+                        unset($product->category->icon_image);
+                    }
+                }
+                // Transform subcategory images
+                if ($product->subcategory) {
+                    if ($product->subcategory->banner_image) {
+                        $product->subcategory->banner_image_url = url($product->subcategory->banner_image);
+                        unset($product->subcategory->banner_image);
+                    }
+                    if ($product->subcategory->thumbnail_image) {
+                        $product->subcategory->thumbnail_image_url = url($product->subcategory->thumbnail_image);
+                        unset($product->subcategory->thumbnail_image);
+                    }
+                    if ($product->subcategory->icon_image) {
+                        $product->subcategory->icon_image_url = url($product->subcategory->icon_image);
+                        unset($product->subcategory->icon_image);
+                    }
+                }
+                return $product;
+            });
+            return response()->json(['products' => $products], 200);
+        }
+        
         $products = Product::with(['category', 'subcategory'])->latest()->paginate(20);
         return view('product.productList', compact('products'));
     }
@@ -127,6 +175,50 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
+        if (request()->is('api/*')) {
+            $product->load(['category', 'subcategory']);
+            if ($product->main_image) {
+                $product->main_image_url = url($product->main_image);
+                unset($product->main_image);
+            }
+            if ($product->gallery_images) {
+                $product->gallery_image_urls = array_map(function ($image) {
+                    return url($image);
+                }, $product->gallery_images);
+                unset($product->gallery_images);
+            }
+            // Transform category images
+            if ($product->category) {
+                if ($product->category->banner_image) {
+                    $product->category->banner_image_url = url($product->category->banner_image);
+                    unset($product->category->banner_image);
+                }
+                if ($product->category->thumbnail_image) {
+                    $product->category->thumbnail_image_url = url($product->category->thumbnail_image);
+                    unset($product->category->thumbnail_image);
+                }
+                if ($product->category->icon_image) {
+                    $product->category->icon_image_url = url($product->category->icon_image);
+                    unset($product->category->icon_image);
+                }
+            }
+            // Transform subcategory images
+            if ($product->subcategory) {
+                if ($product->subcategory->banner_image) {
+                    $product->subcategory->banner_image_url = url($product->subcategory->banner_image);
+                    unset($product->subcategory->banner_image);
+                }
+                if ($product->subcategory->thumbnail_image) {
+                    $product->subcategory->thumbnail_image_url = url($product->subcategory->thumbnail_image);
+                    unset($product->subcategory->thumbnail_image);
+                }
+                if ($product->subcategory->icon_image) {
+                    $product->subcategory->icon_image_url = url($product->subcategory->icon_image);
+                    unset($product->subcategory->icon_image);
+                }
+            }
+            return response()->json(['product' => $product], 200);
+        }
         return view('product.show', compact('product'));
     }
 

@@ -67,6 +67,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/add-quotation', [\App\Http\Controllers\QuotationController::class, 'create'])->name('add.quotation');
     Route::get('/quotation-list', [\App\Http\Controllers\QuotationController::class, 'index'])->name('quotation.list');
     Route::get('/manage-quotations', [\App\Http\Controllers\QuotationController::class, 'index'])->name('manage.quotations');
+    
+    // Blog Routes
+    Route::resource('blogs', \App\Http\Controllers\BlogController::class);
+    Route::get('/blog-list', [\App\Http\Controllers\BlogController::class, 'index'])->name('blog.list');
+    Route::get('/add-blog', [\App\Http\Controllers\BlogController::class, 'create'])->name('add.blog');
+    Route::get('/manage-blogs', [\App\Http\Controllers\BlogController::class, 'index'])->name('manage.blogs');
+    
+    // Service Routes
+    Route::resource('services', \App\Http\Controllers\ServiceController::class);
+    Route::get('/service-list', [\App\Http\Controllers\ServiceController::class, 'index'])->name('service.list');
+    Route::get('/add-service', [\App\Http\Controllers\ServiceController::class, 'create'])->name('add.service');
+    Route::get('/manage-services', [\App\Http\Controllers\ServiceController::class, 'index'])->name('manage.services');
     });
 
 // Password Reset Routes (placeholder)

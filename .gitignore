@@ -5,6 +5,7 @@
 /public/storage
 /public/uploads/products
 /public/uploads/categories
+/public/uploads/blogs
 /storage/*.key
 /vendor
 .env
