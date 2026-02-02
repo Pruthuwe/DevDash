@@ -58,7 +58,7 @@
 
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Slug</label>
-                            <div class="text-muted">{{ $product->slug }}</div>
+                            <div class="text-secondary-light">{{ $product->slug }}</div>
                         </div>
 
                         <div class="col-md-6">
@@ -75,7 +75,7 @@
                                         {{ $product->category_id }}
                                     </span>
                                 @else
-                                    <span class="text-muted">Not assigned</span>
+                                    <span class="text-secondary-light">Not assigned</span>
                                 @endif
                             </div>
                         </div>
@@ -172,7 +172,7 @@
                                 @if($product->is_featured)
                                     <span class="badge bg-info-light text-info">Yes</span>
                                 @else
-                                    <span class="text-muted">No</span>
+                                    <span class="text-secondary-light">No</span>
                                 @endif
                             </div>
                         </div>
@@ -240,7 +240,7 @@
                                 <div class="bg-neutral-200 rounded d-flex align-items-center justify-content-center"
                                      style="height:180px;">
                                     <iconify-icon icon="solar:box-outline"
-                                                  class="text-muted"
+                                                  class="text-secondary-light"
                                                   style="font-size:3rem;"></iconify-icon>
                                 </div>
                             @endif

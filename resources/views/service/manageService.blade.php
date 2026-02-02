@@ -13,10 +13,12 @@
         </nav>
     </div>
     <div class="d-flex gap-2">
+        @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-services')))
         <button type="button" class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addServiceModal">
             <iconify-icon icon="heroicons:plus-circle-20-solid"></iconify-icon>
             Add Service
         </button>
+        @endif
     </div>  
 </div>
 
@@ -44,9 +46,12 @@
                                     <td>{{ Str::limit($service->description, 50) }}</td>
                                     <td>
                                         <div class="d-flex gap-1">
+                                            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-services')))
                                             <a href="{{ route('services.edit', $service) }}" class="btn btn-sm btn-outline-warning" title="Edit">
                                                 <iconify-icon icon="solar:pen-outline"></iconify-icon>
                                             </a>
+                                            @endif
+                                            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'delete-services')))
                                             <form action="{{ route('services.destroy', $service) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this service?')">
                                                 @csrf
                                                 @method('DELETE')
@@ -54,6 +59,7 @@
                                                     <iconify-icon icon="solar:trash-bin-minimalistic-outline"></iconify-icon>
                                                 </button>
                                             </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

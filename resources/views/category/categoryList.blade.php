@@ -52,7 +52,7 @@
                                 <div>
                                     <h6 class="mb-0">{{ $category->name }}</h6>
                                     @if($category->children->count() > 0)
-                                        <small class="text-muted">{{ $category->children->count() }} subcategories</small>
+                                        <small class="text-secondary-light">{{ $category->children->count() }} subcategories</small>
                                     @endif
                                 </div>
                             </td>
@@ -61,7 +61,7 @@
                                     <img src="{{ asset($category->thumbnail_image) }}" alt="{{ $category->name }}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
                                 @else
                                     <div class="bg-neutral-200 rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <iconify-icon icon="solar:folder-outline" class="text-muted"></iconify-icon>
+                                        <iconify-icon icon="solar:folder-outline" class="text-secondary-light"></iconify-icon>
                                     </div>
                                 @endif
                             </td>
@@ -69,7 +69,7 @@
                                 @if($category->description)
                                     {{ Str::limit($category->description, 50) }}
                                 @else
-                                    <span class="text-muted">—</span>
+                                    <span class="text-secondary-light">—</span>
                                 @endif
                             </td>
                             <td class="text-center">
@@ -104,7 +104,7 @@
                                     <img src="{{ asset($subcategory->thumbnail_image) }}" alt="{{ $subcategory->name }}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
                                 @else
                                     <div class="bg-neutral-200 rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <iconify-icon icon="solar:folder-outline" class="text-muted"></iconify-icon>
+                                        <iconify-icon icon="solar:folder-outline" class="text-secondary-light"></iconify-icon>
                                     </div>
                                 @endif
                             </td>
@@ -112,7 +112,7 @@
                                 @if($subcategory->description)
                                     {{ Str::limit($subcategory->description, 50) }}
                                 @else
-                                    <span class="text-muted">—</span>
+                                    <span class="text-secondary-light">—</span>
                                 @endif
                             </td>
                             <td class="text-center">
@@ -135,9 +135,9 @@
                     @empty
                         <tr>
                             <td colspan="5" class="text-center py-5">
-                                <iconify-icon icon="solar:folder-outline" style="font-size: 4rem;" class="text-muted mb-3"></iconify-icon>
-                                <h5 class="text-muted">No Categories Found</h5>
-                                <p class="text-muted mb-4">Start by adding your first category</p>
+                                <iconify-icon icon="solar:folder-outline" style="font-size: 4rem;" class="text-secondary-light mb-3"></iconify-icon>
+                                <h5 class="text-secondary-light">No Categories Found</h5>
+                                <p class="text-secondary-light mb-4">Start by adding your first category</p>
                                 <a href="{{ route('categories.create') }}" class="btn btn-primary">
                                     <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
                                     Add Your First Category

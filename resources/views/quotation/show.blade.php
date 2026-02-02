@@ -120,7 +120,7 @@
                     <div class="col-md-6">
                         @if($quotation->notes)
                             <h6 class="mb-2">Notes</h6>
-                            <p class="text-muted">{{ $quotation->notes }}</p>
+                            <p class="text-secondary-light">{{ $quotation->notes }}</p>
                         @endif
                     </div>
                     <div class="col-md-6">

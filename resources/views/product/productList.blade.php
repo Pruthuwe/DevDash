@@ -54,7 +54,7 @@
                             <td>
                                 <h6 class="mb-0">{{ $product->name }}</h6>
                                 @if($product->brand)
-                                <small class="text-muted">{{ $product->brand }}</small>
+                                <small class="text-secondary-light">{{ $product->brand }}</small>
                                 @endif
                             </td>
                             <td>{{ $product->sku }}</td>
@@ -63,7 +63,7 @@
                                     <img src="{{ asset($product->main_image) }}" alt="{{ $product->name }}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
                                 @else
                                     <div class="bg-neutral-200 rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <iconify-icon icon="solar:box-outline" class="text-muted"></iconify-icon>
+                                        <iconify-icon icon="solar:box-outline" class="text-secondary-light"></iconify-icon>
                                     </div>
                                 @endif
                             </td>
@@ -71,20 +71,20 @@
                                 @if($product->category)
                                 <span class="badge bg-primary-light text-primary">{{ $product->category->name }}</span>
                                 @else
-                                <span class="text-muted">—</span>
+                                <span class="text-secondary-light">—</span>
                                 @endif
                             </td>
                             <td>
                                 @if($product->subcategory)
                                 <span class="badge bg-info-light text-info">{{ $product->subcategory->name }}</span>
                                 @else
-                                <span class="text-muted">—</span>
+                                <span class="text-secondary-light">—</span>
                                 @endif
                             </td>
                             <td>
                                 @if($product->sale_price && $product->sale_price > 0)
                                     <div>
-                                        <span class="text-decoration-line-through text-muted small">${{ number_format($product->price, 2) }}</span>
+                                        <span class="text-decoration-line-through text-secondary-light small">${{ number_format($product->price, 2) }}</span>
                                         <strong class="text-success d-block">${{ number_format($product->sale_price, 2) }}</strong>
                                     </div>
                                 @else
@@ -118,9 +118,9 @@
                     @empty
                         <tr>
                             <td colspan="9" class="text-center py-5">
-                                <iconify-icon icon="solar:box-outline" style="font-size: 4rem;" class="text-muted mb-3"></iconify-icon>
-                                <h5 class="text-muted">No Products Found</h5>
-                                <p class="text-muted mb-4">Start by adding your first product</p>
+                                <iconify-icon icon="solar:box-outline" style="font-size: 4rem;" class="text-secondary-light mb-3"></iconify-icon>
+                                <h5 class="text-secondary-light">No Products Found</h5>
+                                <p class="text-secondary-light mb-4">Start by adding your first product</p>
                                 <a href="{{ route('add.product') }}" class="btn btn-primary">
                                     <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
                                     Add Your First Product

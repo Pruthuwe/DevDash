@@ -19,10 +19,12 @@
 <div class="card">
     <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
         <h5 class="card-title mb-0">All Quotations</h5>
+        @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-quotations')))
         <a href="{{ route('add.quotation') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-2">
             <iconify-icon icon="ic:baseline-plus" class="icon"></iconify-icon>
             <span>Add New Quotation</span>
         </a>
+        @endif
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -63,12 +65,17 @@
                             </td>
                             <td>
                                 <div class="d-flex gap-2">
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-quotations')))
                                     <a href="{{ route('quotations.show', $quotation->id) }}" class="btn btn-sm btn-outline-primary">
                                         <iconify-icon icon="ic:outline-visibility"></iconify-icon>
                                     </a>
+                                    @endif
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-quotations')))
                                     <a href="{{ route('quotations.edit', $quotation->id) }}" class="btn btn-sm btn-outline-warning">
                                         <iconify-icon icon="ic:outline-edit"></iconify-icon>
                                     </a>
+                                    @endif
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'delete-quotations')))
                                     <form action="{{ route('quotations.destroy', $quotation->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
@@ -77,6 +84,7 @@
                                             <iconify-icon icon="ic:outline-delete"></iconify-icon>
                                         </button>
                                     </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -84,11 +92,13 @@
                         <tr>
                             <td colspan="7" class="text-center py-4">
                                 <div class="d-flex flex-column align-items-center">
-                                    <iconify-icon icon="ic:outline-inventory-2" class="icon text-2xl text-muted mb-2"></iconify-icon>
-                                    <span class="text-muted">No quotations found</span>
+                                    <iconify-icon icon="ic:outline-inventory-2" class="icon text-2xl text-secondary-light mb-2"></iconify-icon>
+                                    <span class="text-secondary-light">No quotations found</span>
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-quotations')))
                                     <a href="{{ route('add.quotation') }}" class="btn btn-primary btn-sm mt-2">
                                         Create Your First Quotation
                                     </a>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

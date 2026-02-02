@@ -31,10 +31,12 @@
         </nav>
     </div>
     <div class="d-flex gap-2">
+        @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-purchases')))
         <a href="{{ route('add.purchase') }}" class="btn btn-primary d-flex align-items-center gap-2">
             <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
             Add Purchase
         </a>
+        @endif
     </div>
 </div>
 
@@ -44,7 +46,7 @@
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-muted mb-1">Total Purchases</h6>
+                    <h6 class="text-secondary-light mb-1">Total Purchases</h6>
                     <h4 class="mb-0">{{ $totalPurchases }}</h4>
                 </div>
                 <div class="stat-icon bg-primary-light">
@@ -52,7 +54,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-muted">All purchase orders</small>
+                <small class="text-secondary-light">All purchase orders</small>
             </div>
         </div>
     </div>
@@ -60,7 +62,7 @@
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-muted mb-1">Total Amount</h6>
+                    <h6 class="text-secondary-light mb-1">Total Amount</h6>
                     <h4 class="mb-0">${{ number_format($totalAmount, 2) }}</h4>
                 </div>
                 <div class="stat-icon bg-success-light">
@@ -68,7 +70,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-muted">Completed purchases</small>
+                <small class="text-secondary-light">Completed purchases</small>
             </div>
         </div>
     </div>
@@ -76,7 +78,7 @@
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-muted mb-1">Pending</h6>
+                    <h6 class="text-secondary-light mb-1">Pending</h6>
                     <h4 class="mb-0">{{ $pendingPurchases }}</h4>
                 </div>
                 <div class="stat-icon bg-warning-light">
@@ -84,7 +86,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-muted">Awaiting completion</small>
+                <small class="text-secondary-light">Awaiting completion</small>
             </div>
         </div>
     </div>
@@ -92,7 +94,7 @@
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-muted mb-1">Completed</h6>
+                    <h6 class="text-secondary-light mb-1">Completed</h6>
                     <h4 class="mb-0">{{ $completedPurchases }}</h4>
                 </div>
                 <div class="stat-icon bg-info-light">
@@ -100,7 +102,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-muted">Successfully processed</small>
+                <small class="text-secondary-light">Successfully processed</small>
             </div>
         </div>
     </div>
@@ -169,12 +171,17 @@
                             </td>
                             <td>
                                 <div class="d-flex gap-1">
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-purchases')))
                                     <a href="{{ route('purchases.show', $purchase->id) }}" class="btn btn-sm btn-outline-info" title="View">
                                         <iconify-icon icon="solar:eye-outline"></iconify-icon>
                                     </a>
+                                    @endif
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-purchases')))
                                     <a href="{{ route('purchases.edit', $purchase->id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
                                         <iconify-icon icon="solar:pen-outline"></iconify-icon>
                                     </a>
+                                    @endif
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'delete-purchases')))
                                     <form action="{{ route('purchases.destroy', $purchase->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this purchase?');">
                                         @csrf
                                         @method('DELETE')
@@ -182,19 +189,22 @@
                                             <iconify-icon icon="ic:outline-delete"></iconify-icon>
                                         </button>
                                     </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="7" class="text-center py-4">
-                                <div class="text-muted">
+                                <div class="text-secondary-light">
                                     <iconify-icon icon="solar:box-outline" class="fs-1"></iconify-icon>
                                     <p class="mb-0 mt-2">No purchases found</p>
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-purchases')))
                                     <a href="{{ route('add.purchase') }}" class="btn btn-sm btn-primary mt-2">
                                         <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
                                         Create Your First Purchase
                                     </a>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

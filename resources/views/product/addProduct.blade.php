@@ -89,7 +89,7 @@
                         <div class="wizard-step-content active" id="step-1">
                             <div class="step-header mb-24">
                                 <h5 class="mb-2">Basic Product Information</h5>
-                                <p class="text-muted mb-0">Enter the basic details of your product</p>
+                                <p class="text-secondary-light mb-0">Enter the basic details of your product</p>
                             </div>
 
                             <div class="row g-4">
@@ -192,7 +192,7 @@
                         <div class="wizard-step-content" id="step-2">
                             <div class="step-header mb-24">
                                 <h5 class="mb-2">Pricing & Stock Management</h5>
-                                <p class="text-muted mb-0">Set pricing, discounts, and inventory details</p>
+                                <p class="text-secondary-light mb-0">Set pricing, discounts, and inventory details</p>
                             </div>
 
                             <div class="row g-4">
@@ -213,7 +213,7 @@
                                         <span class="input-group-text">$</span>
                                         <input type="number" class="form-control" name="sale_price" id="salePrice" placeholder="0.00" step="0.01" min="0">
                                     </div>
-                                    <small class="text-muted d-flex align-items-center gap-1 mt-1">
+                                    <small class="text-secondary-light d-flex align-items-center gap-1 mt-1">
                                         <iconify-icon icon="solar:info-circle-outline"></iconify-icon>
                                         Leave empty if no discount
                                     </small>
@@ -235,7 +235,7 @@
                                         <span class="input-group-text">$</span>
                                         <input type="number" class="form-control" name="cost_price" placeholder="0.00" step="0.01" min="0">
                                     </div>
-                                    <small class="text-muted">For profit calculation</small>
+                                    <small class="text-secondary-light">For profit calculation</small>
                                 </div>
 
                                 <!-- Stock Quantity -->
@@ -249,7 +249,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label">Low Stock Alert</label>
                                     <input type="number" class="form-control" name="low_stock_alert" placeholder="10" min="0">
-                                    <small class="text-muted">Alert when stock falls below this number</small>
+                                    <small class="text-secondary-light">Alert when stock falls below this number</small>
                                 </div>
 
                                 <!-- Tax -->
@@ -291,7 +291,7 @@
                         <div class="wizard-step-content" id="step-3">
                             <div class="step-header mb-24">
                                 <h5 class="mb-2">Product Images & Gallery</h5>
-                                <p class="text-muted mb-0">Upload product images for better presentation</p>
+                                <p class="text-secondary-light mb-0">Upload product images for better presentation</p>
                             </div>
 
                             <div class="row g-4">
@@ -304,7 +304,7 @@
                                             <div class="upload-placeholder">
                                                 <iconify-icon icon="solar:cloud-upload-outline" class="icon-4x text-primary mb-3"></iconify-icon>
                                                 <h6>Drop your image here, or <span class="text-primary">browse</span></h6>
-                                                <p class="text-muted mb-0">Supports: JPG, JPEG, PNG (Max: 2MB)</p>
+                                                <p class="text-secondary-light mb-0">Supports: JPG, JPEG, PNG (Max: 2MB)</p>
                                             </div>
                                         </div>
                                         <div class="upload-preview d-none mt-3" id="mainImagePreview">
@@ -324,7 +324,7 @@
                                         <div class="upload-placeholder">
                                             <iconify-icon icon="solar:gallery-add-outline" class="icon-4x text-primary mb-3"></iconify-icon>
                                             <h6>Drop multiple images here, or <span class="text-primary">browse</span></h6>
-                                            <p class="text-muted mb-0">Upload up to 5 additional images</p>
+                                            <p class="text-secondary-light mb-0">Upload up to 5 additional images</p>
                                         </div>
                                     </div>
                                     <div class="gallery-upload-container mt-3">
@@ -355,7 +355,7 @@
                         <div class="wizard-step-content" id="step-4">
                             <div class="step-header mb-24">
                                 <h5 class="mb-2">Product Description</h5>
-                                <p class="text-muted mb-0">Write compelling descriptions for your product</p>
+                                <p class="text-secondary-light mb-0">Write compelling descriptions for your product</p>
                             </div>
 
                             <div class="row g-4">
@@ -364,8 +364,8 @@
                                     <label class="form-label">Short Description</label>
                                     <textarea class="form-control" name="short_description" rows="3" placeholder="Brief product summary (max 200 characters)" maxlength="200"></textarea>
                                     <div class="d-flex justify-content-between mt-1">
-                                        <small class="text-muted">This will appear in product listings</small>
-                                        <small class="text-muted char-count">0/200</small>
+                                        <small class="text-secondary-light">This will appear in product listings</small>
+                                        <small class="text-secondary-light char-count">0/200</small>
                                     </div>
                                 </div>
 
@@ -399,7 +399,7 @@
                                 <div class="col-12">
                                     <label class="form-label">Product Tags</label>
                                     <input type="text" class="form-control" name="tags" placeholder="e.g., organic, natural, eco-friendly (comma separated)">
-                                    <small class="text-muted">Separate tags with commas</small>
+                                    <small class="text-secondary-light">Separate tags with commas</small>
                                 </div>
 
                                 <!-- Additional Notes -->
@@ -446,7 +446,7 @@
                     </div>
                 </div>
                 <h5 class="mb-3">Product Created Successfully!</h5>
-                <p class="text-muted mb-4">Your product has been added to the store.</p>
+                <p class="text-secondary-light mb-4">Your product has been added to the store.</p>
                 <div class="d-flex justify-content-center gap-3">
                     <a href="{{ route('products.index') }}" class="btn btn-outline-secondary">View All Products</a>
                     <button class="btn btn-primary" onclick="location.reload()">Add Another Product</button>

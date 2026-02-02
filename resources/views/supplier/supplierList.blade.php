@@ -14,10 +14,12 @@
         </nav>
     </div>
     <div class="d-flex gap-2">
+        @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-suppliers')))
         <a href="{{ route('add.supplier') }}" class="btn btn-primary d-flex align-items-center gap-2">
             <iconify-icon icon="solar:user-plus-outline"></iconify-icon>
             Add Supplier
         </a>
+        @endif
     </div>
 </div>
 
@@ -88,9 +90,12 @@
                                     <td>{{ $supplier->fax ?? '-' }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
+                                            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-suppliers')))
                                             <a href="{{ route('suppliers.edit', $supplier) }}" class="btn btn-sm btn-outline-warning">
                                                 <iconify-icon icon="solar:pen-outline"></iconify-icon>
                                             </a>
+                                            @endif
+                                            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'delete-suppliers')))
                                             <form action="{{ route('suppliers.destroy', $supplier) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
@@ -98,6 +103,7 @@
                                                     <iconify-icon icon="ic:outline-delete"></iconify-icon>
                                                 </button>
                                             </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -105,13 +111,15 @@
                                 <tr>
                                     <td colspan="13" class="text-center py-4">
                                         <div class="d-flex flex-column align-items-center">
-                                            <iconify-icon icon="solar:users-group-two-rounded-outline" style="font-size: 3rem;" class="text-muted mb-3"></iconify-icon>
-                                            <h6 class="text-muted">No suppliers found</h6>
-                                            <p class="text-muted mb-3">Start by adding your first supplier</p>
+                                            <iconify-icon icon="solar:users-group-two-rounded-outline" style="font-size: 3rem;" class="text-secondary-light mb-3"></iconify-icon>
+                                            <h6 class="text-secondary-light">No suppliers found</h6>
+                                            <p class="text-secondary-light mb-3">Start by adding your first supplier</p>
+                                            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-suppliers')))
                                             <a href="{{ route('add.supplier') }}" class="btn btn-primary d-flex align-items-center gap-2">
                                                 <iconify-icon icon="solar:user-plus-outline"></iconify-icon>
                                                 Add Supplier
                                             </a>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

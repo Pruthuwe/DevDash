@@ -28,7 +28,7 @@
         <div class="card">
             <div class="card-header">
                 <h6 class="mb-0 text-lg">Create New Category</h6>
-                <p class="text-muted mb-0 mt-2">Organize your products with main categories</p>
+                <p class="text-secondary-light mb-0 mt-2">Organize your products with main categories</p>
             </div>
             
             <div class="card-body">
@@ -165,10 +165,10 @@
                                     <div class="image-upload-container">
                                         <div class="image-upload-box" id="bannerImageUpload">
                                             <div class="upload-placeholder">
-                                                <iconify-icon icon="solar:gallery-add-outline" class="icon-4x text-muted"></iconify-icon>
+                                                <iconify-icon icon="solar:gallery-add-outline" class="icon-4x text-secondary-light"></iconify-icon>
                                                 <div class="mt-3">
                                                     <h6 class="mb-1">Drop banner image here or click to upload</h6>
-                                                    <p class="text-muted mb-0">Recommended: 1200×400px, JPG, PNG or WebP</p>
+                                                    <p class="text-secondary-light mb-0">Recommended: 1200×400px, JPG, PNG or WebP</p>
                                                 </div>
                                             </div>
                                             <input type="file" 
@@ -201,7 +201,7 @@
                                     <div class="image-upload-container">
                                         <div class="image-upload-box" id="thumbnailImageUpload">
                                             <div class="upload-placeholder">
-                                                <iconify-icon icon="solar:gallery-add-outline" class="icon-2x text-muted"></iconify-icon>
+                                                <iconify-icon icon="solar:gallery-add-outline" class="icon-2x text-secondary-light"></iconify-icon>
                                                 <div class="mt-2">
                                                     <p class="mb-0">Upload thumbnail</p>
                                                 </div>
@@ -233,7 +233,7 @@
                                     <div class="image-upload-container">
                                         <div class="image-upload-box" id="iconImageUpload">
                                             <div class="upload-placeholder">
-                                                <iconify-icon icon="solar:gallery-add-outline" class="icon-2x text-muted"></iconify-icon>
+                                                <iconify-icon icon="solar:gallery-add-outline" class="icon-2x text-secondary-light"></iconify-icon>
                                                 <div class="mt-2">
                                                     <p class="mb-0">Upload icon</p>
                                                 </div>
@@ -270,7 +270,7 @@
                                                     <iconify-icon icon="solar:info-circle-outline" class="text-primary mt-1"></iconify-icon>
                                                     <div>
                                                         <h6 class="mb-1">Format</h6>
-                                                        <p class="text-muted mb-0">Use JPG, PNG, or WebP format</p>
+                                                        <p class="text-secondary-light mb-0">Use JPG, PNG, or WebP format</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -279,7 +279,7 @@
                                                     <iconify-icon icon="solar:info-circle-outline" class="text-primary mt-1"></iconify-icon>
                                                     <div>
                                                         <h6 class="mb-1">Size Limit</h6>
-                                                        <p class="text-muted mb-0">Max 2MB per image</p>
+                                                        <p class="text-secondary-light mb-0">Max 2MB per image</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -288,7 +288,7 @@
                                                     <iconify-icon icon="solar:info-circle-outline" class="text-primary mt-1"></iconify-icon>
                                                     <div>
                                                         <h6 class="mb-1">Background</h6>
-                                                        <p class="text-muted mb-0">Transparent or white background preferred</p>
+                                                        <p class="text-secondary-light mb-0">Transparent or white background preferred</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -342,15 +342,15 @@
                         <h6 class="mb-3">Details</h6>
                         <div class="row g-3">
                             <div class="col-6">
-                                <small class="text-muted">Display Order</small>
+                                <small class="text-secondary-light">Display Order</small>
                                 <div class="fw-medium" id="previewOrder">0</div>
                             </div>
                             <div class="col-6">
-                                <small class="text-muted">Status</small>
+                                <small class="text-secondary-light">Status</small>
                                 <div class="fw-medium" id="previewStatusText">Active</div>
                             </div>
                             <div class="col-12">
-                                <small class="text-muted">Description</small>
+                                <small class="text-secondary-light">Description</small>
                                 <div class="text-truncate" id="previewDescription">Category description will appear here...</div>
                             </div>
                         </div>
@@ -361,25 +361,25 @@
                         <div class="row g-2">
                             <div class="col-6">
                                 <div class="d-flex align-items-center gap-2">
-                                    <iconify-icon icon="solar:star-outline" class="text-muted"></iconify-icon>
+                                    <iconify-icon icon="solar:star-outline" class="text-secondary-light"></iconify-icon>
                                     <small>Featured: <span id="previewFeatured">No</span></small>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="d-flex align-items-center gap-2">
-                                    <iconify-icon icon="solar:menu-dots-outline" class="text-muted"></iconify-icon>
+                                    <iconify-icon icon="solar:menu-dots-outline" class="text-secondary-light"></iconify-icon>
                                     <small>In Menu: <span id="previewMenu">Yes</span></small>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="d-flex align-items-center gap-2">
-                                    <iconify-icon icon="solar:home-outline" class="text-muted"></iconify-icon>
+                                    <iconify-icon icon="solar:home-outline" class="text-secondary-light"></iconify-icon>
                                     <small>Homepage: <span id="previewHomepage">No</span></small>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="d-flex align-items-center gap-2">
-                                    <iconify-icon icon="solar:filter-outline" class="text-muted"></iconify-icon>
+                                    <iconify-icon icon="solar:filter-outline" class="text-secondary-light"></iconify-icon>
                                     <small>Filtering: <span id="previewFilter">Yes</span></small>
                                 </div>
                             </div>
@@ -388,7 +388,7 @@
                     
                     <div class="preview-tips mt-4 pt-4 border-top">
                         <h6 class="mb-2">Tips</h6>
-                        <ul class="text-muted small">
+                        <ul class="text-secondary-light small">
                             <li>Use descriptive names that customers understand</li>
                             <li>Add clear category descriptions</li>
                             <li>Upload high-quality images</li>

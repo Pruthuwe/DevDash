@@ -36,10 +36,12 @@
         </nav>
     </div>
     <div class="d-flex gap-2">
+        @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-products')))
         <a href="{{ route('add.product') }}" class="btn btn-primary d-flex align-items-center gap-2">
             <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
             Add Product
         </a>
+        @endif
     </div>
 </div>
 
@@ -49,7 +51,7 @@
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-muted mb-1">Total Products</h6>
+                    <h6 class="text-secondary-light mb-1">Total Products</h6>
                     <h4 class="mb-0">{{ $totalProducts }}</h4>
                 </div>
                 <div class="stat-icon bg-primary-light">
@@ -57,7 +59,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-muted">All active products</small>
+                <small class="text-secondary-light">All active products</small>
             </div>
         </div>
     </div>
@@ -65,7 +67,7 @@
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-muted mb-1">Inventory Value</h6>
+                    <h6 class="text-secondary-light mb-1">Inventory Value</h6>
                     <h4 class="mb-0">${{ number_format($totalValue, 2) }}</h4>
                 </div>
                 <div class="stat-icon bg-success-light">
@@ -73,7 +75,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-muted">Total cost value</small>
+                <small class="text-secondary-light">Total cost value</small>
             </div>
         </div>
     </div>
@@ -81,7 +83,7 @@
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-muted mb-1">Low Stock</h6>
+                    <h6 class="text-secondary-light mb-1">Low Stock</h6>
                     <h4 class="mb-0">{{ count($lowStock) }}</h4>
                 </div>
                 <div class="stat-icon bg-warning-light">
@@ -89,7 +91,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-muted">Needs restocking</small>
+                <small class="text-secondary-light">Needs restocking</small>
             </div>
         </div>
     </div>
@@ -97,7 +99,7 @@
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-muted mb-1">Out of Stock</h6>
+                    <h6 class="text-secondary-light mb-1">Out of Stock</h6>
                     <h4 class="mb-0">{{ count($outOfStock) }}</h4>
                 </div>
                 <div class="stat-icon bg-danger-light">
@@ -105,7 +107,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-muted">Require attention</small>
+                <small class="text-secondary-light">Require attention</small>
             </div>
         </div>
     </div>
@@ -150,7 +152,7 @@
                             <td>
                                 <h6 class="mb-0">{{ $product->name }}</h6>
                                 @if($product->brand)
-                                <small class="text-muted">{{ $product->brand }}</small>
+                                <small class="text-secondary-light">{{ $product->brand }}</small>
                                 @endif
                             </td>
                             <td>{{ $product->sku }}</td>
@@ -159,7 +161,7 @@
                                     <img src="{{ asset($product->main_image) }}" alt="{{ $product->name }}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
                                 @else
                                     <div class="bg-neutral-200 rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <iconify-icon icon="solar:box-outline" class="text-muted"></iconify-icon>
+                                        <iconify-icon icon="solar:box-outline" class="text-secondary-light"></iconify-icon>
                                     </div>
                                 @endif
                             </td>
@@ -167,20 +169,20 @@
                                 @if($product->category)
                                 <span class="badge bg-primary-light text-primary">{{ $product->category->name }}</span>
                                 @else
-                                <span class="text-muted">—</span>
+                                <span class="text-secondary-light">—</span>
                                 @endif
                             </td>
                             <td>
                                 @if($product->subcategory)
                                 <span class="badge bg-info-light text-info">{{ $product->subcategory->name }}</span>
                                 @else
-                                <span class="text-muted">—</span>
+                                <span class="text-secondary-light">—</span>
                                 @endif
                             </td>
                             <td>
                                 @if($product->sale_price && $product->sale_price > 0)
                                     <div>
-                                        <span class="text-decoration-line-through text-muted small">${{ number_format($product->price, 2) }}</span>
+                                        <span class="text-decoration-line-through text-secondary-light small">${{ number_format($product->price, 2) }}</span>
                                         <strong class="text-success d-block">${{ number_format($product->sale_price, 2) }}</strong>
                                     </div>
                                 @else
@@ -205,12 +207,17 @@
                             </td>
                             <td>
                                 <div class="d-flex gap-1">
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-products')))
                                     <a href="{{ route('products.show', $product) }}" class="btn btn-sm btn-outline-primary" title="View">
                                         <iconify-icon icon="solar:eye-outline"></iconify-icon>
                                     </a>
+                                    @endif
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-products')))
                                     <a href="{{ route('products.edit', $product) }}" class="btn btn-sm btn-outline-warning" title="Edit">
                                         <iconify-icon icon="solar:pen-outline"></iconify-icon>
                                     </a>
+                                    @endif
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'delete-products')))
                                     <form action="{{ route('products.destroy', $product) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this product?')">
                                         @csrf
                                         @method('DELETE')
@@ -218,19 +225,22 @@
                                             <iconify-icon icon="ic:outline-delete"></iconify-icon>
                                         </button>
                                     </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="9" class="text-center py-5">
-                                <iconify-icon icon="solar:box-outline" style="font-size: 4rem;" class="text-muted mb-3"></iconify-icon>
-                                <h5 class="text-muted">No Products Found</h5>
-                                <p class="text-muted mb-4">Start by adding your first product</p>
+                                <iconify-icon icon="solar:box-outline" style="font-size: 4rem;" class="text-secondary-light mb-3"></iconify-icon>
+                                <h5 class="text-secondary-light">No Products Found</h5>
+                                <p class="text-secondary-light mb-4">Start by adding your first product</p>
+                                @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-products')))
                                 <a href="{{ route('add.product') }}" class="btn btn-primary">
                                     <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
                                     Add Your First Product
                                 </a>
+                                @endif
                             </td>
                         </tr>
                     @endforelse
@@ -268,7 +278,7 @@
                         <div class="row g-3">
                             <div class="col-12">
                                 <h4 id="modalProductName" class="mb-1"></h4>
-                                <p class="text-muted mb-0" id="modalProductBrand"></p>
+                                <p class="text-secondary-light mb-0" id="modalProductBrand"></p>
                             </div>
                             
                             <div class="col-md-6">
@@ -325,7 +335,7 @@ function loadProductDetailsFromData(button) {
     
     // Set price (show sale price if available)
     const displayPrice = (productData.sale_price && productData.sale_price !== null && productData.sale_price !== '' && parseFloat(productData.sale_price) > 0) ? 
-        '<del class="text-muted">$' + parseFloat(productData.price).toFixed(2) + '</del> $' + parseFloat(productData.sale_price).toFixed(2) : 
+        '<del class="text-secondary-light">$' + parseFloat(productData.price).toFixed(2) + '</del> $' + parseFloat(productData.sale_price).toFixed(2) : 
         '$' + parseFloat(productData.price).toFixed(2);
     document.getElementById('modalProductPrice').innerHTML = displayPrice;
     
@@ -424,19 +434,19 @@ function filterProducts() {
 }
 
 .bg-primary-light {
-    background-color: rgba(13, 110, 253, 0.1) !important;
+    background-color: var(--primary-light) !important;
 }
 
 .bg-success-light {
-    background-color: rgba(25, 135, 84, 0.1) !important;
+    background-color: var(--success-surface) !important;
 }
 
 .bg-warning-light {
-    background-color: rgba(255, 193, 7, 0.1) !important;
+    background-color: var(--warning-surface) !important;
 }
 
 .bg-danger-light {
-    background-color: rgba(220, 53, 69, 0.1) !important;
+    background-color: var(--danger-surface) !important;
 }
 </style>
 @endpush

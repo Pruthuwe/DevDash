@@ -43,7 +43,7 @@
                         Edit Category
                     @endif
                 </h6>
-                <p class="text-muted mb-0 mt-2">
+                <p class="text-secondary-light mb-0 mt-2">
                     @if($category->parent_id)
                         Update subcategory information and media
                     @else
@@ -87,7 +87,7 @@
                                 <div>
                                     <strong>Parent Category:</strong> {{ $category->parent->name }}
                                     @if($category->parent->children->count() > 1)
-                                        <br><small class="text-muted">This subcategory belongs to a category with {{ $category->parent->children->count() }} total subcategories</small>
+                                        <br><small class="text-secondary-light">This subcategory belongs to a category with {{ $category->parent->children->count() }} total subcategories</small>
                                     @endif
                                 </div>
                             </div>
@@ -107,13 +107,13 @@
                                                     @if($sibling->thumbnail_image)
                                                         <img src="{{ asset($sibling->thumbnail_image) }}" alt="{{ $sibling->name }}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
                                                     @else
-                                                        <div class="bg-light rounded me-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                                            <iconify-icon icon="solar:folder-outline" class="text-muted"></iconify-icon>
+                                                        <div class="bg-secondary-light rounded me-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                            <iconify-icon icon="solar:folder-outline" class="text-secondary-light"></iconify-icon>
                                                         </div>
                                                     @endif
                                                     <div class="flex-grow-1">
                                                         <div class="fw-medium">{{ $sibling->name }}</div>
-                                                        <small class="text-muted">{{ $sibling->status }}</small>
+                                                        <small class="text-secondary-light">{{ $sibling->status }}</small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -148,7 +148,7 @@
                                                placeholder="Enter category name (e.g., Electronics, Clothing)"
                                                required>
                                     </div>
-                                    <div class="form-text">Give your category a clear and descriptive name</div>
+                                    <div class="form-text text-secondary-light">Give your category a clear and descriptive name</div>
                                     @error('name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -194,7 +194,7 @@
                                               name="description"
                                               rows="4"
                                               placeholder="Describe your category...">{{ old('description', $category->description) }}</textarea>
-                                    <div class="form-text">Brief description for customers</div>
+                                    <div class="form-text text-secondary-light">Brief description for customers</div>
                                     @error('description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -218,10 +218,10 @@
                                     <div class="image-upload-container">
                                         <div class="image-upload-box {{ $category->banner_image ? 'd-none' : '' }}" id="bannerImageUpload">
                                             <div class="upload-placeholder">
-                                                <iconify-icon icon="solar:gallery-add-outline" class="icon-4x text-muted"></iconify-icon>
+                                                <iconify-icon icon="solar:gallery-add-outline" class="icon-4x text-secondary-light"></iconify-icon>
                                                 <div class="mt-3">
                                                     <h6 class="mb-1">Drop banner image here or click to upload</h6>
-                                                    <p class="text-muted mb-0">Recommended: 1200×400px, JPG, PNG or WebP</p>
+                                                    <p class="text-secondary-light mb-0">Recommended: 1200×400px, JPG, PNG or WebP</p>
                                                 </div>
                                             </div>
                                             <input type="file"
@@ -237,7 +237,7 @@
                                         </div>
                                         <input type="hidden" name="delete_banner_image" id="delete_banner_image" value="0">
                                     </div>
-                                    <div class="form-text">Large banner image for category pages</div>
+                                    <div class="form-text text-secondary-light">Large banner image for category pages</div>
                                     @error('banner_image')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -254,7 +254,7 @@
                                     <div class="image-upload-container">
                                         <div class="image-upload-box {{ $category->thumbnail_image ? 'd-none' : '' }}" id="thumbnailImageUpload">
                                             <div class="upload-placeholder">
-                                                <iconify-icon icon="solar:gallery-add-outline" class="icon-2x text-muted"></iconify-icon>
+                                                <iconify-icon icon="solar:gallery-add-outline" class="icon-2x text-secondary-light"></iconify-icon>
                                                 <div class="mt-2">
                                                     <p class="mb-0">Upload thumbnail</p>
                                                 </div>
@@ -273,7 +273,7 @@
                                         </div>
                                         <input type="hidden" name="delete_thumbnail_image" id="delete_thumbnail_image" value="0">
                                     </div>
-                                    <div class="form-text">Small image for category lists (300×300px)</div>
+                                    <div class="form-text text-secondary-light">Small image for category lists (300×300px)</div>
                                     @error('thumbnail_image')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -287,7 +287,7 @@
                                     <div class="image-upload-container">
                                         <div class="image-upload-box {{ $category->icon_image ? 'd-none' : '' }}" id="iconImageUpload">
                                             <div class="upload-placeholder">
-                                                <iconify-icon icon="solar:gallery-add-outline" class="icon-2x text-muted"></iconify-icon>
+                                                <iconify-icon icon="solar:gallery-add-outline" class="icon-2x text-secondary-light"></iconify-icon>
                                                 <div class="mt-2">
                                                     <p class="mb-0">Upload icon</p>
                                                 </div>
@@ -305,7 +305,7 @@
                                         </div>
                                         <input type="hidden" name="delete_icon_image" id="delete_icon_image" value="0">
                                     </div>
-                                    <div class="form-text">Small icon for navigation (100×100px)</div>
+                                    <div class="form-text text-secondary-light">Small icon for navigation (100×100px)</div>
                                     @error('icon_image')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -315,7 +315,7 @@
                             <!-- Image Guidelines -->
                             <div class="col-12">
                                 <div class="card border">
-                                    <div class="card-header bg-light">
+                                    <div class="card-header bg-secondary-light">
                                         <h6 class="mb-0">Image Guidelines</h6>
                                     </div>
                                     <div class="card-body">
@@ -325,7 +325,7 @@
                                                     <iconify-icon icon="solar:info-circle-outline" class="text-primary mt-1"></iconify-icon>
                                                     <div>
                                                         <h6 class="mb-1">Format</h6>
-                                                        <p class="text-muted mb-0">Use JPG, PNG, or WebP format</p>
+                                                        <p class="text-secondary-light mb-0">Use JPG, PNG, or WebP format</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -334,7 +334,7 @@
                                                     <iconify-icon icon="solar:info-circle-outline" class="text-primary mt-1"></iconify-icon>
                                                     <div>
                                                         <h6 class="mb-1">Size Limit</h6>
-                                                        <p class="text-muted mb-0">Max 2MB per image</p>
+                                                        <p class="text-secondary-light mb-0">Max 2MB per image</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -343,7 +343,7 @@
                                                     <iconify-icon icon="solar:info-circle-outline" class="text-primary mt-1"></iconify-icon>
                                                     <div>
                                                         <h6 class="mb-1">Background</h6>
-                                                        <p class="text-muted mb-0">Transparent or white background preferred</p>
+                                                        <p class="text-secondary-light mb-0">Transparent or white background preferred</p>
                                                     </div>
                                                 </div>
                                             </div>

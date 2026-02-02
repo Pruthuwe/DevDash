@@ -38,7 +38,7 @@
 
                         <div class="max-h-400-px overflow-y-auto scroll-sm pe-4">
                             <a href="javascript:void(0)" class="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between">
-                                <div class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
+                                <div class="text-primary-light hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
                                     <span class="w-40-px h-40-px rounded-circle flex-shrink-0 position-relative">
                                         <img src="{{ asset('assets/images/notification/profile-3.png') }}" alt="">
                                         <span class="w-8-px h-8-px bg-success-main rounded-circle position-absolute end-0 bottom-0"></span>
@@ -78,7 +78,7 @@
 
                         <div class="max-h-400-px overflow-y-auto scroll-sm pe-4">
                             <a href="javascript:void(0)" class="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between">
-                                <div class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
+                                <div class="text-primary-light hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
                                     <span class="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
                                         <iconify-icon icon="bitcoin-icons:verify-outline" class="icon text-xxl"></iconify-icon>
                                     </span>
@@ -116,22 +116,22 @@
                         </div>
                         <ul class="to-top-list">
                             <li>
-                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
+                                <a class="dropdown-item text-primary-light px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
                                     href="{{ route('dashboard') }}">
                                     <iconify-icon icon="solar:user-linear" class="icon text-xl"></iconify-icon>
                                     My Profile
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
+                                <a class="dropdown-item text-primary-light px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
                                     href="#">
                                     <iconify-icon icon="tabler:message-check" class="icon text-xl"></iconify-icon> 
                                     Inbox
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
-                                    href="#">
+                                <a class="dropdown-item text-primary-light px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
+                                    href="{{ route('roles.index') }}">
                                     <iconify-icon icon="icon-park-outline:setting-two" class="icon text-xl"></iconify-icon> 
                                     Setting
                                 </a>
@@ -139,7 +139,7 @@
                             <li>
                                 <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                     @csrf
-                                    <button type="submit" class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3" style="background: none; border: none; cursor: pointer; width: 100%;">
+                                    <button type="submit" class="dropdown-item text-primary-light px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3" style="background: none; border: none; cursor: pointer; width: 100%;">
                                         <iconify-icon icon="lucide:power" class="icon text-xl"></iconify-icon> 
                                         Log Out
                                     </button>

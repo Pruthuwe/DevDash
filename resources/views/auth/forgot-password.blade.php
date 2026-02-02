@@ -9,7 +9,7 @@
                     <div class="card-body p-5">
                         <div class="text-center mb-4">
                             <h4 class="mb-2">Forgot Password</h4>
-                            <p class="text-muted">Enter your email address and we'll send you a link to reset your password.</p>
+                            <p class="text-secondary-light">Enter your email address and we'll send you a link to reset your password.</p>
                         </div>
 
                         <form method="POST" action="{{ route('password.email') }}">

@@ -13,10 +13,12 @@
         </nav>
     </div>
     <div class="d-flex gap-2">
+        @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-blogs')))
         <button type="button" class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addBlogModal">
             <iconify-icon icon="heroicons:plus-circle-20-solid"></iconify-icon>
             Add Blog
         </button>
+        @endif
     </div>
 </div>
 
@@ -51,15 +53,18 @@
                                             @endif
                                         @else
                                             <div class="bg-neutral-200 rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                <iconify-icon icon="solar:document-text-outline" class="text-muted"></iconify-icon>
+                                                <iconify-icon icon="solar:document-text-outline" class="text-secondary-light"></iconify-icon>
                                             </div>
                                         @endif
                                     </td>
                                     <td>
                                         <div class="d-flex gap-1">
+                                            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-blogs')))
                                             <a href="{{ route('blogs.edit', $blog) }}" class="btn btn-sm btn-outline-warning" title="Edit">
                                                 <iconify-icon icon="solar:pen-outline"></iconify-icon>
                                             </a>
+                                            @endif
+                                            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'delete-blogs')))
                                             <form action="{{ route('blogs.destroy', $blog) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this blog?')">
                                                 @csrf
                                                 @method('DELETE')
@@ -67,6 +72,7 @@
                                                     <iconify-icon icon="solar:trash-bin-minimalistic-outline"></iconify-icon>
                                                 </button>
                                             </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

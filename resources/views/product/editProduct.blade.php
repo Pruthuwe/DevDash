@@ -167,11 +167,11 @@
                                             <img id="imagePreview" src="{{ asset($product->main_image) }}" alt="Product Image" class="img-fluid rounded mb-3" style="max-height: 200px;">
                                         @else
                                             <div id="imagePreview" class="bg-light rounded d-flex align-items-center justify-content-center mb-3" style="height: 200px;">
-                                                <iconify-icon icon="solar:box-outline" style="font-size: 3rem;" class="text-muted"></iconify-icon>
+                                                <iconify-icon icon="solar:box-outline" style="font-size: 3rem;" class="text-secondary-light"></iconify-icon>
                                             </div>
                                         @endif
                                         <input type="file" class="form-control" name="main_image" id="mainImageInput" accept="image/*" onchange="previewImage(this)">
-                                        <small class="text-muted">Upload product image (JPG, PNG, max 2MB)</small>
+                                        <small class="text-secondary-light">Upload product image (JPG, PNG, max 2MB)</small>
                                     </div>
                                 </div>
                             </div>
@@ -202,7 +202,7 @@
                                     <!-- Upload New Gallery Images -->
                                     <div class="text-center">
                                         <input type="file" class="form-control" name="gallery_images[]" id="galleryImagesInput" accept="image/*" multiple onchange="previewGalleryImages(this)">
-                                        <small class="text-muted">Upload multiple gallery images (JPG, PNG, max 2MB each)</small>
+                                        <small class="text-secondary-light">Upload multiple gallery images (JPG, PNG, max 2MB each)</small>
                                     </div>
 
                                     <!-- Gallery Preview -->
@@ -237,7 +237,7 @@
                                                 <span class="input-group-text">$</span>
                                                 <input type="number" class="form-control" name="sale_price" value="{{ old('sale_price', $product->sale_price) }}" step="0.01" min="0" placeholder="0.00">
                                             </div>
-                                            <small class="text-muted">Leave empty if no sale price</small>
+                                            <small class="text-secondary-light">Leave empty if no sale price</small>
                                         </div>
 
                                         <!-- Cost Price -->
@@ -394,7 +394,7 @@ $(document).ready(function() {
     // Handle remove main image button
     $('#removeImageBtn').on('click', function() {
         if (confirm('Are you sure you want to remove the current image?')) {
-            $('#imagePreview').replaceWith('<div id="imagePreview" class="bg-light rounded d-flex align-items-center justify-content-center mb-3" style="height: 200px;"><iconify-icon icon="solar:box-outline" style="font-size: 3rem;" class="text-muted"></iconify-icon></div>');
+            $('#imagePreview').replaceWith('<div id="imagePreview" class="bg-light rounded d-flex align-items-center justify-content-center mb-3" style="height: 200px;"><iconify-icon icon="solar:box-outline" style="font-size: 3rem;" class="text-secondary-light"></iconify-icon></div>');
             // Add a hidden input to indicate image should be removed
             $('<input>').attr({
                 type: 'hidden',

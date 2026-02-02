@@ -14,10 +14,12 @@
         </nav>
     </div>
     <div class="d-flex gap-2">
+        @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-categories')))
         <a href="{{ route('add.category') }}" class="btn btn-primary d-flex align-items-center gap-2">
             <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
             Add Category
         </a>
+        @endif
     </div>
 </div>
 
@@ -27,7 +29,7 @@
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-muted mb-1">Total Categories</h6>
+                    <h6 class="text-secondary-light mb-1">Total Categories</h6>
                     <h4 class="mb-0">{{ $totalCategories }}</h4>
                 </div>
                 <div class="stat-icon bg-primary-light">
@@ -35,7 +37,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-muted">Main categories</small>
+                <small class="text-secondary-light">Main categories</small>
             </div>
         </div>
     </div>
@@ -43,7 +45,7 @@
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-muted mb-1">Subcategories</h6>
+                    <h6 class="text-secondary-light mb-1">Subcategories</h6>
                     <h4 class="mb-0">{{ $totalSubcategories }}</h4>
                 </div>
                 <div class="stat-icon bg-success-light">
@@ -51,7 +53,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-muted">Child categories</small>
+                <small class="text-secondary-light">Child categories</small>
             </div>
         </div>
     </div>
@@ -59,7 +61,7 @@
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-muted mb-1">Active</h6>
+                    <h6 class="text-secondary-light mb-1">Active</h6>
                     <h4 class="mb-0">{{ $activeCategories }}</h4>
                 </div>
                 <div class="stat-icon bg-info-light">
@@ -67,7 +69,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-muted">Active categories</small>
+                <small class="text-secondary-light">Active categories</small>
             </div>
         </div>
     </div>
@@ -104,7 +106,7 @@
                                 <div>
                                     <h6 class="mb-0">{{ $category->name }}</h6>
                                     @if($category->children->count() > 0)
-                                        <small class="text-muted">{{ $category->children->count() }} subcategories</small>
+                                        <small class="text-secondary-light">{{ $category->children->count() }} subcategories</small>
                                     @endif
                                 </div>
                             </td>
@@ -113,7 +115,7 @@
                                     <img src="{{ asset($category->thumbnail_image) }}" alt="{{ $category->name }}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
                                 @else
                                     <div class="bg-neutral-200 rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <iconify-icon icon="solar:folder-outline" class="text-muted"></iconify-icon>
+                                        <iconify-icon icon="solar:folder-outline" class="text-secondary-light"></iconify-icon>
                                     </div>
                                 @endif
                             </td>
@@ -121,7 +123,7 @@
                                 @if($category->description)
                                     {{ Str::limit($category->description, 50) }}
                                 @else
-                                    <span class="text-muted">—</span>
+                                    <span class="text-secondary-light">—</span>
                                 @endif
                             </td>
                             <td class="text-center">
@@ -138,15 +140,22 @@
                                             <iconify-icon icon="solar:alt-arrow-down-outline" class="category-arrow" data-category-id="{{ $category->id }}"></iconify-icon>
                                         </button>
                                     @endif
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-categories')))
                                     <a href="{{ route('categories.show', $category) }}" class="btn btn-sm btn-outline-primary" title="View">
                                         <iconify-icon icon="solar:eye-outline"></iconify-icon>
                                     </a>
+                                    @endif
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-categories')))
                                     <button type="button" class="btn btn-sm btn-outline-info" title="Add Subcategory" data-parent-id="{{ $category->id }}" data-parent-name="{{ $category->name }}" onclick="openSubcategoryModal(this)">
                                         <iconify-icon icon="solar:add-folder-outline"></iconify-icon>
                                     </button>
+                                    @endif
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-categories')))
                                     <a href="{{ route('categories.edit', $category) }}" class="btn btn-sm btn-outline-warning" title="Edit">
                                         <iconify-icon icon="solar:pen-outline"></iconify-icon>
                                     </a>
+                                    @endif
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'delete-categories')))
                                     <form method="POST" action="{{ route('categories.destroy', $category) }}" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
@@ -154,6 +163,7 @@
                                             <iconify-icon icon="ic:outline-delete"></iconify-icon>
                                         </button>
                                     </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -169,7 +179,7 @@
                                     <img src="{{ asset($subcategory->thumbnail_image) }}" alt="{{ $subcategory->name }}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
                                 @else
                                     <div class="bg-neutral-200 rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <iconify-icon icon="solar:folder-outline" class="text-muted"></iconify-icon>
+                                        <iconify-icon icon="solar:folder-outline" class="text-secondary-light"></iconify-icon>
                                     </div>
                                 @endif
                             </td>
@@ -177,7 +187,7 @@
                                 @if($subcategory->description)
                                     {{ Str::limit($subcategory->description, 50) }}
                                 @else
-                                    <span class="text-muted">—</span>
+                                    <span class="text-secondary-light">—</span>
                                 @endif
                             </td>
                             <td class="text-center">
@@ -189,12 +199,17 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex gap-1 justify-content-center">
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-categories')))
                                     <a href="{{ route('categories.show', $subcategory) }}" class="btn btn-sm btn-outline-primary" title="View">
                                         <iconify-icon icon="solar:eye-outline"></iconify-icon>
                                     </a>
+                                    @endif
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-categories')))
                                     <a href="{{ route('categories.edit', $subcategory) }}" class="btn btn-sm btn-outline-warning" title="Edit">
                                         <iconify-icon icon="solar:pen-outline"></iconify-icon>
                                     </a>
+                                    @endif
+                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'delete-categories')))
                                     <form method="POST" action="{{ route('categories.destroy', $subcategory) }}" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
@@ -202,6 +217,7 @@
                                             <iconify-icon icon="solar:trash-outline"></iconify-icon>
                                         </button>
                                     </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -210,9 +226,9 @@
                     @empty
                         <tr>
                             <td colspan="5" class="text-center py-5">
-                                <iconify-icon icon="solar:folder-outline" style="font-size: 4rem;" class="text-muted mb-3"></iconify-icon>
-                                <h5 class="text-muted">No Categories Found</h5>
-                                <p class="text-muted mb-4">Start by adding your first category</p>
+                                <iconify-icon icon="solar:folder-outline" style="font-size: 4rem;" class="text-secondary-light mb-3"></iconify-icon>
+                                <h5 class="text-secondary-light">No Categories Found</h5>
+                                <p class="text-secondary-light mb-4">Start by adding your first category</p>
                                 <a href="{{ route('categories.create') }}" class="btn btn-primary">
                                     <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
                                     Add Your First Category
@@ -277,17 +293,17 @@
                         <div class="col-md-4 mb-3">
                             <label for="subcategory_banner_image" class="form-label">Banner Image</label>
                             <input type="file" class="form-control" id="subcategory_banner_image" name="banner_image" accept="image/*">
-                            <small class="text-muted">Optional banner image</small>
+                            <small class="text-secondary-light">Optional banner image</small>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="subcategory_thumbnail_image" class="form-label">Thumbnail Image</label>
                             <input type="file" class="form-control" id="subcategory_thumbnail_image" name="thumbnail_image" accept="image/*">
-                            <small class="text-muted">Optional thumbnail image</small>
+                            <small class="text-secondary-light">Optional thumbnail image</small>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="subcategory_icon_image" class="form-label">Icon Image</label>
                             <input type="file" class="form-control" id="subcategory_icon_image" name="icon_image" accept="image/*">
-                            <small class="text-muted">Optional icon image</small>
+                            <small class="text-secondary-light">Optional icon image</small>
                         </div>
                     </div>
                 </div>
@@ -465,15 +481,15 @@ function toggleSubcategories(categoryId) {
 }
 
 .bg-primary-light {
-    background-color: rgba(13, 110, 253, 0.1) !important;
+    background-color: var(--primary-light) !important;
 }
 
 .bg-success-light {
-    background-color: rgba(25, 135, 84, 0.1) !important;
+    background-color: var(--success-surface) !important;
 }
 
 .bg-info-light {
-    background-color: rgba(13, 202, 240, 0.1) !important;
+    background-color: var(--info-surface) !important;
 }
 </style>
 @endpush

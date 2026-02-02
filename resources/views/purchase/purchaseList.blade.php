@@ -93,7 +93,7 @@
                     @empty
                         <tr>
                             <td colspan="6" class="text-center py-4">
-                                <div class="text-muted">
+                                <div class="text-secondary-light">
                                     <iconify-icon icon="solar:box-outline" class="fs-1"></iconify-icon>
                                     <p class="mb-0 mt-2">No purchases found</p>
                                     <a href="{{ route('add.purchase') }}" class="btn btn-sm btn-primary mt-2">

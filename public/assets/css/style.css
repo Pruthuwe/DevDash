@@ -3202,6 +3202,22 @@ th {
   background-color: var(--primary-light) !important;
 }
 
+.bg-success-light {
+  background-color: var(--success-surface) !important;
+}
+
+.bg-info-light {
+  background-color: var(--info-surface) !important;
+}
+
+.bg-warning-light {
+  background-color: var(--warning-surface) !important;
+}
+
+.bg-danger-light {
+  background-color: var(--danger-surface) !important;
+}
+
 .bg-yellow-light {
   background-color: var(--yellow-light) !important;
 }
@@ -11990,6 +12006,85 @@ div.dt-container .dt-paging .dt-paging-button:hover:hover, div.dt-container .dt-
   padding: 4px 16px !important;
 }
 
+/* Dark Mode Table Styles */
+html[data-theme="dark"] .basic-table thead th {
+  background-color: var(--neutral-100);
+  color: var(--text-primary-light);
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+html[data-theme="dark"] .basic-table tbody td {
+  background-color: var(--dark-2);
+  color: var(--text-secondary-light);
+}
+
+html[data-theme="dark"] .bordered-table {
+  border: 1px solid var(--neutral-200);
+}
+
+html[data-theme="dark"] .bordered-table thead tr th {
+  background-color: var(--neutral-100) !important;
+  border-bottom: 1px solid var(--neutral-200) !important;
+  color: var(--text-primary-light) !important;
+}
+
+html[data-theme="dark"] .bordered-table tbody tr td {
+  background-color: var(--dark-2);
+  color: var(--text-secondary-light);
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+html[data-theme="dark"] .striped-table tbody tr:nth-child(even) td {
+  background-color: var(--neutral-100);
+}
+
+html[data-theme="dark"] .striped-table tbody tr:nth-child(odd) td {
+  background-color: var(--dark-2);
+}
+
+/* Bootstrap Table Classes Dark Mode */
+html[data-theme="dark"] .table {
+  color: var(--text-secondary-light);
+}
+
+html[data-theme="dark"] .table thead th {
+  background-color: var(--neutral-100);
+  color: var(--text-primary-light);
+  border-color: var(--neutral-200);
+}
+
+html[data-theme="dark"] .table tbody td {
+  background-color: var(--dark-2);
+  color: var(--text-secondary-light);
+  border-color: var(--neutral-200);
+}
+
+html[data-theme="dark"] .table-hover tbody tr:hover td {
+  background-color: var(--neutral-100);
+}
+
+html[data-theme="dark"] .table-striped tbody tr:nth-of-type(odd) td {
+  background-color: var(--neutral-50);
+}
+
+html[data-theme="dark"] .table-striped tbody tr:nth-of-type(even) td {
+  background-color: var(--dark-2);
+}
+
+html[data-theme="dark"] .table-bordered {
+  border-color: var(--neutral-200);
+}
+
+html[data-theme="dark"] .table-bordered th,
+html[data-theme="dark"] .table-bordered td {
+  border-color: var(--neutral-200);
+}
+
+html[data-theme="dark"] .table-light thead th {
+  background-color: var(--neutral-100) !important;
+  color: var(--text-primary-light) !important;
+}
+
 /* Table Common Css End */
 /* === table css end === */
 /* === form css start === */
@@ -14930,6 +15025,17 @@ td.fc-header-center {
 
 .sidebar-menu li a .circle-icon {
   font-size: 0.625rem;
+}
+
+.sidebar-menu li a .submenu-icon {
+  font-size: 1rem;
+  margin-inline-end: 0.5rem;
+  color: #6b7280;
+  transition: color 0.2s ease;
+}
+
+.sidebar-menu li a:hover .submenu-icon {
+  color: #3b82f6;
 }
 
 .sidebar-menu .sidebar-submenu {

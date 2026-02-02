@@ -104,7 +104,7 @@
                                             <iconify-icon icon="solar:folder-outline" style="font-size: 2rem;" class="text-primary mb-2"></iconify-icon>
                                         @endif
                                         <h6 class="mb-1">{{ $subcategory->name }}</h6>
-                                        <small class="text-muted">{{ $subcategory->products->count() }} products</small>
+                                        <small class="text-secondary-light">{{ $subcategory->products->count() }} products</small>
                                         <div class="mt-2">
                                             <a href="{{ route('categories.show', $subcategory) }}" class="btn btn-sm btn-outline-primary me-1">
                                                 <iconify-icon icon="solar:eye-outline"></iconify-icon>
@@ -120,9 +120,9 @@
                         </div>
                     @else
                         <div class="text-center py-4">
-                            <iconify-icon icon="solar:folder-outline" style="font-size: 3rem;" class="text-muted mb-3"></iconify-icon>
-                            <h6 class="text-muted mb-2">No Subcategories</h6>
-                            <p class="text-muted mb-3">This category doesn't have any subcategories yet.</p>
+                            <iconify-icon icon="solar:folder-outline" style="font-size: 3rem;" class="text-secondary-light mb-3"></iconify-icon>
+                            <h6 class="text-secondary-light mb-2">No Subcategories</h6>
+                            <p class="text-secondary-light mb-3">This category doesn't have any subcategories yet.</p>
                             <a href="{{ route('categories.create', ['parent_id' => $category->id]) }}" class="btn btn-primary">
                                 <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
                                 Create First Subcategory
@@ -172,8 +172,8 @@
 
                         @if(!$category->banner_image && !$category->thumbnail_image && !$category->icon_image)
                         <div class="col-12 text-center py-4">
-                            <iconify-icon icon="solar:gallery-outline" style="font-size: 3rem;" class="text-muted mb-2"></iconify-icon>
-                            <p class="text-muted mb-0">No images uploaded</p>
+                            <iconify-icon icon="solar:gallery-outline" style="font-size: 3rem;" class="text-secondary-light mb-2"></iconify-icon>
+                            <p class="text-secondary-light mb-0">No images uploaded</p>
                         </div>
                         @endif
                     </div>

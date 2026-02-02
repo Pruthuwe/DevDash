@@ -127,7 +127,7 @@
                 <div class="row">
                     <div class="col-12">
                         <h6 class="mb-2">Notes</h6>
-                        <p class="text-muted">{{ $purchase->notes }}</p>
+                        <p class="text-secondary-light">{{ $purchase->notes }}</p>
                     </div>
                 </div>
                 @endif
