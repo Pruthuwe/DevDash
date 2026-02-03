@@ -196,10 +196,10 @@
 
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-end gap-3">
-                        <a href="{{ route('purchases.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('purchases.index') }}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
                             Cancel
                         </a>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary d-flex align-items-center gap-2">
                             <iconify-icon icon="solar:check-circle-outline" class="me-1"></iconify-icon>
                             Update Purchase
                         </button>
