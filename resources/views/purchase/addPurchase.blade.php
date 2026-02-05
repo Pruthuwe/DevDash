@@ -107,13 +107,13 @@
 
                     <!-- Product Selection Section -->
                     <div class="card border mb-4">
-                        <div class="card-header bg-light">
+                        <div class="card-header">
                             <h6 class="mb-0">Select Products for Purchase</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="productsTable">
-                                    <thead>
+                                <table class="basic-table table table-bordered" id="productsTable">
+                                    <thead class="bg-neutral-50">
                                         <tr>
                                             <th width="30%">Product <i class="text-danger">*</i></th>
                                             <th width="12%">SKU</th>
@@ -162,9 +162,9 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="4" class="text-end"><strong>Grand Total:</strong></td>
-                                            <td><strong id="grandTotal">0.00</strong></td>
-                                            <td>
+                                            <td colspan="4" class="text-end bg-neutral-50 text-primary-light"><strong>Grand Total:</strong></td>
+                                            <td class="bg-neutral-50 text-primary-light"><strong id="grandTotal">0.00</strong></td>
+                                            <td class="bg-neutral-50">
                                                 <button type="button" class="btn btn-sm btn-success" id="addRowBtn">
                                                     <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
                                                 </button>

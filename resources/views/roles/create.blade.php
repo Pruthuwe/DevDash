@@ -55,7 +55,7 @@
                             @foreach($permissions as $module => $perms)
                                 <div class="col-md-6 mb-16">
                                     <div class="card border">
-                                        <div class="card-header bg-light">
+                                        <div class="card-header">
                                             <h6 class="mb-0 text-capitalize">{{ $module }}</h6>
                                         </div>
                                         <div class="card-body">
