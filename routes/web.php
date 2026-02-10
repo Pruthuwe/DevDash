@@ -95,6 +95,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/add-service', [\App\Http\Controllers\ServiceController::class, 'create'])->middleware('permission:create-services')->name('add.service');
     Route::get('/manage-services', [\App\Http\Controllers\ServiceController::class, 'index'])->middleware('permission:view-services')->name('manage.services');
     
+    // Appointment Routes
+    Route::resource('appointments', \App\Http\Controllers\AppointmentController::class)->middleware([
+        'permission:view-appointments'
+    ])->except(['create', 'store']);
+    Route::get('/manage-appointments', [\App\Http\Controllers\AppointmentController::class, 'manage'])->middleware('permission:view-appointments')->name('manage.appointments');
+    Route::post('/appointments/{appointment}/update-status', [\App\Http\Controllers\AppointmentController::class, 'updateStatus'])->middleware('permission:edit-appointments')->name('appointments.update-status');
+    
     // Role Routes
     Route::resource('roles', \App\Http\Controllers\RoleController::class)->middleware([
         'permission:view-roles'

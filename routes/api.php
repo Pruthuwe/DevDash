@@ -21,6 +21,8 @@ Route::get('services', [\App\Http\Controllers\ServiceController::class, 'index']
 Route::get('services/{id}', [\App\Http\Controllers\ServiceController::class, 'show']);
 Route::get('products', [\App\Http\Controllers\ProductController::class, 'index']);
 Route::get('products/{product}', [\App\Http\Controllers\ProductController::class, 'show']);
+Route::get('appointments', [\App\Http\Controllers\AppointmentController::class, 'index']);
+Route::get('appointments/{appointment}', [\App\Http\Controllers\AppointmentController::class, 'show']);
 
 // Protected user endpoint
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

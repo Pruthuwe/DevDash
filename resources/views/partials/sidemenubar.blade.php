@@ -240,6 +240,15 @@
                 </ul>
             </li>
             @endif
+            {{-- Appointment Management --}}
+            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-blogs')))
+            <li>
+                <a href="{{ route('manage.appointments') }}">
+                    <iconify-icon icon="solar:document-text-outline" class="menu-icon"></iconify-icon>
+                    <span>Appointments</span>
+                </a>
+            </li>
+            @endif
             {{-- Blog Management --}}
             @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-blogs')))
             <li>
