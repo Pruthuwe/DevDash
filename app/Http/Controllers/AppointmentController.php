@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use App\Models\Customer;
 use App\Models\Service;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -16,6 +17,11 @@ class AppointmentController extends Controller
      */
     public function index(Request $request)
     {
+        // Check permissions
+        if (Auth::user()->user_type !== 'admin' && (!Auth::user()->role || !Auth::user()->role->permissions->contains('name', 'view-appointments'))) {
+            abort(403, 'You do not have permission to view appointments.');
+        }
+
         // Check if this is an API request
         if ($request->expectsJson() || $request->is('api/*')) {
             $appointments = Appointment::with(['customer', 'service'])->get();
@@ -45,6 +51,11 @@ class AppointmentController extends Controller
      */
     public function show(Request $request, Appointment $appointment)
     {
+        // Check permissions
+        if (Auth::user()->user_type !== 'admin' && (!Auth::user()->role || !Auth::user()->role->permissions->contains('name', 'view-appointments'))) {
+            abort(403, 'You do not have permission to view appointments.');
+        }
+
         $appointment->load(['customer', 'service']);
 
         if ($request->expectsJson() || $request->is('api/*')) {
@@ -78,6 +89,11 @@ class AppointmentController extends Controller
 
     public function update(Request $request, Appointment $appointment)
     {
+        // Check permissions
+        if (Auth::user()->user_type !== 'admin' && (!Auth::user()->role || !Auth::user()->role->permissions->contains('name', 'edit-appointments'))) {
+            abort(403, 'You do not have permission to edit appointments.');
+        }
+
         // Check if this is a status update
         if ($request->has('status')) {
             return $this->updateStatus($request, $appointment);
@@ -122,6 +138,11 @@ class AppointmentController extends Controller
      */
     public function destroy(Appointment $appointment)
     {
+        // Check permissions
+        if (Auth::user()->user_type !== 'admin' && (!Auth::user()->role || !Auth::user()->role->permissions->contains('name', 'delete-appointments'))) {
+            abort(403, 'You do not have permission to delete appointments.');
+        }
+
         $appointment->delete();
 
         if (request()->expectsJson() || request()->is('api/*')) {
@@ -139,6 +160,10 @@ class AppointmentController extends Controller
      */
     public function manage(Request $request)
     {
+        // Check permissions
+        if (Auth::user()->user_type !== 'admin' && (!Auth::user()->role || !Auth::user()->role->permissions->contains('name', 'view-appointments'))) {
+            abort(403, 'You do not have permission to view appointments.');
+        }
         $query = Appointment::with(['customer', 'service']);
 
         // Apply filters
@@ -177,6 +202,11 @@ class AppointmentController extends Controller
      */
     public function updateStatus(Request $request, Appointment $appointment)
     {
+        // Check permissions
+        if (Auth::user()->user_type !== 'admin' && (!Auth::user()->role || !Auth::user()->role->permissions->contains('name', 'edit-appointments'))) {
+            abort(403, 'You do not have permission to edit appointments.');
+        }
+
         $validator = Validator::make($request->all(), [
             'status' => 'required|in:pending,approved,rejected',
         ]);
@@ -199,5 +229,92 @@ class AppointmentController extends Controller
                 'status' => $appointment->status,
             ]
         ]);
+    }
+
+    /**
+     * Import appointment from JSON API.
+     */
+    public function importFromJson(Request $request)
+    {
+        // Check permissions
+        if (Auth::user()->user_type !== 'admin' && (!Auth::user()->role || !Auth::user()->role->permissions->contains('name', 'create-appointments'))) {
+            abort(403, 'You do not have permission to create appointments.');
+        }
+
+        // Placeholder API URL - replace with actual API endpoint
+        $apiUrl = 'https://api.example.com/appointments'; // TODO: Replace with actual API URL
+
+        try {
+            // Fetch data from API
+            $client = new Client();
+            $response = $client->get($apiUrl);
+            $data = json_decode($response->getBody(), true);
+
+            // Assuming the API returns an array of appointments or a single appointment
+            // If it's a single appointment, wrap it in an array
+            if (isset($data['customer'])) {
+                $appointmentsData = [$data];
+            } elseif (is_array($data)) {
+                $appointmentsData = $data;
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid API response structure'
+                ], 422);
+            }
+
+            $importedCount = 0;
+
+            foreach ($appointmentsData as $appointmentData) {
+                // Validate JSON structure
+                if (!isset($appointmentData['customer']) || !isset($appointmentData['service']) || !isset($appointmentData['submitted_at'])) {
+                    continue; // Skip invalid entries
+                }
+
+                // Handle customer
+                $customer = Customer::firstOrCreate(
+                    ['email' => $appointmentData['customer']['email']],
+                    [
+                        'name' => $appointmentData['customer']['name'],
+                        'phone' => $appointmentData['customer']['phone_number'] ?? null,
+                        'mobile' => $appointmentData['customer']['phone_number'] ?? null,
+                    ]
+                );
+
+                // Handle service
+                $service = Service::firstOrCreate(
+                    ['title' => $appointmentData['service']['name']],
+                    ['description' => null]
+                );
+
+                // Create appointment (avoid duplicates based on customer, service, and date)
+                $existingAppointment = Appointment::where('customer_id', $customer->id)
+                    ->where('service_id', $service->id)
+                    ->where('appointment_date', $appointmentData['submitted_at']['formatted'])
+                    ->first();
+
+                if (!$existingAppointment) {
+                    Appointment::create([
+                        'customer_id' => $customer->id,
+                        'service_id' => $service->id,
+                        'appointment_date' => $appointmentData['submitted_at']['formatted'],
+                        'notes' => $appointmentData['notes'] ?? null,
+                        'status' => 'pending',
+                    ]);
+                    $importedCount++;
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "Successfully imported {$importedCount} appointment(s) from API"
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch data from API: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

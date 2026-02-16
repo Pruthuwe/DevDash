@@ -101,6 +101,7 @@ Route::middleware('auth')->group(function () {
     ])->except(['create', 'store']);
     Route::get('/manage-appointments', [\App\Http\Controllers\AppointmentController::class, 'manage'])->middleware('permission:view-appointments')->name('manage.appointments');
     Route::post('/appointments/{appointment}/update-status', [\App\Http\Controllers\AppointmentController::class, 'updateStatus'])->middleware('permission:edit-appointments')->name('appointments.update-status');
+    Route::post('/appointments/import-json', [\App\Http\Controllers\AppointmentController::class, 'importFromJson'])->middleware('permission:create-appointments')->name('appointments.import-json');
     
     // Role Routes
     Route::resource('roles', \App\Http\Controllers\RoleController::class)->middleware([

@@ -317,6 +317,8 @@
 </div>
 
 <script>
+/* global FormData */
+
 function openSubcategoryModal(button) {
     const parentId = button.getAttribute('data-parent-id');
     const parentName = button.getAttribute('data-parent-name');
@@ -349,7 +351,7 @@ function openSubcategoryModal(button) {
 document.getElementById('subcategoryForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
-    const formData = new FormData(this);
+    const formData = new window.FormData(this);
     
     fetch('{{ route("store.subcategory") }}', {
         method: 'POST',
