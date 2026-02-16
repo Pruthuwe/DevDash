@@ -5,11 +5,11 @@
 <!-- Header with breadcrumb -->
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
     <div>
-        <h6 class="fw-semibold mb-2">Customer List</h6>
+        <h6 class="fw-semibold mb-2">Customer Management</h6>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Customer List</li>
+                <li class="breadcrumb-item active" aria-current="page">Customers</li>
             </ol>
         </nav>
     </div>
@@ -63,12 +63,6 @@
                                 <th>Phone</th>
                                 <th>Mobile</th>
                                 <th>Address</th>
-                                <th>City</th>
-                                <th>State</th>
-                                <th>Country</th>
-                                <th>Zip Code</th>
-                                <th>VAT NO</th>
-                                <th>Fax</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -82,14 +76,13 @@
                                     <td>{{ $customer->phone ?? '-' }}</td>
                                     <td>{{ $customer->mobile ?? '-' }}</td>
                                     <td>{{ $customer->address ?? '-' }}</td>
-                                    <td>{{ $customer->city ?? '-' }}</td>
-                                    <td>{{ $customer->state ?? '-' }}</td>
-                                    <td>{{ $customer->country ?? '-' }}</td>
-                                    <td>{{ $customer->zip_code ?? '-' }}</td>
-                                    <td>{{ $customer->vat_no ?? '-' }}</td>
-                                    <td>{{ $customer->fax ?? '-' }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
+                                            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-customers')))
+                                            <a href="{{ route('customers.show', $customer) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                                <iconify-icon icon="solar:eye-outline"></iconify-icon>
+                                            </a>
+                                            @endif
                                             @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-customers')))
                                             <a href="{{ route('customers.edit', $customer) }}" class="btn btn-sm btn-outline-warning">
                                                 <iconify-icon icon="solar:pen-outline"></iconify-icon>
@@ -109,7 +102,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="13" class="text-center py-4">
+                                    <td colspan="7" class="text-center py-4">
                                         <div class="d-flex flex-column align-items-center">
                                             <iconify-icon icon="solar:users-group-two-rounded-outline" style="font-size: 3rem;" class="text-secondary-light mb-3"></iconify-icon>
                                             <h6 class="text-secondary-light">No customers found</h6>

@@ -28,36 +28,32 @@ Route::middleware('auth')->group(function () {
         })->name('dashboard');
         
         // Product Routes
-        Route::resource('products', \App\Http\Controllers\ProductController::class)->middleware([
+        Route::resource('products', \App\Http\Controllers\ProductController::class)->except(['index'])->middleware([
             'permission:view-products'
         ]);
-        Route::get('/product-list', [\App\Http\Controllers\ProductController::class, 'index'])->middleware('permission:view-products')->name('product.list');
-        Route::get('manage-products', [\App\Http\Controllers\ProductController::class, 'manage'])->middleware('permission:view-products')->name('manage.products');
+        Route::get('/manage-products', [\App\Http\Controllers\ProductController::class, 'manage'])->middleware('permission:view-products')->name('manage.products');
         Route::get('/add-product', [\App\Http\Controllers\ProductController::class, 'create'])->middleware('permission:create-products')->name('add.product');
         Route::get('/categories/{category}/subcategories', [\App\Http\Controllers\CategoryController::class, 'getSubcategories'])->name('categories.subcategories');
         
     // Category Routes
-    Route::resource('categories', \App\Http\Controllers\CategoryController::class)->middleware([
+    Route::resource('categories', \App\Http\Controllers\CategoryController::class)->except(['index'])->middleware([
         'permission:view-categories'
     ]);
     Route::get('/add-category', [\App\Http\Controllers\CategoryController::class, 'create'])->middleware('permission:create-categories')->name('add.category');
-    Route::get('/category-list', [\App\Http\Controllers\CategoryController::class, 'index'])->middleware('permission:view-categories')->name('category.list');
     Route::get('/manage-category', [\App\Http\Controllers\CategoryController::class, 'manage'])->middleware('permission:view-categories')->name('manage.category');
     Route::post('/store-subcategory', [\App\Http\Controllers\CategoryController::class, 'storeSubcategory'])->middleware('permission:create-categories')->name('store.subcategory');
     
     // Customer Routes
-    Route::resource('customers', \App\Http\Controllers\CustomerController::class)->middleware([
+    Route::resource('customers', \App\Http\Controllers\CustomerController::class)->except(['index'])->middleware([
         'permission:view-customers'
     ]);
-    Route::get('/customer-list', [\App\Http\Controllers\CustomerController::class, 'index'])->middleware('permission:view-customers')->name('customer.list');
     Route::get('/add-customer', [\App\Http\Controllers\CustomerController::class, 'create'])->middleware('permission:create-customers')->name('add.customer');
     Route::get('/manage-customers', [\App\Http\Controllers\CustomerController::class, 'manage'])->middleware('permission:view-customers')->name('manage.customers');
     
     // Supplier Routes
-    Route::resource('suppliers', \App\Http\Controllers\SupplierController::class)->middleware([
+    Route::resource('suppliers', \App\Http\Controllers\SupplierController::class)->except(['index'])->middleware([
         'permission:view-suppliers'
     ]);
-    Route::get('/supplier-list', [\App\Http\Controllers\SupplierController::class, 'index'])->middleware('permission:view-suppliers')->name('supplier.list');
     Route::get('/add-supplier', [\App\Http\Controllers\SupplierController::class, 'create'])->middleware('permission:create-suppliers')->name('add.supplier');
     Route::get('/manage-suppliers', [\App\Http\Controllers\SupplierController::class, 'manage'])->middleware('permission:view-suppliers')->name('manage.suppliers');
     
@@ -65,7 +61,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('purchases', \App\Http\Controllers\PurchaseController::class)->middleware([
         'permission:view-purchases'
     ]);
-    Route::get('/purchase-list', [\App\Http\Controllers\PurchaseController::class, 'index'])->middleware('permission:view-purchases')->name('purchase.list');
     Route::get('/add-purchase', [\App\Http\Controllers\PurchaseController::class, 'create'])->middleware('permission:create-purchases')->name('add.purchase');
     Route::get('/manage-purchases', [\App\Http\Controllers\PurchaseController::class, 'manage'])->middleware('permission:view-purchases')->name('manage.purchases');
     Route::get('/products/{id}/details', [\App\Http\Controllers\PurchaseController::class, 'getProductDetails'])->middleware('permission:view-products')->name('products.details');

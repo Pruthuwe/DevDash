@@ -9,13 +9,13 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('categories.index') }}">Categories</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('manage.category') }}">Categories</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Add New</li>
             </ol>
         </nav>
     </div>
     <div class="d-flex gap-2">
-        <a href="{{ route('categories.index') }}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+        <a href="{{ route('manage.category') }}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
             <iconify-icon icon="solar:arrow-left-outline"></iconify-icon>
             Back to Categories
         </a>

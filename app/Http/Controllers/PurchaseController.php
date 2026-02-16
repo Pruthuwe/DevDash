@@ -114,7 +114,7 @@ class PurchaseController extends Controller
 
             DB::commit();
 
-            return redirect()->route('purchases.index')
+            return redirect()->route('manage.purchases')
                 ->with('success', 'Purchase created successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -212,7 +212,7 @@ class PurchaseController extends Controller
 
             DB::commit();
 
-            return redirect()->route('purchases.index')
+            return redirect()->route('manage.purchases')
                 ->with('success', 'Purchase updated successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -242,7 +242,7 @@ class PurchaseController extends Controller
 
             DB::commit();
 
-            return redirect()->route('purchases.index')
+            return redirect()->route('manage.purchases')
                 ->with('success', 'Purchase deleted successfully!');
         } catch (\Exception $e) {
             DB::rollBack();

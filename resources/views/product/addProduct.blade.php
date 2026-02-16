@@ -9,13 +9,12 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('products.index') }}">Products</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Add Product</li>
             </ol>
         </nav>
     </div>
     <div class="d-flex gap-2">
-        <a href="{{ route('products.index') }}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+        <a href="{{ route('manage.products') }}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
             <iconify-icon icon="solar:arrow-left-outline"></iconify-icon>
             Back to Products
         </a>
@@ -448,7 +447,7 @@
                 <h5 class="mb-3">Product Created Successfully!</h5>
                 <p class="text-secondary-light mb-4">Your product has been added to the store.</p>
                 <div class="d-flex justify-content-center gap-3">
-                    <a href="{{ route('products.index') }}" class="btn btn-outline-secondary">View All Products</a>
+                    <a href="{{ route('manage.products') }}" class="btn btn-outline-secondary">View All Products</a>
                     <button class="btn btn-primary" onclick="location.reload()">Add Another Product</button>
                 </div>
             </div>

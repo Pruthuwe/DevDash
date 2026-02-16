@@ -7,14 +7,6 @@ use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $suppliers = Supplier::paginate(10);
-        return view('supplier.supplierList', compact('suppliers'));
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -45,7 +37,7 @@ class SupplierController extends Controller
 
         Supplier::create($request->all());
 
-        return redirect()->route('supplier.list')->with('success', 'Supplier added successfully!');
+        return redirect()->route('manage.suppliers')->with('success', 'Supplier added successfully!');
     }
 
     /**
@@ -85,7 +77,7 @@ class SupplierController extends Controller
 
         $supplier->update($request->all());
 
-        return redirect()->route('supplier.list')->with('success', 'Supplier updated successfully!');
+        return redirect()->route('manage.suppliers')->with('success', 'Supplier updated successfully!');
     }
 
     /**
@@ -94,14 +86,19 @@ class SupplierController extends Controller
     public function destroy(Supplier $supplier)
     {
         $supplier->delete();
-        return redirect()->route('supplier.list')->with('success', 'Supplier deleted successfully!');
+        return redirect()->route('manage.suppliers')->with('success', 'Supplier deleted successfully!');
     }
 
     /**
-     * Manage suppliers (alias for index).
+     * Manage suppliers page with statistics.
      */
     public function manage()
     {
-        return $this->index();
+        $suppliers = Supplier::latest()->paginate(15);
+
+        // Calculate statistics
+        $totalSuppliers = Supplier::count();
+
+        return view('supplier.manageSupplier', compact('suppliers', 'totalSuppliers'));
     }
 }

@@ -63,12 +63,6 @@
                                 <th>Phone</th>
                                 <th>Mobile</th>
                                 <th>Address</th>
-                                <th>City</th>
-                                <th>State</th>
-                                <th>Country</th>
-                                <th>Zip Code</th>
-                                <th>VAT NO</th>
-                                <th>Fax</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -82,14 +76,13 @@
                                     <td>{{ $supplier->phone ?? '-' }}</td>
                                     <td>{{ $supplier->mobile ?? '-' }}</td>
                                     <td>{{ $supplier->address ?? '-' }}</td>
-                                    <td>{{ $supplier->city ?? '-' }}</td>
-                                    <td>{{ $supplier->state ?? '-' }}</td>
-                                    <td>{{ $supplier->country ?? '-' }}</td>
-                                    <td>{{ $supplier->zip_code ?? '-' }}</td>
-                                    <td>{{ $supplier->vat_no ?? '-' }}</td>
-                                    <td>{{ $supplier->fax ?? '-' }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
+                                            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-suppliers')))
+                                            <a href="{{ route('suppliers.show', $supplier) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                                <iconify-icon icon="solar:eye-outline"></iconify-icon>
+                                            </a>
+                                            @endif
                                             @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-suppliers')))
                                             <a href="{{ route('suppliers.edit', $supplier) }}" class="btn btn-sm btn-outline-warning">
                                                 <iconify-icon icon="solar:pen-outline"></iconify-icon>
@@ -109,7 +102,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="13" class="text-center py-4">
+                                    <td colspan="7" class="text-center py-4">
                                         <div class="d-flex flex-column align-items-center">
                                             <iconify-icon icon="solar:users-group-two-rounded-outline" style="font-size: 3rem;" class="text-secondary-light mb-3"></iconify-icon>
                                             <h6 class="text-secondary-light">No suppliers found</h6>

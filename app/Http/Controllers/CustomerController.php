@@ -7,14 +7,6 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $customers = Customer::paginate(10);
-        return view('customer.customerlist', compact('customers'));
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -45,7 +37,7 @@ class CustomerController extends Controller
 
         Customer::create($request->all());
 
-        return redirect()->route('customer.list')->with('success', 'Customer added successfully!');
+        return redirect()->route('manage.customers')->with('success', 'Customer added successfully!');
     }
 
     /**
@@ -85,7 +77,7 @@ class CustomerController extends Controller
 
         $customer->update($request->all());
 
-        return redirect()->route('customer.list')->with('success', 'Customer updated successfully!');
+        return redirect()->route('manage.customers')->with('success', 'Customer updated successfully!');
     }
 
     /**
@@ -94,14 +86,19 @@ class CustomerController extends Controller
     public function destroy(Customer $customer)
     {
         $customer->delete();
-        return redirect()->route('customer.list')->with('success', 'Customer deleted successfully!');
+        return redirect()->route('manage.customers')->with('success', 'Customer deleted successfully!');
     }
 
     /**
-     * Manage customers (alias for index).
+     * Manage customers page with statistics.
      */
     public function manage()
     {
-        return $this->index();
+        $customers = Customer::latest()->paginate(15);
+
+        // Calculate statistics
+        $totalCustomers = Customer::count();
+
+        return view('customer.manageCustomer', compact('customers', 'totalCustomers'));
     }
 }

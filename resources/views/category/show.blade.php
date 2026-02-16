@@ -13,7 +13,7 @@
                         <a href="{{ route('dashboard') }}">Dashboard</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="{{ route('categories.index') }}">Categories</a>
+                        <a href="{{ route('manage.category') }}">Categories</a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">
                         {{ $category->name }}
@@ -26,7 +26,7 @@
             <a href="{{ route('categories.edit', $category) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-2">
                 <iconify-icon icon="solar:pen-outline"></iconify-icon> Edit
             </a>
-            <a href="{{ route('categories.index') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2">
+            <a href="{{ route('manage.category') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2">
                 <iconify-icon icon="solar:arrow-left-outline"></iconify-icon> Back
             </a>
         </div>

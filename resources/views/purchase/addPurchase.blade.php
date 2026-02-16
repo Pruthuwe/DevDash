@@ -14,7 +14,7 @@
         </nav>
     </div>
     <div class="d-flex gap-2">
-        <a href="{{ route('purchases.index') }}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+        <a href="{{ route('manage.purchases') }}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
             <iconify-icon icon="solar:arrow-left-outline"></iconify-icon>
             Back to Purchases
         </a>

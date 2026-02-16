@@ -1,138 +1,183 @@
 @extends('layouts.main')
 
 @section('content')
-{{-- Page Header --}}
-<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-    <h6 class="fw-semibold mb-0">Purchase Details</h6>
-    <ul class="d-flex align-items-center gap-2">
-        <li class="fw-medium">
-            <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-1 hover-text-primary">
-                <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
-                Dashboard
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+        <div>
+            <h5 class="fw-semibold mb-1">Purchase Details</h5>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('manage.purchases') }}">Purchases</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        {{ $purchase->reference_number }}
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="{{ route('purchases.edit', $purchase) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-2">
+                <iconify-icon icon="solar:pen-outline"></iconify-icon> Edit
             </a>
-        </li>
-        <li>-</li>
-        <li class="fw-medium">
-            <a href="{{ route('purchases.index') }}">Manage Purchases</a>
-        </li>
-        <li>-</li>
-        <li class="fw-medium">{{ $purchase->reference_number }}</li>
-    </ul>
-</div>
+            <button onclick="window.print()" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2">
+                <iconify-icon icon="solar:printer-outline"></iconify-icon> Print
+            </button>
+            <a href="{{ route('manage.purchases') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2">
+                <iconify-icon icon="solar:arrow-left-outline"></iconify-icon> Back
+            </a>
+        </div>
+    </div>
 
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Purchase #{{ $purchase->reference_number }}</h5>
-                <div class="d-flex gap-2">
-                    <a href="{{ route('purchases.edit', $purchase->id) }}" class="btn btn-warning btn-sm d-flex align-items-center gap-1">
-                        <iconify-icon icon="ic:outline-edit"></iconify-icon>
-                        Edit
-                    </a>
-                    <button onclick="window.print()" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
-                        <iconify-icon icon="ic:outline-print"></iconify-icon>
-                        Print
-                    </button>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <h6 class="mb-3">Purchase Information</h6>
-                        <table class="table table-borderless">
-                            <tr>
-                                <td class="fw-semibold">Reference Number:</td>
-                                <td>{{ $purchase->reference_number }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Purchase Date:</td>
-                                <td>{{ $purchase->purchase_date->format('M d, Y') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Status:</td>
-                                <td>
-                                    <span class="badge
-                                        @if($purchase->status == 'pending') bg-warning
-                                        @elseif($purchase->status == 'completed') bg-success
-                                        @elseif($purchase->status == 'cancelled') bg-danger
-                                        @else bg-secondary
-                                        @endif">
-                                        {{ ucfirst($purchase->status) }}
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Total Amount:</td>
-                                <td>${{ number_format($purchase->total_amount, 2) }}</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="col-md-6">
-                        <h6 class="mb-3">Supplier Information</h6>
-                        <table class="table table-borderless">
-                            <tr>
-                                <td class="fw-semibold">Name:</td>
-                                <td>{{ $purchase->supplier->name }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Email:</td>
-                                <td>{{ $purchase->supplier->email ?: 'N/A' }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Phone:</td>
-                                <td>{{ $purchase->supplier->mobile ?? $purchase->supplier->phone ?: 'N/A' }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Address:</td>
-                                <td>{{ $purchase->supplier->address ?: 'N/A' }}</td>
-                            </tr>
-                        </table>
-                    </div>
+    <!-- Content -->    
+    <div class="row g-3">
+
+        <!-- LEFT COLUMN -->
+        <div class="col-lg-8 col-md-12">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6 class="mb-0">Purchase Information</h6>
                 </div>
 
-                <h6 class="mb-3">Purchase Items</h6>
-                <div class="table-responsive mb-4">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>SKU</th>
-                                <th>Quantity</th>
-                                <th>Unit Price</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($purchase->purchaseItems as $item)
-                                <tr>
-                                    <td>{{ $item->product->name }}</td>
-                                    <td>{{ $item->product->sku ?: 'N/A' }}</td>
-                                    <td>{{ $item->quantity }}</td>
-                                    <td>${{ number_format($item->unit_price, 2) }}</td>
-                                    <td>${{ number_format($item->quantity * $item->unit_price, 2) }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="4" class="text-end fw-bold">Total Amount:</td>
-                                <td class="fw-bold">${{ number_format($purchase->total_amount, 2) }}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                <div class="card-body">
+                    <div class="row g-3">
 
-                @if($purchase->notes)
-                <div class="row">
-                    <div class="col-12">
-                        <h6 class="mb-2">Notes</h6>
-                        <p class="text-secondary-light">{{ $purchase->notes }}</p>
+                        {{-- Basic Info --}}
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Reference Number</label>
+                            <div>{{ $purchase->reference_number }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Purchase Date</label>
+                            <div>{{ $purchase->purchase_date->format('M d, Y') }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Status</label>
+                            <div>
+                                @if($purchase->status == 'pending')
+                                    <span class="badge bg-warning-light text-warning">Pending</span>
+                                @elseif($purchase->status == 'completed')
+                                    <span class="badge bg-success-light text-success">Completed</span>
+                                @elseif($purchase->status == 'cancelled')
+                                    <span class="badge bg-danger-light text-danger">Cancelled</span>
+                                @else
+                                    <span class="badge bg-secondary-light text-secondary">Unknown</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Total Amount</label>
+                            <div class="fw-bold text-primary">${{ number_format($purchase->total_amount, 2) }}</div>
+                        </div>
+
+                        {{-- Supplier Info --}}
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Supplier</label>
+                            <div>{{ $purchase->supplier->name }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Supplier Email</label>
+                            <div>{{ $purchase->supplier->email ?: 'Not specified' }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Supplier Phone</label>
+                            <div>{{ $purchase->supplier->mobile ?? $purchase->supplier->phone ?: 'Not specified' }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Supplier Address</label>
+                            <div>{{ $purchase->supplier->address ?: 'Not specified' }}</div>
+                        </div>
+
                     </div>
+
+                    <hr>
+
+                    {{-- Notes --}}
+                    @if($purchase->notes)
+                        <div>
+                            <label class="form-label fw-semibold">Notes</label>
+                            <p class="mb-0">{{ $purchase->notes }}</p>
+                        </div>
+                    @endif
+
                 </div>
-                @endif
             </div>
         </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-lg-4 col-md-12">
+            <div class="row g-3">
+
+                <!-- Purchase Items -->
+                <div class="col-12">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h6 class="mb-0">Purchase Items</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Qty</th>
+                                            <th>Price</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($purchase->purchaseItems as $item)
+                                            <tr>
+                                                <td class="text-truncate" style="max-width: 120px;" title="{{ $item->product->name }}">
+                                                    {{ Str::limit($item->product->name, 15) }}
+                                                </td>
+                                                <td>{{ $item->quantity }}</td>
+                                                <td>${{ number_format($item->unit_price, 2) }}</td>
+                                                <td>${{ number_format($item->quantity * $item->unit_price, 2) }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3" class="text-end fw-bold">Total:</td>
+                                            <td class="fw-bold">${{ number_format($purchase->total_amount, 2) }}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="col-12">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h6 class="mb-0">Statistics</h6>
+                        </div>
+                        <div class="card-body">
+                            <div><strong>Items:</strong> {{ $purchase->purchaseItems->count() }}</div>
+                            <div><strong>Created:</strong> {{ $purchase->created_at->format('M d, Y') }}</div>
+                            <div><strong>Updated:</strong> {{ $purchase->updated_at->format('M d, Y') }}</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 </div>
 @endsection
