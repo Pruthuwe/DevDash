@@ -24,6 +24,11 @@ Route::get('products/{product}', [\App\Http\Controllers\ProductController::class
 Route::get('appointments', [\App\Http\Controllers\AppointmentController::class, 'index']);
 Route::get('appointments/{appointment}', [\App\Http\Controllers\AppointmentController::class, 'show']);
 
+// Customer Auth
+Route::post('login', [\App\Http\Controllers\AuthController::class, 'apiLogin']);
+Route::post('register', [\App\Http\Controllers\AuthController::class, 'apiRegister']);
+Route::middleware('auth:sanctum')->post('logout', [\App\Http\Controllers\AuthController::class, 'apiLogout']);
+
 // Protected user endpoint
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
