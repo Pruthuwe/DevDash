@@ -24,8 +24,26 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Protected Routes (require authentication)
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
-        })->name('dashboard');
+    $totalProducts = \App\Models\Product::count();
+    $totalCustomers = \App\Models\Customer::count();
+    $totalAppointments = \App\Models\Appointment::count();
+    $totalBlogs = \App\Models\Blog::count();
+    $totalServices = \App\Models\Service::count();
+    $totalSuppliers = \App\Models\Supplier::count();
+    $latestCustomers = \App\Models\Customer::latest()->take(5)->get();
+    $latestProducts = \App\Models\Product::latest()->take(5)->get();
+
+    return view('dashboard', compact(
+        'totalProducts',
+        'totalCustomers',
+        'totalAppointments',
+        'totalBlogs',
+        'totalServices',
+        'totalSuppliers',
+        'latestCustomers',
+        'latestProducts'
+    ));
+})->name('dashboard');
         
         // Product Routes
         Route::resource('products', \App\Http\Controllers\ProductController::class)->except(['index'])->middleware([
