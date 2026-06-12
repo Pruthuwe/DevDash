@@ -9,13 +9,13 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('customer.list') }}">Customers</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('manage.customers') }}">Customers</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Edit Customer</li>
             </ol>
         </nav>
     </div>
     <div class="d-flex gap-2">
-        <a href="{{ route('customer.list') }}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+        <a href="{{ route('manage.customers')}}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
             <iconify-icon icon="solar:arrow-left-outline"></iconify-icon>
             Back to Customers
         </a>
@@ -142,7 +142,7 @@
 
                     <!-- Form Actions -->
                     <div class="d-flex justify-content-end gap-2 mt-4">
-                        <a href="{{ route('customer.list') }}" class="btn btn-outline-secondary">Cancel</a>
+                        <a href="{{ route('manage.customers') }}" class="btn btn-outline-secondary">Cancel</a>
                         <button type="submit" class="btn btn-primary">
                             <iconify-icon icon="solar:save-outline"></iconify-icon>
                             Update Customer
