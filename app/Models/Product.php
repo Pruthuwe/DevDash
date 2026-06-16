@@ -35,12 +35,17 @@ class Product extends Model
         'notes',
         'status',
         'is_featured',
-        'views'
+        'views',
+        'engine_spec',
+'highlights',
+'rating'
     ];
 
     protected $casts = [
         'gallery_images' => 'array',
         'is_featured' => 'boolean',
+        'highlights' => 'array',
+'rating' => 'decimal:1',
         'price' => 'decimal:2',
         'sale_price' => 'decimal:2',
         'cost_price' => 'decimal:2',

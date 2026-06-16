@@ -363,7 +363,7 @@ function loadProductDetailsFromData(button) {
         imageElement.src = '{{ url("/") }}/' + productData.image;
         imageElement.style.display = 'block';
     } else {
-        imageElement.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMDAgMTAwSDEwMFYxMDBaTTAgMEgyMDBWMjAwSDBWMFoiIGZpbGw9IiNGOUY5RjkiLz4KPHBhdGggZD0iTTEwMCAxMzAuNUM5NS44IDEzMC41IDkyIDEyNi44IDkyIDEyM1Y3N0MTEwMCAxMzAuNUMxMDQuMiAxMzAuNSAxMDggMTI2LjggMTA4IDEyM1Y3N0MTEwMCA5NUMxMDQuMiA5NSAxMDggOTkuMiAxMDggMTA0VjEwNEMxMDggMTA4LjggMTA0LjIgMTEzIDEwMCAxMTNNOTIgMTA0QzkyIDEwOC44IDk1LjggMTEzIDEwMCAxMTNNMTEwIDEwNEMxMTAgMTA4LjggMTA2LjggMTEzIDEwMiAxMTMiIGZpbGw9IiM5Q0E0QUYi8+Cjwvc3ZnPgo=';
+        imageElement.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMDAgMTAwSDEwMFYxMDBaTTAgMEgyMDBWMjAwSDBWMFoiIGZpbGw9IiNGOUY5RjkiLz4KPHBhdGggZD0iTTEwMCAxMzAuNUM5NS44IDEzMC41IDkyIDEyNi44IDkyIDEyM1Y3N0MxMDAgMTMwLjVDMTA0LjIgMTMwLjUgMTA4IDEyNi44IDEwOCAxMjNWNzdDMTEwMCA5NUMxMDQuMiA5NSAxMDggOTkuMiAxMDggMTA0VjEwNEMxMDggMTA4LjggMTA0LjIgMTEzIDEwMCAxMTNNOTIgMTA0QzkyIDEwOC44IDk1LjggMTEzIDEwMCAxMTNNMTEwIDEwNEMxMTAgMTA4LjggMTA2LjggMTEzIDEwMiAxMTMiIGZpbGw9IiM5Q0E0QUYiLz4KPC9zdmc+Cg==';
         imageElement.style.display = 'block';
         imageElement.alt = 'No image available';
     }
@@ -408,6 +408,7 @@ function filterProducts() {
     });
 }
 </script>
+@endpush
 
 @push('styles')
 <style>
