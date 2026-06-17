@@ -116,6 +116,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/appointments/{appointment}/update-status', [\App\Http\Controllers\AppointmentController::class, 'updateStatus'])->middleware('permission:edit-appointments')->name('appointments.update-status');
     Route::post('/appointments/import-json', [\App\Http\Controllers\AppointmentController::class, 'importFromJson'])->middleware('permission:create-appointments')->name('appointments.import-json');
     
+    // Contact Messages Routes
+Route::get('/manage-contacts', [\App\Http\Controllers\ContactController::class, 'manage'])->name('manage.contacts');
+Route::post('/contacts/{contact}/mark-read', [\App\Http\Controllers\ContactController::class, 'markRead'])->name('contacts.mark-read');
+Route::delete('/contacts/{contact}', [\App\Http\Controllers\ContactController::class, 'destroy'])->name('contacts.destroy');
+
+
+
     // Role Routes
     Route::resource('roles', \App\Http\Controllers\RoleController::class)->middleware([
         'permission:view-roles'

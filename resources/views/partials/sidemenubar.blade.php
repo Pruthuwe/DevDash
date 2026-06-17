@@ -234,6 +234,20 @@
                 </a>
             </li>
             @endif
+
+{{-- Contact Messages --}}
+            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-contacts')))
+<li class="sidebar-menu-item">
+    <a href="{{ route('manage.contacts') }}">
+        <iconify-icon icon="solar:letter-bold-duotone" class="menu-icon"></iconify-icon>
+        <span>Contact Messages</span>
+        @php $unreadCount = \App\Models\Contact::where('status','unread')->count(); @endphp
+        @if($unreadCount > 0)
+            <span class="badge bg-danger ms-auto">{{ $unreadCount }}</span>
+        @endif
+    </a>
+</li>
+@endif
             {{-- Blog Management --}}
             @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-blogs')))
             <li class="dropdown">

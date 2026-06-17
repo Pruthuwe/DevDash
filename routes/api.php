@@ -23,6 +23,7 @@ Route::get('products', [\App\Http\Controllers\ProductController::class, 'index']
 Route::get('products/{product}', [\App\Http\Controllers\ProductController::class, 'show']);
 Route::get('appointments', [\App\Http\Controllers\AppointmentController::class, 'index']);
 Route::get('appointments/{appointment}', [\App\Http\Controllers\AppointmentController::class, 'show']);
+Route::post('contacts', [\App\Http\Controllers\ContactController::class, 'store']);
 
 // customers login
 Route::post('customer/login', [\App\Http\Controllers\CustomerAuthController::class, 'login']);
