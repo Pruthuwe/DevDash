@@ -24,6 +24,8 @@ Route::get('products/{product}', [\App\Http\Controllers\ProductController::class
 Route::get('appointments', [\App\Http\Controllers\AppointmentController::class, 'index']);
 Route::get('appointments/{appointment}', [\App\Http\Controllers\AppointmentController::class, 'show']);
 Route::post('contacts', [\App\Http\Controllers\ContactController::class, 'store']);
+Route::post('loan-inquiries', [\App\Http\Controllers\LoanInquiryController::class, 'store']);
+Route::post('product-enquiries', [\App\Http\Controllers\ProductEnquiryController::class, 'store']);
 
 // customers login
 Route::post('customer/login', [\App\Http\Controllers\CustomerAuthController::class, 'login']);

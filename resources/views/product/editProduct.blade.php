@@ -261,20 +261,24 @@
                                             <input type="number" class="form-control" name="low_stock_alert" value="{{ old('low_stock_alert', $product->low_stock_alert) }}" min="0" placeholder="Alert threshold">
                                         </div>
 
-                                        <!-- Tax -->
+                                        <!-- Loan Amount -->
                                         <div class="col-md-6">
-                                            <label class="form-label">Tax (%)</label>
-                                            <input type="number" class="form-control" name="tax" value="{{ old('tax', $product->tax) }}" step="0.01" min="0" max="100" placeholder="0.00">
+                                            <label class="form-label">Loan Amount</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">Rs</span>
+                                                <input type="number" class="form-control" name="loan_amount" value="{{ old('loan_amount', $product->loan_amount) }}" step="0.01" min="0" placeholder="0.00">
+                                            </div>
+                                            <small class="text-secondary-light">Amount financed via loan (leave 0 for full cash)</small>
                                         </div>
 
-                                        <!-- Tax Type -->
+                                        <!-- RMV Fee -->
                                         <div class="col-md-6">
-                                            <label class="form-label">Tax Type</label>
-                                            <select class="form-select" name="tax_type">
-                                                <option value="">Select Tax Type</option>
-                                                <option value="exclusive" {{ old('tax_type', $product->tax_type) == 'exclusive' ? 'selected' : '' }}>Exclusive</option>
-                                                <option value="inclusive" {{ old('tax_type', $product->tax_type) == 'inclusive' ? 'selected' : '' }}>Inclusive</option>
-                                            </select>
+                                            <label class="form-label">RMV Fee</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">Rs</span>
+                                                <input type="number" class="form-control" name="rmv" value="{{ old('rmv', $product->rmv ?? 10160) }}" step="0.01" min="0" placeholder="10160.00">
+                                            </div>
+                                            <small class="text-secondary-light">Revenue &amp; Motor Vehicle Department registration fee</small>
                                         </div>
                                     </div>
                                 </div>

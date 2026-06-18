@@ -65,21 +65,21 @@
         </div>
     </div>
 
-    {{-- Total Appointments --}}
+    {{-- Total Loan Inquiries --}}
     <div class="col">
         <div class="card shadow-none border bg-gradient-start-3 h-100">
             <div class="card-body p-20">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div>
-                        <p class="fw-medium text-primary-light mb-1">Total Appointments</p>
-                        <h6 class="mb-0">{{ $totalAppointments }}</h6>
+                        <p class="fw-medium text-primary-light mb-1">Loan Inquiries</p>
+                        <h6 class="mb-0">{{ $totalLoanInquiries }}</h6>
                     </div>
                     <div class="w-50-px h-50-px bg-info rounded-circle d-flex justify-content-center align-items-center">
-                        <iconify-icon icon="solar:calendar-bold" class="text-white text-2xl mb-0"></iconify-icon>
+                        <iconify-icon icon="solar:wallet-money-outline" class="text-white text-2xl mb-0"></iconify-icon>
                     </div>
                 </div>
                 <p class="fw-medium text-sm text-primary-light mt-12 mb-0">
-                    <a href="{{ route('manage.appointments') }}" class="text-primary">View all appointments</a>
+                    <a href="{{ route('manage.loan-inquiries') }}" class="text-primary">View all loan inquiries</a>
                 </p>
             </div>
         </div>
@@ -105,21 +105,41 @@
         </div>
     </div>
 
-    {{-- Total Services --}}
+    {{-- Total Product Enquiries --}}
     <div class="col">
         <div class="card shadow-none border bg-gradient-start-5 h-100">
             <div class="card-body p-20">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div>
-                        <p class="fw-medium text-primary-light mb-1">Total Services</p>
-                        <h6 class="mb-0">{{ $totalServices }}</h6>
+                        <p class="fw-medium text-primary-light mb-1">Product Enquiries</p>
+                        <h6 class="mb-0">{{ $totalProductEnquiries }}</h6>
                     </div>
                     <div class="w-50-px h-50-px bg-red rounded-circle d-flex justify-content-center align-items-center">
-                        <iconify-icon icon="solar:settings-bold" class="text-white text-2xl mb-0"></iconify-icon>
+                        <iconify-icon icon="solar:chat-square-like-outline" class="text-white text-2xl mb-0"></iconify-icon>
                     </div>
                 </div>
                 <p class="fw-medium text-sm text-primary-light mt-12 mb-0">
-                    <a href="{{ route('manage.services') }}" class="text-primary">View all services</a>
+                    <a href="{{ route('manage.product-enquiries') }}" class="text-primary">View all product enquiries</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    {{-- Total Contact Messages --}}
+    <div class="col">
+        <div class="card shadow-none border bg-gradient-start-2 h-100">
+            <div class="card-body p-20">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <div>
+                        <p class="fw-medium text-primary-light mb-1">Contact Messages</p>
+                        <h6 class="mb-0">{{ $totalContactMessages }}</h6>
+                    </div>
+                    <div class="w-50-px h-50-px bg-purple rounded-circle d-flex justify-content-center align-items-center">
+                        <iconify-icon icon="solar:letter-bold-duotone" class="text-white text-2xl mb-0"></iconify-icon>
+                    </div>
+                </div>
+                <p class="fw-medium text-sm text-primary-light mt-12 mb-0">
+                    <a href="{{ route('manage.contacts') }}" class="text-primary">View all messages</a>
                 </p>
             </div>
         </div>

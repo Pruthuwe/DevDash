@@ -26,20 +26,22 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
     $totalProducts = \App\Models\Product::count();
     $totalCustomers = \App\Models\Customer::count();
-    $totalAppointments = \App\Models\Appointment::count();
     $totalBlogs = \App\Models\Blog::count();
-    $totalServices = \App\Models\Service::count();
     $totalSuppliers = \App\Models\Supplier::count();
+    $totalLoanInquiries = \App\Models\LoanInquiry::count();
+    $totalProductEnquiries = \App\Models\ProductEnquiry::count();
+    $totalContactMessages = \App\Models\Contact::count();
     $latestCustomers = \App\Models\Customer::latest()->take(5)->get();
     $latestProducts = \App\Models\Product::latest()->take(5)->get();
 
     return view('dashboard', compact(
         'totalProducts',
         'totalCustomers',
-        'totalAppointments',
         'totalBlogs',
-        'totalServices',
         'totalSuppliers',
+        'totalLoanInquiries',
+        'totalProductEnquiries',
+        'totalContactMessages',
         'latestCustomers',
         'latestProducts'
     ));
@@ -121,6 +123,15 @@ Route::get('/manage-contacts', [\App\Http\Controllers\ContactController::class, 
 Route::post('/contacts/{contact}/mark-read', [\App\Http\Controllers\ContactController::class, 'markRead'])->name('contacts.mark-read');
 Route::delete('/contacts/{contact}', [\App\Http\Controllers\ContactController::class, 'destroy'])->name('contacts.destroy');
 
+// Loan Inquiry Routes
+Route::get('/manage-loan-inquiries', [\App\Http\Controllers\LoanInquiryController::class, 'manage'])->middleware('permission:view-loan-inquiries')->name('manage.loan-inquiries');
+Route::post('/loan-inquiries/{loanInquiry}/update-status', [\App\Http\Controllers\LoanInquiryController::class, 'updateStatus'])->middleware('permission:edit-loan-inquiries')->name('loan-inquiries.update-status');
+Route::delete('/loan-inquiries/{loanInquiry}', [\App\Http\Controllers\LoanInquiryController::class, 'destroy'])->middleware('permission:delete-loan-inquiries')->name('loan-inquiries.destroy');
+
+// Product Enquiry Routes
+Route::get('/manage-product-enquiries', [\App\Http\Controllers\ProductEnquiryController::class, 'manage'])->middleware('permission:view-product-enquiries')->name('manage.product-enquiries');
+Route::post('/product-enquiries/{productEnquiry}/update-status', [\App\Http\Controllers\ProductEnquiryController::class, 'updateStatus'])->middleware('permission:edit-product-enquiries')->name('product-enquiries.update-status');
+Route::delete('/product-enquiries/{productEnquiry}', [\App\Http\Controllers\ProductEnquiryController::class, 'destroy'])->middleware('permission:delete-product-enquiries')->name('product-enquiries.destroy');
 
 
     // Role Routes

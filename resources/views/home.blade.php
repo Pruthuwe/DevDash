@@ -7,7 +7,7 @@
     {{-- Left Side Image Section --}}
     <div class="auth-left d-lg-block d-none">
         <div class="d-flex align-items-center flex-column h-100 justify-content-center">
-            <img src="{{ asset('assets/images/auth/auth-img.png') }}" alt="Authentication">
+            <img src="{{ asset('assets/images/auth/.png') }}" alt="Authentication">
         </div>
     </div>
 
@@ -16,9 +16,13 @@
         <div class="max-w-464-px mx-auto w-100">
             {{-- Header Section --}}
             <div>
-                <a href="{{ url('/') }}" class="mb-40 max-w-290-px">
-                    <img src="{{ asset('assets/images/logo.png') }}" alt="Logo">
-                </a>
+                <a href="{{ url('/') }}" class="mb-40 max-w-350-px d-flex justify-content-center">
+    <img
+        src="{{ asset('assets/images/logo-icon.png') }}"
+        alt="Logo"
+        style="width:100px; height:auto;"
+    >
+</a>
                 <h4 class="mb-12">Sign In to your Account</h4>
                 <p class="mb-32 text-secondary-light text-lg">Welcome back! please enter your detail</p>
             </div>

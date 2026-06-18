@@ -211,22 +211,24 @@
                                     <small class="text-secondary-light">Alert when stock falls below this number</small>
                                 </div>
 
-                                <!-- Tax -->
+                                <!-- Loan Amount -->
                                 <div class="col-md-6">
-                                    <label class="form-label" for="taxInput">Tax (%)</label>
+                                    <label class="form-label" for="loanAmountInput">Loan Amount</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" name="tax" id="taxInput" placeholder="0" step="0.01" min="0" max="100" value="{{ old('tax') }}">
-                                        <span class="input-group-text">%</span>
+                                        <span class="input-group-text">Rs</span>
+                                        <input type="number" class="form-control" name="loan_amount" id="loanAmountInput" placeholder="0.00" step="0.01" min="0" value="{{ old('loan_amount') }}">
                                     </div>
+                                    <small class="text-secondary-light">Amount financed via loan (leave 0 for full cash)</small>
                                 </div>
 
-                                <!-- Tax Type -->
+                                <!-- RMV Fee -->
                                 <div class="col-md-6">
-                                    <label class="form-label" for="taxTypeSelect">Tax Type</label>
-                                    <select class="form-select" name="tax_type" id="taxTypeSelect">
-                                        <option value="exclusive" {{ old('tax_type', 'exclusive') == 'exclusive' ? 'selected' : '' }}>Exclusive</option>
-                                        <option value="inclusive" {{ old('tax_type') == 'inclusive' ? 'selected' : '' }}>Inclusive</option>
-                                    </select>
+                                    <label class="form-label" for="rmvInput">RMV Fee</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rs</span>
+                                        <input type="number" class="form-control" name="rmv" id="rmvInput" placeholder="10160.00" step="0.01" min="0" value="{{ old('rmv', 10160) }}">
+                                    </div>
+                                    <small class="text-secondary-light">Revenue & Motor Vehicle Department registration fee</small>
                                 </div>
                             </div>
 

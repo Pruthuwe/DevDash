@@ -27,4 +27,7 @@
 <script src="{{ asset('assets/js/lib/iconify-icon.min.js') }}"></script>
 <script src="{{ asset('assets/js/app.js') }}"></script>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+
 @stack('scripts')

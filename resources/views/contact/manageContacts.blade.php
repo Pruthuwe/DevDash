@@ -26,7 +26,7 @@
                         </div>
                     </div>
                     <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-1">{{ $stats['total'] }}</h6>
+                        <h6 class="mb-1" id="stat-total">{{ $stats['total'] }}</h6>
                         <p class="mb-0 text-sm text-secondary-light fw-medium">Total Messages</p>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                         </div>
                     </div>
                     <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-1">{{ $stats['unread'] }}</h6>
+                        <h6 class="mb-1" id="stat-unread">{{ $stats['unread'] }}</h6>
                         <p class="mb-0 text-sm text-secondary-light fw-medium">Unread</p>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                         </div>
                     </div>
                     <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-1">{{ $stats['read'] }}</h6>
+                        <h6 class="mb-1" id="stat-read">{{ $stats['read'] }}</h6>
                         <p class="mb-0 text-sm text-secondary-light fw-medium">Read</p>
                     </div>
                 </div>
@@ -193,12 +193,16 @@ $(document).ready(function () {
                         .addClass('bg-success-light text-success')
                         .text('Read');
                     row.find('.mark-read-btn').remove();
-                    toastr.success('Marked as read');
+                    const unread = parseInt($('#stat-unread').text()) || 0;
+                    const read = parseInt($('#stat-read').text()) || 0;
+                    $('#stat-unread').text(Math.max(0, unread - 1));
+                    $('#stat-read').text(read + 1);
                 }
             },
-            error: function () { toastr.error('Failed to update status'); }
+            error: function () { alert('Failed to update status'); }
         });
     });
+
 });
 </script>
 @endpush

@@ -120,6 +120,8 @@ class ProductController extends Controller
                 'engine_spec'      => 'nullable|string|max:255',
                 'highlights'       => 'nullable|string',
                 'rating'           => 'nullable|numeric|min:1|max:5',
+                'loan_amount' => 'nullable|numeric|min:0',   
+'rmv'         => 'nullable|numeric|min:0',
             ]);
 
             // Convert highlights from comma-separated string to array
@@ -277,6 +279,8 @@ $validated['slug'] = $slug;
                 'engine_spec'      => 'nullable|string|max:255',
                 'highlights'       => 'nullable|string',
                 'rating'           => 'nullable|numeric|min:1|max:5',
+            'loan_amount' => 'nullable|numeric|min:0',   
+'rmv'         => 'nullable|numeric|min:0',
             ]);
 
             // Convert highlights from comma-separated string to array
