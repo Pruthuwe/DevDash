@@ -122,6 +122,7 @@ class ProductController extends Controller
                 'rating'           => 'nullable|numeric|min:1|max:5',
                 'loan_amount' => 'nullable|numeric|min:0',   
 'rmv'         => 'nullable|numeric|min:0',
+'service_charge' => 'nullable|numeric|min:0',
             ]);
 
             // Convert highlights from comma-separated string to array
@@ -183,6 +184,10 @@ $validated['slug'] = $slug;
             }
             if (!isset($validated['tax_type']) || $validated['tax_type'] === null) {
                 $validated['tax_type'] = 'exclusive';
+            }
+            if (!isset($validated['service_charge']) || $validated['service_charge'] === null) {
+                $loanAmt = $validated['loan_amount'] ?? 0;
+                $validated['service_charge'] = $loanAmt > 0 ? round($loanAmt * 0.05, 2) : 25000;
             }
 
             // Check if saving as draft
@@ -281,6 +286,7 @@ $validated['slug'] = $slug;
                 'rating'           => 'nullable|numeric|min:1|max:5',
             'loan_amount' => 'nullable|numeric|min:0',   
 'rmv'         => 'nullable|numeric|min:0',
+'service_charge' => 'nullable|numeric|min:0',
             ]);
 
             // Convert highlights from comma-separated string to array
@@ -368,6 +374,10 @@ if (!isset($validated['tax']) || is_null($validated['tax'])) {
 }
 if (!isset($validated['low_stock_alert']) || is_null($validated['low_stock_alert'])) {
     $validated['low_stock_alert'] = 10;
+}
+if (!isset($validated['service_charge']) || is_null($validated['service_charge'])) {
+    $loanAmt = $validated['loan_amount'] ?? 0;
+    $validated['service_charge'] = $loanAmt > 0 ? round($loanAmt * 0.05, 2) : 25000;
 }
 
 $product->update($validated);;

@@ -46,7 +46,7 @@
 
 <!-- Statistics Cards -->
 <div class="row g-3 mb-24">
-    <div class="col-md-3 col-sm-6">
+    <div class="col-md-4 col-sm-6">
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
@@ -62,23 +62,8 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="card stat-card">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <h6 class="text-secondary-light mb-1">Inventory Value</h6>
-                    <h4 class="mb-0">${{ number_format($totalValue, 2) }}</h4>
-                </div>
-                <div class="stat-icon bg-success-light">
-                    <iconify-icon icon="solar:dollar-outline" class="text-success"></iconify-icon>
-                </div>
-            </div>
-            <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-secondary-light">Total cost value</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
+    
+    <div class="col-md-4 col-sm-6">
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
@@ -94,7 +79,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3 col-sm-6">
+    <div class="col-md-4 col-sm-6">
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>

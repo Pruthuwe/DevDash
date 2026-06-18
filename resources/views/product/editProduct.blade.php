@@ -245,7 +245,7 @@
                                             <label class="form-label">Cost Price</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">$</span>
-                                                <input type="number" class="form-control" name="cost_price" value="{{ old('cost_price', $product->cost_price) }}" step="0.01" min="0" placeholder="0.00">
+                                                <input type="text" inputmode="decimal" class="form-control decimal-input" name="cost_price" value="{{ old('cost_price', $product->cost_price) }}" placeholder="0.00">
                                             </div>
                                         </div>
 
@@ -266,7 +266,7 @@
                                             <label class="form-label">Loan Amount</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">Rs</span>
-                                                <input type="number" class="form-control" name="loan_amount" value="{{ old('loan_amount', $product->loan_amount) }}" step="0.01" min="0" placeholder="0.00">
+                                                <input type="text" inputmode="decimal" class="form-control decimal-input" id="editLoanAmountInput" name="loan_amount" value="{{ old('loan_amount', $product->loan_amount) }}" placeholder="0.00">
                                             </div>
                                             <small class="text-secondary-light">Amount financed via loan (leave 0 for full cash)</small>
                                         </div>
@@ -276,9 +276,28 @@
                                             <label class="form-label">RMV Fee</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">Rs</span>
-                                                <input type="number" class="form-control" name="rmv" value="{{ old('rmv', $product->rmv ?? 10160) }}" step="0.01" min="0" placeholder="10160.00">
+                                                <input type="text" inputmode="decimal" class="form-control decimal-input" name="rmv" value="{{ old('rmv', $product->rmv ?? 10160) }}" placeholder="10160.00">
                                             </div>
                                             <small class="text-secondary-light">Revenue &amp; Motor Vehicle Department registration fee</small>
+                                        </div>
+
+                                        <!-- Service Charge -->
+                                        <div class="col-md-6">
+                                            <label class="form-label d-block">Service Charge</label>
+
+                                            <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Service charge type">
+                                                <input type="radio" class="btn-check" name="service_charge_type" id="scTypeFixed" autocomplete="off">
+                                                <label class="btn btn-outline-primary" for="scTypeFixed">Fixed Rs 25,000</label>
+
+                                                <input type="radio" class="btn-check" name="service_charge_type" id="scTypePercent" autocomplete="off">
+                                                <label class="btn btn-outline-primary" for="scTypePercent">5% of Loan Amount</label>
+                                            </div>
+
+                                            <div class="input-group">
+                                                <span class="input-group-text">Rs</span>
+                                                <input type="text" inputmode="decimal" class="form-control decimal-input" id="editServiceChargeInput" name="service_charge" value="{{ old('service_charge', $product->service_charge ?? 25000) }}" placeholder="25000.00">
+                                            </div>
+                                            <small class="text-secondary-light">Pick a mode above, or just type a custom amount</small>
                                         </div>
                                     </div>
                                 </div>
@@ -394,6 +413,61 @@ $(document).ready(function() {
     if (categorySelect.val()) {
         categorySelect.trigger('change');
     }
+
+    // Plain-text currency fields (Cost Price, Loan Amount, RMV, Service Charge)
+    // No native number spinner — digits + single decimal point only.
+    $('.decimal-input').on('input', function() {
+        let val = $(this).val().replace(/[^0-9.]/g, '');
+        const parts = val.split('.');
+        if (parts.length > 2) {
+            val = parts[0] + '.' + parts.slice(1).join('');
+        }
+        $(this).val(val);
+    });
+
+    // ----- Service Charge type toggle: Fixed Rs 25,000 vs 5% of Loan Amount -----
+    const scFixedRadio   = $('#scTypeFixed');
+    const scPercentRadio = $('#scTypePercent');
+    const scInput        = $('#editServiceChargeInput');
+    const loanInput      = $('#editLoanAmountInput');
+
+    function calcPercentServiceCharge() {
+        const loanAmount = parseFloat(loanInput.val()) || 0;
+        return (loanAmount * 0.05).toFixed(2);
+    }
+
+    // On page load, guess which mode matches the value already saved on this product
+    (function initServiceChargeType() {
+        const currentVal  = parseFloat(scInput.val()) || 0;
+        const loanAmount  = parseFloat(loanInput.val()) || 0;
+        const fivePercent = parseFloat(calcPercentServiceCharge());
+
+        if (loanAmount > 0 && Math.abs(currentVal - fivePercent) < 0.01) {
+            scPercentRadio.prop('checked', true);
+        } else {
+            scFixedRadio.prop('checked', true);
+        }
+    })();
+
+    scFixedRadio.on('change', function() {
+        if (this.checked) {
+            scInput.val('25000.00');
+        }
+    });
+
+    scPercentRadio.on('change', function() {
+        if (this.checked) {
+            scInput.val(calcPercentServiceCharge());
+        }
+    });
+
+    // While "5%" mode is active, keep Service Charge synced as Loan Amount changes
+    loanInput.on('input', function() {
+        if (scPercentRadio.is(':checked')) {
+            scInput.val(calcPercentServiceCharge());
+        }
+    });
+    // ----- end Service Charge toggle -----
 
     // Handle remove main image button
     $('#removeImageBtn').on('click', function() {

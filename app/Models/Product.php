@@ -24,6 +24,7 @@ class Product extends Model
         'sale_price',
         'loan_amount',   // ✅ NEW
         'rmv',           // ✅ NEW
+        'service_charge', // ✅ NEW
         'cost_price',
         'quantity',
         'low_stock_alert',
@@ -53,6 +54,7 @@ class Product extends Model
         'cost_price'     => 'decimal:2',
         'loan_amount'    => 'decimal:2',  // ✅ NEW
         'rmv'            => 'decimal:2',  // ✅ NEW
+        'service_charge' => 'decimal:2',  // ✅ NEW
     ];
 
     protected static function boot()

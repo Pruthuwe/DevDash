@@ -192,7 +192,7 @@
                                     <label class="form-label" for="costPrice">Purchase Cost <span class="text-muted small">(Private)</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text">Rs</span>
-                                        <input type="number" class="form-control" name="cost_price" id="costPrice" placeholder="0.00" step="0.01" min="0" value="{{ old('cost_price') }}">
+                                        <input type="text" inputmode="decimal" class="form-control decimal-input" name="cost_price" id="costPrice" placeholder="0.00" value="{{ old('cost_price') }}">
                                     </div>
                                     <small class="text-secondary-light">What you paid the supplier — for profit tracking only</small>
                                 </div>
@@ -216,7 +216,7 @@
                                     <label class="form-label" for="loanAmountInput">Loan Amount</label>
                                     <div class="input-group">
                                         <span class="input-group-text">Rs</span>
-                                        <input type="number" class="form-control" name="loan_amount" id="loanAmountInput" placeholder="0.00" step="0.01" min="0" value="{{ old('loan_amount') }}">
+                                        <input type="text" inputmode="decimal" class="form-control decimal-input" name="loan_amount" id="loanAmountInput" placeholder="0.00" value="{{ old('loan_amount') }}">
                                     </div>
                                     <small class="text-secondary-light">Amount financed via loan (leave 0 for full cash)</small>
                                 </div>
@@ -226,9 +226,18 @@
                                     <label class="form-label" for="rmvInput">RMV Fee</label>
                                     <div class="input-group">
                                         <span class="input-group-text">Rs</span>
-                                        <input type="number" class="form-control" name="rmv" id="rmvInput" placeholder="10160.00" step="0.01" min="0" value="{{ old('rmv', 10160) }}">
+                                        <input type="text" inputmode="decimal" class="form-control decimal-input" name="rmv" id="rmvInput" placeholder="10160.00" value="{{ old('rmv', 10160) }}">
                                     </div>
                                     <small class="text-secondary-light">Revenue & Motor Vehicle Department registration fee</small>
+                                </div>
+
+                                <!-- Service Charge -->
+                                <div class="col-md-6">
+                                    <label class="form-label" for="serviceChargeInput">Service Charge</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rs</span>
+                                        <input type="text" inputmode="decimal" class="form-control decimal-input" name="service_charge" id="serviceChargeInput" placeholder="25000.00" value="{{ old('service_charge') }}">
+                                    </div>
                                 </div>
                             </div>
 
@@ -277,7 +286,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Product Gallery -->
+                                <!-- Product Gallery 
                                 <div class="col-12">
                                     <label class="form-label" for="galleryInput">Product Gallery (Optional)</label>
                                     <div class="gallery-upload-box">
@@ -290,10 +299,10 @@
                                     </div>
                                     <div class="gallery-upload-container mt-3">
                                         <div class="gallery-grid" id="galleryGrid">
-                                            <!-- Gallery images will be displayed here -->
+                                            
                                         </div>
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
 
                             <div class="d-flex justify-content-between mt-40 pt-4 border-top">
@@ -745,6 +754,32 @@ $(document).ready(function() {
     }
     
     $('#regularPrice, #salePrice').on('input', calculateDiscount);
+
+    // Plain-text currency fields (Purchase Cost, Loan Amount, RMV, Service Charge)
+    // No native number spinner — digits + single decimal point only.
+    $('.decimal-input').on('input', function() {
+        let val = $(this).val().replace(/[^0-9.]/g, '');
+        const parts = val.split('.');
+        if (parts.length > 2) {
+            val = parts[0] + '.' + parts.slice(1).join('');
+        }
+        $(this).val(val);
+    });
+
+    // Service Charge suggestion — Rs 25,000 flat, or 5% of loan amount once a loan amount is entered.
+    // Stops auto-filling the moment the admin types into the field themselves.
+    let serviceChargeTouched = $('#serviceChargeInput').val() !== '';
+    $('#serviceChargeInput').on('input', function() {
+        serviceChargeTouched = true;
+    });
+
+    function suggestServiceCharge() {
+        if (serviceChargeTouched) return;
+        const loanAmount = parseFloat($('#loanAmountInput').val()) || 0;
+        const suggested = loanAmount > 0 ? (loanAmount * 0.05) : 25000;
+        $('#serviceChargeInput').val(suggested.toFixed(2));
+    }
+    $('#loanAmountInput').on('input', suggestServiceCharge);
     
     // Main image upload
     $('#mainImageInput').change(function() {
