@@ -81,7 +81,7 @@ class CustomerAuthController extends Controller
         return response()->json([
             'message'   => 'Login successful',
             'user_type' => 'admin',
-            'redirect'  => 'http://127.0.0.1:8000/dashboard',
+            'redirect'  => route('dashboard'),
         ]);
     }
 
@@ -90,7 +90,7 @@ class CustomerAuthController extends Controller
         'message' => 'Invalid email or password'
     ], 401);
 }
-    
+
 
     public function logout(Request $request)
     {
