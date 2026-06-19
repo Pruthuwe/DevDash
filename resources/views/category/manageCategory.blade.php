@@ -145,7 +145,7 @@
                                         </button>
                                     @endif
                                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-categories')))
-                                    <button type="button" class="btn btn-sm btn-outline-info" title="Add Subcategory" data-parent-id="{{ $category->id }}" data-parent-name="{{ $category->name }}" onclick="openSubcategoryModal(this)">
+                                    <button type="button" class="btn btn-sm btn-outline-info" title="Add new Brand" data-parent-id="{{ $category->id }}" data-parent-name="{{ $category->name }}" onclick="openSubcategoryModal(this)">
                                         <iconify-icon icon="solar:add-folder-outline"></iconify-icon>
                                     </button>
                                     @endif

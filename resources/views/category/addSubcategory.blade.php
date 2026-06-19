@@ -28,7 +28,7 @@
         <div class="card">
             <div class="card-header">
                 <h6 class="mb-0 text-lg">Create New Subcategory</h6>
-                <p class="text-secondary-light mb-0 mt-2">Add a brand or subcategory under an existing category</p>
+                <p class="text-secondary-light mb-0 mt-2">Add a new brand under an existing category</p>
             </div>
 
             <div class="card-body">
