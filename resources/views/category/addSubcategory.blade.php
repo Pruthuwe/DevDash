@@ -2,24 +2,15 @@
 
 @section('content')
 
-{{--
-    Rebuilt as a single page per request:
-    - Removed the 2-step wizard (Basic Info / Media) — everything is one page now.
-    - Removed the "Category Preview" sidebar — it referenced fields (Display Order,
-      Featured, In Menu, Homepage, Filtering, SEO meta, color picker) that never
-      existed in this form or in the database, so it never showed real data.
-    The old multi-step version is kept at: _backups/category/addCategory.blade.php.old-wizard-version
---}}
-
 <!-- Header with breadcrumb -->
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
     <div>
-        <h6 class="fw-semibold mb-2">Add New Category</h6>
+        <h6 class="fw-semibold mb-2">Add Subcategory</h6>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('manage.category') }}">Categories</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Add New</li>
+                <li class="breadcrumb-item active" aria-current="page">Add Subcategory</li>
             </ol>
         </nav>
     </div>
@@ -36,22 +27,56 @@
     <div class="col-xl-8">
         <div class="card">
             <div class="card-header">
-                <h6 class="mb-0 text-lg">Create New Category</h6>
-                <p class="text-secondary-light mb-0 mt-2">Organize your products with main categories</p>
+                <h6 class="mb-0 text-lg">Create New Subcategory</h6>
+                <p class="text-secondary-light mb-0 mt-2">Add a brand or subcategory under an existing category</p>
             </div>
 
             <div class="card-body">
-                <form id="categoryForm" action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
+                @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
+
+                <form id="subcategoryPageForm" action="{{ route('store.subcategory') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <h6 class="mb-4 text-primary">Basic Information</h6>
 
                     <div class="row g-4">
-                        <!-- Category Name -->
+                        <!-- Parent Category Dropdown -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label fw-medium">
-                                    Category Name
+                                    Parent Category
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <iconify-icon icon="solar:folder-outline"></iconify-icon>
+                                    </span>
+                                    <select class="form-select form-control-lg @error('parent_id') is-invalid @enderror"
+                                            id="parent_id"
+                                            name="parent_id"
+                                            required>
+                                        <option value="" disabled {{ old('parent_id') ? '' : 'selected' }}>Select a category</option>
+                                        @foreach($parentCategories as $parent)
+                                            <option value="{{ $parent->id }}" {{ old('parent_id') == $parent->id ? 'selected' : '' }}>
+                                                {{ $parent->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-text">Choose which category this subcategory belongs to</div>
+                                @error('parent_id')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Subcategory Name -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label fw-medium">
+                                    Subcategory Name
                                     <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group">
@@ -60,34 +85,15 @@
                                     </span>
                                     <input type="text"
                                            class="form-control form-control-lg @error('name') is-invalid @enderror"
-                                           id="categoryName"
+                                           id="subcategoryName"
                                            name="name"
                                            value="{{ old('name') }}"
-                                           placeholder="Enter category name (e.g., Electronics, Clothing)"
+                                           placeholder="e.g., KTM, Bajaj"
                                            required>
                                 </div>
-                                <div class="form-text">Give your category a clear and descriptive name</div>
+                                <div class="form-text">Give this subcategory a clear name</div>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <!-- Status -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label fw-medium">Status</label>
-                                <div class="status-toggle-wrap">
-                                    <label class="status-switch mb-0">
-                                        <input type="checkbox" id="statusToggle" {{ old('status', 'active') == 'active' ? 'checked' : '' }}>
-                                        <span class="status-slider"></span>
-                                    </label>
-                                    <span class="status-toggle-label {{ old('status', 'active') == 'active' ? 'text-success' : 'text-danger' }} fw-semibold" id="statusToggleLabel">{{ old('status', 'active') == 'active' ? 'Active' : 'Inactive' }}</span>
-                                </div>
-                                <input type="hidden" name="status" id="statusInput" value="{{ old('status', 'active') }}">
-                                <div class="form-text">Active categories are visible to customers</div>
-                                @error('status')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
@@ -95,17 +101,13 @@
                         <!-- Description -->
                         <div class="col-12">
                             <div class="form-group">
-                                <label class="form-label fw-medium">
-                                    Description
-                                    <span class="text-danger">*</span>
-                                </label>
+                                <label class="form-label fw-medium">Description</label>
                                 <textarea class="form-control @error('description') is-invalid @enderror"
                                           id="description"
                                           name="description"
                                           rows="4"
                                           maxlength="500"
-                                          placeholder="Describe this category and what products it contains"
-                                          required>{{ old('description') }}</textarea>
+                                          placeholder="Describe this subcategory">{{ old('description') }}</textarea>
                                 <div class="form-text d-flex justify-content-between">
                                     <span>Brief description for customers</span>
                                     <span class="char-count">0/500</span>
@@ -115,20 +117,36 @@
                                 @enderror
                             </div>
                         </div>
+
+                        <!-- Status Toggle -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label fw-medium">Status</label>
+                                <div class="status-toggle-wrap">
+                                    <label class="status-switch mb-0">
+                                        <input type="checkbox" id="statusToggle" checked>
+                                        <span class="status-slider"></span>
+                                    </label>
+                                    <span class="status-toggle-label text-success fw-semibold" id="statusToggleLabel">Active</span>
+                                </div>
+                                <input type="hidden" name="status" id="statusInput" value="active">
+                                <div class="form-text">Active subcategories are visible to customers</div>
+                                @error('status')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
 
-                    <h6 class="mb-4 mt-40 pt-4 border-top text-primary">Category Media</h6>
+                    <h6 class="mb-4 mt-40 pt-4 border-top text-primary">Subcategory Media <span class="text-secondary-light fw-normal">(optional)</span></h6>
 
                     <div class="row g-4">
                         <!-- Banner Image -->
                         <div class="col-12">
                             <div class="form-group">
-                                <label class="form-label fw-medium">
-                                    Banner Image
-                                    <span class="text-danger">*</span>
-                                </label>
+                                <label class="form-label fw-medium">Banner Image</label>
                                 <div class="image-upload-container">
-                                    <div class="image-upload-box" id="bannerImageUpload">
+                                    <div class="image-upload-box" id="subBannerImageUpload">
                                         <div class="upload-placeholder">
                                             <iconify-icon icon="solar:gallery-add-outline" class="icon-4x text-secondary-light"></iconify-icon>
                                             <div class="mt-3">
@@ -139,17 +157,15 @@
                                         <input type="file"
                                                class="image-upload-input @error('banner_image') is-invalid @enderror"
                                                name="banner_image"
-                                               accept="image/*"
-                                               required>
+                                               accept="image/*">
                                     </div>
-                                    <div class="upload-preview d-none" id="bannerImagePreview">
+                                    <div class="upload-preview d-none" id="subBannerImagePreview">
                                         <img src="" alt="Preview" class="preview-image">
                                         <button type="button" class="btn btn-danger btn-sm remove-image">
                                             <iconify-icon icon="solar:trash-bin-outline"></iconify-icon>
                                         </button>
                                     </div>
                                 </div>
-                                <div class="form-text">Large banner image for category pages</div>
                                 @error('banner_image')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -159,12 +175,9 @@
                         <!-- Thumbnail Image -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label fw-medium">
-                                    Thumbnail Image
-                                    <span class="text-danger">*</span>
-                                </label>
+                                <label class="form-label fw-medium">Thumbnail Image</label>
                                 <div class="image-upload-container">
-                                    <div class="image-upload-box" id="thumbnailImageUpload">
+                                    <div class="image-upload-box" id="subThumbnailImageUpload">
                                         <div class="upload-placeholder">
                                             <iconify-icon icon="solar:gallery-add-outline" class="icon-2x text-secondary-light"></iconify-icon>
                                             <div class="mt-2">
@@ -174,17 +187,15 @@
                                         <input type="file"
                                                class="image-upload-input @error('thumbnail_image') is-invalid @enderror"
                                                name="thumbnail_image"
-                                               accept="image/*"
-                                               required>
+                                               accept="image/*">
                                     </div>
-                                    <div class="upload-preview d-none" id="thumbnailImagePreview">
+                                    <div class="upload-preview d-none" id="subThumbnailImagePreview">
                                         <img src="" alt="Preview" class="preview-image">
                                         <button type="button" class="btn btn-danger btn-sm remove-image">
                                             <iconify-icon icon="solar:trash-bin-outline"></iconify-icon>
                                         </button>
                                     </div>
                                 </div>
-                                <div class="form-text">Small image for category lists (300×300px)</div>
                                 @error('thumbnail_image')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -196,7 +207,7 @@
                             <div class="form-group">
                                 <label class="form-label fw-medium">Icon Image</label>
                                 <div class="image-upload-container">
-                                    <div class="image-upload-box" id="iconImageUpload">
+                                    <div class="image-upload-box" id="subIconImageUpload">
                                         <div class="upload-placeholder">
                                             <iconify-icon icon="solar:gallery-add-outline" class="icon-2x text-secondary-light"></iconify-icon>
                                             <div class="mt-2">
@@ -208,57 +219,16 @@
                                                name="icon_image"
                                                accept="image/*">
                                     </div>
-                                    <div class="upload-preview d-none" id="iconImagePreview">
+                                    <div class="upload-preview d-none" id="subIconImagePreview">
                                         <img src="" alt="Preview" class="preview-image">
                                         <button type="button" class="btn btn-danger btn-sm remove-image">
                                             <iconify-icon icon="solar:trash-bin-outline"></iconify-icon>
                                         </button>
                                     </div>
                                 </div>
-                                <div class="form-text">Small icon for navigation (100×100px)</div>
                                 @error('icon_image')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                            </div>
-                        </div>
-
-                        <!-- Image Guidelines -->
-                        <div class="col-12">
-                            <div class="card border">
-                                <div class="card-header bg-light">
-                                    <h6 class="mb-0">Image Guidelines</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="d-flex align-items-start gap-2">
-                                                <iconify-icon icon="solar:info-circle-outline" class="text-primary mt-1"></iconify-icon>
-                                                <div>
-                                                    <h6 class="mb-1">Format</h6>
-                                                    <p class="text-secondary-light mb-0">Use JPG, PNG, or WebP format</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="d-flex align-items-start gap-2">
-                                                <iconify-icon icon="solar:info-circle-outline" class="text-primary mt-1"></iconify-icon>
-                                                <div>
-                                                    <h6 class="mb-1">Size Limit</h6>
-                                                    <p class="text-secondary-light mb-0">Max 2MB per image</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="d-flex align-items-start gap-2">
-                                                <iconify-icon icon="solar:info-circle-outline" class="text-primary mt-1"></iconify-icon>
-                                                <div>
-                                                    <h6 class="mb-1">Background</h6>
-                                                    <p class="text-secondary-light mb-0">Transparent or white background preferred</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -266,7 +236,7 @@
                     <div class="d-flex justify-content-end mt-40 pt-4 border-top">
                         <button type="submit" class="btn btn-primary px-32 d-flex align-items-center gap-2">
                             <iconify-icon icon="solar:upload-outline"></iconify-icon>
-                            Create Category
+                            Create Subcategory
                         </button>
                     </div>
                 </form>
@@ -403,6 +373,10 @@
     transform: translateX(24px);
 }
 
+.status-switch input:focus-visible + .status-slider {
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25);
+}
+
 .status-toggle-label {
     font-size: 0.95rem;
     transition: color 0.2s;
@@ -413,7 +387,7 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // Live image preview on upload (banner / thumbnail / icon)
+    // Live image preview on upload
     function setupImageUpload(uploadId, previewId) {
         const uploadBox = $('#' + uploadId);
         const previewBox = $('#' + previewId);
@@ -439,9 +413,16 @@ $(document).ready(function() {
         });
     }
 
-    setupImageUpload('bannerImageUpload', 'bannerImagePreview');
-    setupImageUpload('thumbnailImageUpload', 'thumbnailImagePreview');
-    setupImageUpload('iconImageUpload', 'iconImagePreview');
+    setupImageUpload('subBannerImageUpload', 'subBannerImagePreview');
+    setupImageUpload('subThumbnailImageUpload', 'subThumbnailImagePreview');
+    setupImageUpload('subIconImageUpload', 'subIconImagePreview');
+
+    // Description character counter
+    $('#description').on('input', function() {
+        const maxLength = $(this).attr('maxlength') || 500;
+        const currentLength = $(this).val().length;
+        $(this).closest('.form-group').find('.char-count').text(currentLength + '/' + maxLength);
+    }).trigger('input');
 
     // Status toggle switch
     const statusToggle = document.getElementById('statusToggle');
@@ -462,37 +443,20 @@ $(document).ready(function() {
         }
     });
 
-    // Description character counter
-    $('#description').on('input', function() {
-        const maxLength = $(this).attr('maxlength') || 500;
-        const currentLength = $(this).val().length;
-        $(this).closest('.form-group').find('.char-count').text(currentLength + '/' + maxLength);
-    }).trigger('input');
-
-    // Simple required-field check before submit (single page now, no step logic needed)
-    $('#categoryForm').submit(function(e) {
+    // Required-field check before submit
+    $('#subcategoryPageForm').submit(function(e) {
         let isValid = true;
         let firstInvalidField = null;
 
         $(this).find('[required]').each(function() {
             const $field = $(this);
 
-            if ($field.attr('type') === 'file') {
-                if (!$field[0].files || $field[0].files.length === 0) {
-                    $field.addClass('is-invalid');
-                    if (!firstInvalidField) firstInvalidField = $field;
-                    isValid = false;
-                } else {
-                    $field.removeClass('is-invalid');
-                }
+            if (!$field.val() || !$field.val().trim()) {
+                $field.addClass('is-invalid');
+                if (!firstInvalidField) firstInvalidField = $field;
+                isValid = false;
             } else {
-                if (!$field.val() || !$field.val().trim()) {
-                    $field.addClass('is-invalid');
-                    if (!firstInvalidField) firstInvalidField = $field;
-                    isValid = false;
-                } else {
-                    $field.removeClass('is-invalid');
-                }
+                $field.removeClass('is-invalid');
             }
         });
 

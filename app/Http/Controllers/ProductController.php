@@ -52,6 +52,8 @@ class ProductController extends Controller
                 }
                 if ($product->category) {
                     $product->category->thumbnail_image_url = $product->category->thumbnail_image ? url($product->category->thumbnail_image) : null;
+                    $product->category->banner_image_url    = $product->category->banner_image    ? url($product->category->banner_image)    : null;
+                    $product->category->icon_image_url      = $product->category->icon_image      ? url($product->category->icon_image)      : null;
                     unset($product->category->thumbnail_image, $product->category->banner_image, $product->category->icon_image);
                 }
                 return $product;
@@ -224,18 +226,10 @@ $validated['slug'] = $slug;
                 unset($product->gallery_images);
             }
             if ($product->category) {
-                if ($product->category->banner_image) {
-                    $product->category->banner_image_url = url($product->category->banner_image);
-                    unset($product->category->banner_image);
-                }
-                if ($product->category->thumbnail_image) {
-                    $product->category->thumbnail_image_url = url($product->category->thumbnail_image);
-                    unset($product->category->thumbnail_image);
-                }
-                if ($product->category->icon_image) {
-                    $product->category->icon_image_url = url($product->category->icon_image);
-                    unset($product->category->icon_image);
-                }
+                $product->category->banner_image_url    = $product->category->banner_image    ? url($product->category->banner_image)    : null;
+                $product->category->thumbnail_image_url = $product->category->thumbnail_image ? url($product->category->thumbnail_image) : null;
+                $product->category->icon_image_url      = $product->category->icon_image      ? url($product->category->icon_image)      : null;
+                unset($product->category->banner_image, $product->category->thumbnail_image, $product->category->icon_image);
             }
             if ($product->subcategory) {
                 if ($product->subcategory->banner_image) {

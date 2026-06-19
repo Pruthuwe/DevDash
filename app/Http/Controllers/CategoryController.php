@@ -26,6 +26,16 @@ class CategoryController extends Controller
         return view('category.addCategory');
     }
 
+    public function createSubcategory()
+    {
+        $parentCategories = Category::whereNull('parent_id')
+            ->where('status', 'active')
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return view('category.addSubcategory', compact('parentCategories'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -123,13 +133,11 @@ class CategoryController extends Controller
             'icon_image' => $iconImagePath,
         ]);
 
-        return response()->json(['success' => true, 'message' => 'Subcategory created successfully.']);
-    }
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Brand created successfully.']);
+        }
 
-    public function show(Category $category)
-    {
-        $category->load('children');
-        return view('category.show', compact('category'));
+        return redirect()->route('manage.category')->with('success', 'Subcategory created successfully.');
     }
 
     public function edit(Category $category)
@@ -260,8 +268,8 @@ class CategoryController extends Controller
         $category->delete();
 
         $message = $category->parent_id === null
-            ? 'Category and all its subcategories deleted successfully.'
-            : 'Subcategory deleted successfully.';
+            ? 'Category and all its brands deleted successfully.'
+            : 'Brand deleted successfully.';
 
         return redirect()->route('manage.category')->with('success', $message);
     }
@@ -273,5 +281,58 @@ class CategoryController extends Controller
         return response()->json([
             'subcategories' => $subcategories
         ]);
+    }
+
+    // ── API methods for the React frontend ──────────────────────────────
+
+    public function apiIndex()
+    {
+        $categories = Category::whereNull('parent_id')
+            ->where('status', 'active')
+            ->with(['children' => function ($q) {
+                $q->where('status', 'active');
+            }])
+            ->get();
+
+        $categories = $categories->map(function ($category) {
+            return $this->buildCategoryResponse($category);
+        });
+
+        return response()->json(['categories' => $categories]);
+    }
+
+    public function apiSubcategories($id)
+    {
+        $category = Category::findOrFail($id);
+
+        $subcategories = $category->children()
+            ->where('status', 'active')
+            ->get()
+            ->map(function ($sub) {
+                return $this->buildCategoryResponse($sub);
+            });
+
+        return response()->json(['subcategories' => $subcategories]);
+    }
+
+    private function buildCategoryResponse($category)
+    {
+        $data = [
+            'id'                  => $category->id,
+            'name'                => $category->name,
+            'description'         => $category->description,
+            'status'              => $category->status,
+            'banner_image_url'    => $category->banner_image    ? url($category->banner_image)    : null,
+            'thumbnail_image_url' => $category->thumbnail_image ? url($category->thumbnail_image) : null,
+            'icon_image_url'      => $category->icon_image      ? url($category->icon_image)      : null,
+        ];
+
+        if ($category->relationLoaded('children')) {
+            $data['subcategories'] = $category->children->map(function ($child) {
+                return $this->buildCategoryResponse($child);
+            })->values();
+        }
+
+        return $data;
     }
 }

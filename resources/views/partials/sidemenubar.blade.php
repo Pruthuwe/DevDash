@@ -21,6 +21,28 @@
             
             {{-- Inventory Management --}}
             <li class="sidebar-menu-group-title">Inventory Management</li>
+
+            {{-- Category --}}
+            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-categories')))
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="material-symbols:category" class="menu-icon"></iconify-icon>
+                    <span>Categories</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-categories')))
+                    <li>
+                        <a href="{{ route('add.category') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Category</a>
+                    </li>
+                    @endif
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-categories')))
+                    <li>
+                        <a href="{{ route('manage.category') }}"><iconify-icon icon="solar:settings-bold" class="submenu-icon"></iconify-icon> Manage Category</a>
+                    </li>
+                    @endif
+                </ul>
+            </li>
+            @endif
             
             {{-- Products --}}
             @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-products')))
@@ -44,27 +66,7 @@
             </li>
             @endif
             
-            {{-- Category --}}
-            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-categories')))
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="material-symbols:category" class="menu-icon"></iconify-icon>
-                    <span>Categories</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-categories')))
-                    <li>
-                        <a href="{{ route('add.category') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Category</a>
-                    </li>
-                    @endif
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-categories')))
-                    <li>
-                        <a href="{{ route('manage.category') }}"><iconify-icon icon="solar:settings-bold" class="submenu-icon"></iconify-icon> Manage Category</a>
-                    </li>
-                    @endif
-                </ul>
-            </li>
-            @endif
+            
             
             <!-- {{-- Order --}}
             <li class="dropdown">

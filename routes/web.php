@@ -56,10 +56,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/categories/{category}/subcategories', [\App\Http\Controllers\CategoryController::class, 'getSubcategories'])->name('categories.subcategories');
         
     // Category Routes
-    Route::resource('categories', \App\Http\Controllers\CategoryController::class)->except(['index'])->middleware([
+    // Note: 'show' (category preview page) intentionally excluded — not needed per requirements.
+    Route::resource('categories', \App\Http\Controllers\CategoryController::class)->except(['index', 'show'])->middleware([
         'permission:view-categories'
     ]);
     Route::get('/add-category', [\App\Http\Controllers\CategoryController::class, 'create'])->middleware('permission:create-categories')->name('add.category');
+    Route::get('/add-subcategory', [\App\Http\Controllers\CategoryController::class, 'createSubcategory'])->middleware('permission:create-categories')->name('add.subcategory');
     Route::get('/manage-category', [\App\Http\Controllers\CategoryController::class, 'manage'])->middleware('permission:view-categories')->name('manage.category');
     Route::post('/store-subcategory', [\App\Http\Controllers\CategoryController::class, 'storeSubcategory'])->middleware('permission:create-categories')->name('store.subcategory');
     

@@ -15,6 +15,10 @@
     </div>
     <div class="d-flex gap-2">
         @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-categories')))
+        <a href="{{ route('add.subcategory') }}" class="btn btn-outline-primary d-flex align-items-center gap-2">
+            <iconify-icon icon="solar:add-folder-outline"></iconify-icon>
+            Add Subcategory
+        </a>
         <a href="{{ route('add.category') }}" class="btn btn-primary d-flex align-items-center gap-2">
             <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
             Add Category
@@ -140,11 +144,6 @@
                                             <iconify-icon icon="solar:alt-arrow-down-outline" class="category-arrow" data-category-id="{{ $category->id }}"></iconify-icon>
                                         </button>
                                     @endif
-                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-categories')))
-                                    <a href="{{ route('categories.show', $category) }}" class="btn btn-sm btn-outline-primary" title="View">
-                                        <iconify-icon icon="solar:eye-outline"></iconify-icon>
-                                    </a>
-                                    @endif
                                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-categories')))
                                     <button type="button" class="btn btn-sm btn-outline-info" title="Add Subcategory" data-parent-id="{{ $category->id }}" data-parent-name="{{ $category->name }}" onclick="openSubcategoryModal(this)">
                                         <iconify-icon icon="solar:add-folder-outline"></iconify-icon>
@@ -199,11 +198,6 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex gap-1 justify-content-center">
-                                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-categories')))
-                                    <a href="{{ route('categories.show', $subcategory) }}" class="btn btn-sm btn-outline-primary" title="View">
-                                        <iconify-icon icon="solar:eye-outline"></iconify-icon>
-                                    </a>
-                                    @endif
                                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-categories')))
                                     <a href="{{ route('categories.edit', $subcategory) }}" class="btn btn-sm btn-outline-warning" title="Edit">
                                         <iconify-icon icon="solar:pen-outline"></iconify-icon>
@@ -283,11 +277,16 @@
                         <textarea class="form-control" id="subcategory_description" name="description" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="subcategory_status" class="form-label">Status <span class="text-danger">*</span></label>
-                        <select class="form-select" id="subcategory_status" name="status" required>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
+                        <label class="form-label">Status</label>
+                        <div class="status-toggle-wrap">
+                            <label class="status-switch mb-0">
+                                <input type="checkbox" id="modalStatusToggle" checked>
+                                <span class="status-slider"></span>
+                            </label>
+                            <span class="status-toggle-label text-success fw-semibold" id="modalStatusToggleLabel">Active</span>
+                        </div>
+                        <input type="hidden" name="status" id="subcategory_status" value="active">
+                        <div class="form-text">Active subcategories are visible to customers</div>
                     </div>
                     <div class="row">
                         <div class="col-md-4 mb-3">
@@ -317,6 +316,29 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modalStatusToggle = document.getElementById('modalStatusToggle');
+    if (modalStatusToggle) {
+        modalStatusToggle.addEventListener('change', function() {
+            const input = document.getElementById('subcategory_status');
+            const label = document.getElementById('modalStatusToggleLabel');
+            if (this.checked) {
+                input.value = 'active';
+                label.textContent = 'Active';
+                label.classList.remove('text-danger');
+                label.classList.add('text-success');
+            } else {
+                input.value = 'inactive';
+                label.textContent = 'Inactive';
+                label.classList.remove('text-success');
+                label.classList.add('text-danger');
+            }
+        });
+    }
+});
+</script>
+
+<script>
 /* global FormData */
 
 function openSubcategoryModal(button) {
@@ -327,7 +349,11 @@ function openSubcategoryModal(button) {
     document.getElementById('parent_category').value = parentName;
     document.getElementById('subcategory_name').value = '';
     document.getElementById('subcategory_description').value = '';
+    document.getElementById('modalStatusToggle').checked = true;
     document.getElementById('subcategory_status').value = 'active';
+    document.getElementById('modalStatusToggleLabel').textContent = 'Active';
+    document.getElementById('modalStatusToggleLabel').classList.remove('text-danger');
+    document.getElementById('modalStatusToggleLabel').classList.add('text-success');
     document.getElementById('subcategory_banner_image').value = '';
     document.getElementById('subcategory_thumbnail_image').value = '';
     document.getElementById('subcategory_icon_image').value = '';
@@ -344,7 +370,6 @@ function openSubcategoryModal(button) {
         // Remove any potential readonly/disabled states
         document.getElementById('subcategory_name').removeAttribute('readonly');
         document.getElementById('subcategory_description').removeAttribute('readonly');
-        document.getElementById('subcategory_status').removeAttribute('disabled');
     }, 300);
 }
 
@@ -384,37 +409,7 @@ document.getElementById('subcategoryForm').addEventListener('submit', function(e
 </script>
 
 <script>
-// Enhanced modal opening
-function openSubcategoryModal(button) {
-    const parentId = button.getAttribute('data-parent-id');
-    const parentName = button.getAttribute('data-parent-name');
-    
-    document.getElementById('parent_id').value = parentId;
-    document.getElementById('parent_category').value = parentName;
-    document.getElementById('subcategory_name').value = '';
-    document.getElementById('subcategory_description').value = '';
-    document.getElementById('subcategory_status').value = 'active';
-    
-    // Reset all image inputs
-    document.getElementById('subcategory_banner_image').value = '';
-    document.getElementById('subcategory_thumbnail_image').value = '';
-    document.getElementById('subcategory_icon_image').value = '';
-    
-    const modal = new bootstrap.Modal(document.getElementById('subcategoryModal'), {
-        backdrop: 'static',
-        keyboard: false
-    });
-    modal.show();
-    
-    // Ensure inputs are focusable after modal is shown
-    setTimeout(() => {
-        document.getElementById('subcategory_name').focus();
-        // Remove any potential readonly/disabled states
-        document.getElementById('subcategory_name').removeAttribute('readonly');
-        document.getElementById('subcategory_description').removeAttribute('readonly');
-        document.getElementById('subcategory_status').removeAttribute('disabled');
-    }, 300);
-}
+// Toggle subcategory rows under each parent category
 document.addEventListener('DOMContentLoaded', function() {
     // Add click event listeners to category toggle buttons
     document.querySelectorAll('.category-toggle').forEach(button => {
@@ -466,7 +461,6 @@ function toggleSubcategories(categoryId) {
     border: none;
     border-radius: 12px;
 }
-
 .stat-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -492,6 +486,65 @@ function toggleSubcategories(categoryId) {
 
 .bg-info-light {
     background-color: var(--info-surface) !important;
+}
+
+/* Status Toggle Switch */
+.status-toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.status-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.status-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.status-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #d9dde3;
+    transition: 0.25s;
+    border-radius: 999px;
+}
+
+.status-slider::before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #fff;
+    transition: 0.25s;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+
+.status-switch input:checked + .status-slider {
+    background-color: #28a745;
+}
+
+.status-switch input:checked + .status-slider::before {
+    transform: translateX(24px);
+}
+
+.status-toggle-label {
+    font-size: 0.95rem;
+    transition: color 0.2s;
 }
 </style>
 @endpush
