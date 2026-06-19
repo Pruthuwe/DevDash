@@ -289,28 +289,21 @@ class CategoryController extends Controller
     {
         $categories = Category::whereNull('parent_id')
             ->where('status', 'active')
-            ->with(['children' => function ($q) {
-                $q->where('status', 'active');
-            }])
+            ->with(['children' => fn($q) => $q->where('status', 'active')])
             ->get();
 
-        $categories = $categories->map(function ($category) {
-            return $this->buildCategoryResponse($category);
-        });
-
-        return response()->json(['categories' => $categories]);
+        return response()->json([
+            'categories' => $categories->map(fn($c) => $this->buildCategoryResponse($c))
+        ]);
     }
 
     public function apiSubcategories($id)
     {
         $category = Category::findOrFail($id);
-
         $subcategories = $category->children()
             ->where('status', 'active')
             ->get()
-            ->map(function ($sub) {
-                return $this->buildCategoryResponse($sub);
-            });
+            ->map(fn($s) => $this->buildCategoryResponse($s));
 
         return response()->json(['subcategories' => $subcategories]);
     }
@@ -328,9 +321,9 @@ class CategoryController extends Controller
         ];
 
         if ($category->relationLoaded('children')) {
-            $data['subcategories'] = $category->children->map(function ($child) {
-                return $this->buildCategoryResponse($child);
-            })->values();
+            $data['subcategories'] = $category->children
+                ->map(fn($child) => $this->buildCategoryResponse($child))
+                ->values();
         }
 
         return $data;
