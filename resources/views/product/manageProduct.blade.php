@@ -319,8 +319,9 @@ function loadProductDetailsFromData(button) {
     
     // Set price (show sale price if available)
     const displayPrice = (productData.sale_price && productData.sale_price !== null && productData.sale_price !== '' && parseFloat(productData.sale_price) > 0) ? 
-        '<del class="text-secondary-light">$' + parseFloat(productData.price).toFixed(2) + '</del> $' + parseFloat(productData.sale_price).toFixed(2) : 
-        '$' + parseFloat(productData.price).toFixed(2);
+       function formatLKR(val) {
+    return 'LKR ' + parseFloat(val).toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
     document.getElementById('modalProductPrice').innerHTML = displayPrice;
     
     // Set stock

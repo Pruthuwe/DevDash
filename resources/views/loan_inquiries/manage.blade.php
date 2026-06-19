@@ -124,8 +124,8 @@
                             <td>{{ $inquiry->phone }}</td>
                             <td>{{ $inquiry->city ?? 'N/A' }}</td>
                             <td>{{ $inquiry->product->name ?? 'N/A' }}</td>
-                            <td>{{ $inquiry->bike_price ? 'LKR ' . number_format($inquiry->bike_price) : 'N/A' }}</td>
-                            <td>{{ $inquiry->monthly_payment ? 'LKR ' . number_format($inquiry->monthly_payment) : 'N/A' }}</td>
+                            <td>{{ $inquiry->bike_price ? 'LKR ' . number_format($inquiry->bike_price, 2) : 'N/A' }}</td>
+                            <td>{{ $inquiry->monthly_payment ? 'LKR ' . number_format($inquiry->monthly_payment, 2) : 'N/A' }}</td>
                             <td>{{ $inquiry->created_at->format('F j, Y, g:i a') }}</td>
                             <td>
                                 <select class="form-select form-select-sm status-select" data-id="{{ $inquiry->id }}" style="width: auto;">
