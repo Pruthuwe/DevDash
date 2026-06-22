@@ -32,12 +32,15 @@
                 <ul class="sidebar-submenu">
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-categories')))
                     <li>
-                        <a href="{{ route('add.category') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Category</a>
+                        <a href="{{ route('add.category') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Bike Type</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('add.subcategory') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Brand</a>
                     </li>
                     @endif
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-categories')))
                     <li>
-                        <a href="{{ route('manage.category') }}"><iconify-icon icon="solar:settings-bold" class="submenu-icon"></iconify-icon> Manage Category</a>
+                        <a href="{{ route('manage.category') }}"><iconify-icon icon="solar:settings-bold" class="submenu-icon"></iconify-icon> View All Categories</a>
                     </li>
                     @endif
                 </ul>
