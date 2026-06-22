@@ -261,7 +261,7 @@
                                             <input type="number" class="form-control" name="low_stock_alert" value="{{ old('low_stock_alert', $product->low_stock_alert ?? 2) }}" min="0" placeholder="2">
                                         </div>
 
-                                       {{--  <!-- Loan Amount -->
+                                        <!-- Loan Amount -->
                                         <div class="col-md-6">
                                             <label class="form-label">Loan Amount</label>
                                             <div class="input-group">
@@ -297,8 +297,18 @@
                                                 <span class="input-group-text">Rs</span>
                                                 <input type="text" inputmode="decimal" class="form-control decimal-input" id="editServiceChargeInput" name="service_charge" value="{{ old('service_charge', $product->service_charge ?? 25000) }}" placeholder="25000.00">
                                             </div>
-                                            <small class="text-secondary-light">Pick a mode above, or just type a custom amount</small>
-                                        </div> --}}
+                                            <small class="text-secondary-light">Pick a mode above, or just type a custom amount (5% mode is capped at Rs 25,000)</small>
+                                        </div>
+
+                                        <!-- Interest Rate -->
+                                        <div class="col-md-6">
+                                            <label class="form-label">Interest Rate</label>
+                                            <div class="input-group">
+                                                <input type="text" inputmode="decimal" class="form-control decimal-input" name="interest_rate" value="{{ old('interest_rate', $product->interest_rate ?? 1.5) }}" placeholder="1.5">
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                            <small class="text-secondary-light">Defaults to 1.5% &mdash; change if this bike's loan rate differs</small>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -433,7 +443,9 @@ $(document).ready(function() {
 
     function calcPercentServiceCharge() {
         const loanAmount = parseFloat(loanInput.val()) || 0;
-        return (loanAmount * 0.05).toFixed(2);
+        // Bug fix: this used to be uncapped (loanAmount * 0.05 with no
+        // ceiling). Now capped at Rs 25,000 to match the backend rule.
+        return Math.min(loanAmount * 0.05, 25000).toFixed(2);
     }
 
     // On page load, guess which mode matches the value already saved on this product

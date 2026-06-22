@@ -129,7 +129,8 @@ Route::delete('/contacts/{contact}', [\App\Http\Controllers\ContactController::c
 Route::get('/manage-loan-inquiries', [\App\Http\Controllers\LoanInquiryController::class, 'manage'])->middleware('permission:view-loan-inquiries')->name('manage.loan-inquiries');
 Route::post('/loan-inquiries/{loanInquiry}/update-status', [\App\Http\Controllers\LoanInquiryController::class, 'updateStatus'])->middleware('permission:edit-loan-inquiries')->name('loan-inquiries.update-status');
 Route::delete('/loan-inquiries/{loanInquiry}', [\App\Http\Controllers\LoanInquiryController::class, 'destroy'])->middleware('permission:delete-loan-inquiries')->name('loan-inquiries.destroy');
-
+// Loan Calculator
+Route::get('/loan-calculator', [\App\Http\Controllers\LoanCalculatorController::class, 'index'])->name('loan.calculator');
 // Product Enquiry Routes
 Route::get('/manage-product-enquiries', [\App\Http\Controllers\ProductEnquiryController::class, 'manage'])->middleware('permission:view-product-enquiries')->name('manage.product-enquiries');
 Route::post('/product-enquiries/{productEnquiry}/update-status', [\App\Http\Controllers\ProductEnquiryController::class, 'updateStatus'])->middleware('permission:edit-product-enquiries')->name('product-enquiries.update-status');

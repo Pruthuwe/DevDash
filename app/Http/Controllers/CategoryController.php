@@ -68,6 +68,7 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'status' => 'required|in:active,inactive',
+            'min_down_payment_percent' => 'nullable|numeric|min:0|max:100',
             'icon_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
@@ -83,6 +84,7 @@ class CategoryController extends Controller
         Category::create([
             'name' => $request->name,
             'status' => $request->status,
+            'min_down_payment_percent' => $request->min_down_payment_percent,
             'icon_image' => $iconImagePath,
         ]);
 
@@ -99,6 +101,7 @@ class CategoryController extends Controller
             'parent_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255',
             'status' => 'required|in:active,inactive',
+            'min_down_payment_percent' => 'nullable|numeric|min:0|max:100',
             'icon_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
@@ -115,6 +118,7 @@ class CategoryController extends Controller
             'parent_id' => $request->parent_id,
             'name' => $request->name,
             'status' => $request->status,
+            'min_down_payment_percent' => $request->min_down_payment_percent,
             'icon_image' => $iconImagePath,
         ]);
 
@@ -136,6 +140,7 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'status' => 'required|in:active,inactive',
+            'min_down_payment_percent' => 'nullable|numeric|min:0|max:100',
             'icon_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
@@ -161,6 +166,7 @@ class CategoryController extends Controller
         $category->update([
             'name' => $request->name,
             'status' => $request->status,
+            'min_down_payment_percent' => $request->min_down_payment_percent,
             'icon_image' => $iconImagePath,
         ]);
 
@@ -233,10 +239,11 @@ class CategoryController extends Controller
     private function buildCategoryResponse($category)
     {
         $data = [
-            'id'             => $category->id,
-            'name'           => $category->name,
-            'status'         => $category->status,
-            'icon_image_url' => $category->icon_image ? url($category->icon_image) : null,
+            'id'                        => $category->id,
+            'name'                      => $category->name,
+            'status'                    => $category->status,
+            'min_down_payment_percent'  => $category->min_down_payment_percent !== null ? (float) $category->min_down_payment_percent : null,
+            'icon_image_url'            => $category->icon_image ? url($category->icon_image) : null,
         ];
 
         if ($category->relationLoaded('children')) {

@@ -214,7 +214,7 @@
                                     <small class="text-secondary-light">Alert when stock falls below this number</small>
                                 </div>
 
-                             {{-- <!-- Loan Amount -->
+                             <!-- Loan Amount -->
                                 <div class="col-md-6">
                                     <label class="form-label" for="loanAmountInput">Loan Amount</label>
                                     <div class="input-group">
@@ -241,7 +241,18 @@
                                         <span class="input-group-text">Rs</span>
                                         <input type="text" inputmode="decimal" class="form-control decimal-input" name="service_charge" id="serviceChargeInput" placeholder="25000.00" value="{{ old('service_charge') }}">
                                     </div>
-                                </div> --}}
+                                    <small class="text-secondary-light">Auto-suggested as 5% of Loan Amount, capped at Rs 25,000 &mdash; type to override</small>
+                                </div>
+
+                                <!-- Interest Rate -->
+                                <div class="col-md-6">
+                                    <label class="form-label" for="interestRateInput">Interest Rate</label>
+                                    <div class="input-group">
+                                        <input type="text" inputmode="decimal" class="form-control decimal-input" name="interest_rate" id="interestRateInput" placeholder="1.5" value="{{ old('interest_rate', 1.5) }}">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <small class="text-secondary-light">Defaults to 1.5% &mdash; change if this bike's loan rate differs</small>
+                                </div>
                             </div>
 
                             <div class="d-flex justify-content-between mt-40 pt-4 border-top">
@@ -779,7 +790,9 @@ $(document).ready(function() {
     function suggestServiceCharge() {
         if (serviceChargeTouched) return;
         const loanAmount = parseFloat($('#loanAmountInput').val()) || 0;
-        const suggested = loanAmount > 0 ? (loanAmount * 0.05) : 25000;
+        // Bug fix: this used to be uncapped (loanAmount * 0.05 with no
+        // ceiling). Now capped at Rs 25,000 to match the backend rule.
+        const suggested = loanAmount > 0 ? Math.min(loanAmount * 0.05, 25000) : 25000;
         $('#serviceChargeInput').val(suggested.toFixed(2));
     }
     $('#loanAmountInput').on('input', suggestServiceCharge);

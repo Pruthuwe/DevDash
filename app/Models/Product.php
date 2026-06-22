@@ -11,6 +11,10 @@ class Product extends Model
 {
     use HasFactory, SoftDeletes;
 
+    // Makes loan_calc available automatically in API JSON responses
+    // (index/show), no extra work needed in the controller.
+    protected $appends = ['loan_calc'];
+
     protected $fillable = [
         'name',
         'sku',
@@ -25,6 +29,7 @@ class Product extends Model
         'loan_amount',   
         'rmv',           
         'service_charge', 
+        'interest_rate', // ✅ NEW — shop owner's rate, defaults to 1.5%
         'cost_price',
         'quantity',
         'low_stock_alert',
@@ -55,6 +60,7 @@ class Product extends Model
         'loan_amount'    => 'decimal:2',  // ✅ NEW
         'rmv'            => 'decimal:2',  // ✅ NEW
         'service_charge' => 'decimal:2',  // ✅ NEW
+        'interest_rate'  => 'decimal:2',  // ✅ NEW
     ];
 
     protected static function boot()
@@ -86,18 +92,31 @@ class Product extends Model
         $sellingPrice   = floatval($this->sale_price ?? $this->price);
         $loanAmount     = floatval($this->loan_amount ?? 0);
         $rmv            = floatval($this->rmv ?? 10160);
+        $interestRate   = floatval($this->interest_rate ?? 1.5);
 
         $bikeDP         = $sellingPrice - $loanAmount;
         $serviceCharge  = min($loanAmount * 0.05, 25000);
         $minimumDP      = $bikeDP + $serviceCharge + $rmv;
 
+        // Minimum down payment % — the brand (sub-category) overrides its
+        // parent category if it has its own value set; otherwise we fall
+        // back to the category's value, then to null if neither is set.
+        $minDownPaymentPercent = null;
+        if ($this->subcategory && $this->subcategory->min_down_payment_percent !== null) {
+            $minDownPaymentPercent = floatval($this->subcategory->min_down_payment_percent);
+        } elseif ($this->category && $this->category->min_down_payment_percent !== null) {
+            $minDownPaymentPercent = floatval($this->category->min_down_payment_percent);
+        }
+
         return [
-            'selling_price'  => $sellingPrice,
-            'loan_amount'    => $loanAmount,
-            'bike_dp'        => $bikeDP,
-            'service_charge' => $serviceCharge,
-            'rmv'            => $rmv,
-            'minimum_dp'     => $minimumDP,
+            'selling_price'              => $sellingPrice,
+            'loan_amount'                => $loanAmount,
+            'bike_dp'                    => $bikeDP,
+            'service_charge'             => $serviceCharge,
+            'rmv'                        => $rmv,
+            'minimum_dp'                 => $minimumDP,
+            'interest_rate'              => $interestRate,           // ✅ NEW
+            'min_down_payment_percent'   => $minDownPaymentPercent,  // ✅ NEW
         ];
     }
 

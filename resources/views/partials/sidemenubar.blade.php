@@ -151,6 +151,15 @@
             
             {{-- Features --}}
             <li class="sidebar-menu-group-title">Features</li>
+
+            {{-- Loan Calculator --}}
+<li>
+    <a href="{{ route('loan.calculator') }}">
+        <iconify-icon icon="solar:calculator-outline" class="menu-icon"></iconify-icon>
+        <span>Loan Calculator</span>
+    </a>
+</li>
+
             
             <!-- {{-- Purchase Section --}}
             @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-purchases')))
@@ -251,6 +260,8 @@
     </a>
 </li>
 @endif
+
+
 {{-- Product Enquiries --}}
 @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-product-enquiries')))
 <li>
