@@ -2,24 +2,15 @@
 
 @section('content')
 
-{{--
-    Rebuilt as a single page per request:
-    - Removed the 2-step wizard (Basic Info / Media) — everything is one page now.
-    - Removed the "Category Preview" sidebar — it referenced fields (Display Order,
-      Featured, In Menu, Homepage, Filtering, SEO meta, color picker) that never
-      existed in this form or in the database, so it never showed real data.
-    The old multi-step version is kept at: _backups/category/addCategory.blade.php.old-wizard-version
---}}
-
 <!-- Header with breadcrumb -->
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
     <div>
-        <h6 class="fw-semibold mb-2">Add New Category</h6>
+        <h6 class="fw-semibold mb-2">Add Fuel Type</h6>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('manage.category') }}">Categories</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Add New</li>
+                <li class="breadcrumb-item active" aria-current="page">Add Fuel Type</li>
             </ol>
         </nav>
     </div>
@@ -31,247 +22,182 @@
     </div>
 </div>
 
-<!-- Main Content -->
-<div class="row justify-content-center">
-    <div class="col-xl-8">
-        <div class="card">
-            <div class="card-header">
-                <h6 class="mb-0 text-lg">Create New Category</h6>
-                <p class="text-secondary-light mb-0 mt-2">Organize your products with main categories</p>
+@if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
+<!-- ── Add Fuel Type Form ── -->
+<div class="card mb-24">
+    <div class="card-header">
+        <h6 class="mb-0 text-lg">Create New Fuel Type</h6>
+        <p class="text-secondary-light mb-0 mt-2">e.g. Electric Bikes, Petrol Bikes</p>
+    </div>
+
+    <div class="card-body">
+        <form id="categoryForm" action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+
+            <div class="row g-4">
+                <!-- Fuel Type Name -->
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label class="form-label fw-medium">
+                            Fuel Type Name
+                            <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <iconify-icon icon="solar:tag-outline"></iconify-icon>
+                            </span>
+                            <input type="text"
+                                   class="form-control @error('name') is-invalid @enderror"
+                                   id="categoryName"
+                                   name="name"
+                                   value="{{ old('name') }}"
+                                   placeholder="e.g., Electric Bikes"
+                                   required>
+                        </div>
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Icon -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label fw-medium">Icon / Logo</label>
+                        <div class="image-upload-container">
+                            <div class="image-upload-box" id="iconImageUpload">
+                                <div class="upload-placeholder">
+                                    <iconify-icon icon="solar:gallery-add-outline" class="icon-2x text-secondary-light"></iconify-icon>
+                                    <div class="mt-2">
+                                        <p class="mb-0">Upload icon</p>
+                                    </div>
+                                </div>
+                                <input type="file"
+                                       class="image-upload-input @error('icon_image') is-invalid @enderror"
+                                       name="icon_image"
+                                       accept="image/*">
+                            </div>
+                            <div class="upload-preview d-none" id="iconImagePreview">
+                                <img src="" alt="Preview" class="preview-image">
+                                <button type="button" class="btn btn-danger btn-sm remove-image">
+                                    <iconify-icon icon="ic:outline-delete"></iconify-icon>
+                                </button>
+                            </div>
+                        </div>
+                        @error('icon_image')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label fw-medium">Status</label>
+                        <div class="status-toggle-wrap">
+                            <label class="status-switch mb-0">
+                                <input type="checkbox" id="statusToggle" {{ old('status', 'active') == 'active' ? 'checked' : '' }}>
+                                <span class="status-slider"></span>
+                            </label>
+                            <span class="status-toggle-label {{ old('status', 'active') == 'active' ? 'text-success' : 'text-danger' }} fw-semibold" id="statusToggleLabel">{{ old('status', 'active') == 'active' ? 'Active' : 'Inactive' }}</span>
+                        </div>
+                        <input type="hidden" name="status" id="statusInput" value="{{ old('status', 'active') }}">
+                        @error('status')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
             </div>
 
-            <div class="card-body">
-                <form id="categoryForm" action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-
-                    <h6 class="mb-4 text-primary">Basic Information</h6>
-
-                    <div class="row g-4">
-                        <!-- Category Name -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label fw-medium">
-                                    Category Name
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <iconify-icon icon="solar:tag-outline"></iconify-icon>
-                                    </span>
-                                    <input type="text"
-                                           class="form-control form-control-lg @error('name') is-invalid @enderror"
-                                           id="categoryName"
-                                           name="name"
-                                           value="{{ old('name') }}"
-                                           placeholder="Enter category name (e.g., Electronics, Clothing)"
-                                           required>
-                                </div>
-                                <div class="form-text">Give your category a clear and descriptive name</div>
-                                @error('name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <!-- Status -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label fw-medium">Status</label>
-                                <div class="status-toggle-wrap">
-                                    <label class="status-switch mb-0">
-                                        <input type="checkbox" id="statusToggle" {{ old('status', 'active') == 'active' ? 'checked' : '' }}>
-                                        <span class="status-slider"></span>
-                                    </label>
-                                    <span class="status-toggle-label {{ old('status', 'active') == 'active' ? 'text-success' : 'text-danger' }} fw-semibold" id="statusToggleLabel">{{ old('status', 'active') == 'active' ? 'Active' : 'Inactive' }}</span>
-                                </div>
-                                <input type="hidden" name="status" id="statusInput" value="{{ old('status', 'active') }}">
-                                <div class="form-text">Active categories are visible to customers</div>
-                                @error('status')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <!-- Description -->
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label fw-medium">
-                                    Description
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <textarea class="form-control @error('description') is-invalid @enderror"
-                                          id="description"
-                                          name="description"
-                                          rows="4"
-                                          maxlength="500"
-                                          placeholder="Describe this category and what products it contains"
-                                          required>{{ old('description') }}</textarea>
-                                <div class="form-text d-flex justify-content-between">
-                                    <span>Brief description for customers</span>
-                                    <span class="char-count">0/500</span>
-                                </div>
-                                @error('description')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-
-                    <h6 class="mb-4 mt-40 pt-4 border-top text-primary">Category Media</h6>
-
-                    <div class="row g-4">
-                        <!-- Banner Image -->
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label fw-medium">
-                                    Banner Image
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <div class="image-upload-container">
-                                    <div class="image-upload-box" id="bannerImageUpload">
-                                        <div class="upload-placeholder">
-                                            <iconify-icon icon="solar:gallery-add-outline" class="icon-4x text-secondary-light"></iconify-icon>
-                                            <div class="mt-3">
-                                                <h6 class="mb-1">Drop banner image here or click to upload</h6>
-                                                <p class="text-secondary-light mb-0">Recommended: 1200×400px, JPG, PNG or WebP</p>
-                                            </div>
-                                        </div>
-                                        <input type="file"
-                                               class="image-upload-input @error('banner_image') is-invalid @enderror"
-                                               name="banner_image"
-                                               accept="image/*"
-                                               required>
-                                    </div>
-                                    <div class="upload-preview d-none" id="bannerImagePreview">
-                                        <img src="" alt="Preview" class="preview-image">
-                                        <button type="button" class="btn btn-danger btn-sm remove-image">
-                                            <iconify-icon icon="solar:trash-bin-outline"></iconify-icon>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="form-text">Large banner image for category pages</div>
-                                @error('banner_image')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <!-- Thumbnail Image -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label fw-medium">
-                                    Thumbnail Image
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <div class="image-upload-container">
-                                    <div class="image-upload-box" id="thumbnailImageUpload">
-                                        <div class="upload-placeholder">
-                                            <iconify-icon icon="solar:gallery-add-outline" class="icon-2x text-secondary-light"></iconify-icon>
-                                            <div class="mt-2">
-                                                <p class="mb-0">Upload thumbnail</p>
-                                            </div>
-                                        </div>
-                                        <input type="file"
-                                               class="image-upload-input @error('thumbnail_image') is-invalid @enderror"
-                                               name="thumbnail_image"
-                                               accept="image/*"
-                                               required>
-                                    </div>
-                                    <div class="upload-preview d-none" id="thumbnailImagePreview">
-                                        <img src="" alt="Preview" class="preview-image">
-                                        <button type="button" class="btn btn-danger btn-sm remove-image">
-                                            <iconify-icon icon="solar:trash-bin-outline"></iconify-icon>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="form-text">Small image for category lists (300×300px)</div>
-                                @error('thumbnail_image')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <!-- Icon Image -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label fw-medium">Icon Image</label>
-                                <div class="image-upload-container">
-                                    <div class="image-upload-box" id="iconImageUpload">
-                                        <div class="upload-placeholder">
-                                            <iconify-icon icon="solar:gallery-add-outline" class="icon-2x text-secondary-light"></iconify-icon>
-                                            <div class="mt-2">
-                                                <p class="mb-0">Upload icon</p>
-                                            </div>
-                                        </div>
-                                        <input type="file"
-                                               class="image-upload-input @error('icon_image') is-invalid @enderror"
-                                               name="icon_image"
-                                               accept="image/*">
-                                    </div>
-                                    <div class="upload-preview d-none" id="iconImagePreview">
-                                        <img src="" alt="Preview" class="preview-image">
-                                        <button type="button" class="btn btn-danger btn-sm remove-image">
-                                            <iconify-icon icon="solar:trash-bin-outline"></iconify-icon>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="form-text">Small icon for navigation (100×100px)</div>
-                                @error('icon_image')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <!-- Image Guidelines -->
-                        <div class="col-12">
-                            <div class="card border">
-                                <div class="card-header bg-light">
-                                    <h6 class="mb-0">Image Guidelines</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="d-flex align-items-start gap-2">
-                                                <iconify-icon icon="solar:info-circle-outline" class="text-primary mt-1"></iconify-icon>
-                                                <div>
-                                                    <h6 class="mb-1">Format</h6>
-                                                    <p class="text-secondary-light mb-0">Use JPG, PNG, or WebP format</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="d-flex align-items-start gap-2">
-                                                <iconify-icon icon="solar:info-circle-outline" class="text-primary mt-1"></iconify-icon>
-                                                <div>
-                                                    <h6 class="mb-1">Size Limit</h6>
-                                                    <p class="text-secondary-light mb-0">Max 2MB per image</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="d-flex align-items-start gap-2">
-                                                <iconify-icon icon="solar:info-circle-outline" class="text-primary mt-1"></iconify-icon>
-                                                <div>
-                                                    <h6 class="mb-1">Background</h6>
-                                                    <p class="text-secondary-light mb-0">Transparent or white background preferred</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-end mt-40 pt-4 border-top">
-                        <button type="submit" class="btn btn-primary px-32 d-flex align-items-center gap-2">
-                            <iconify-icon icon="solar:upload-outline"></iconify-icon>
-                            Create Category
-                        </button>
-                    </div>
-                </form>
+            <div class="d-flex justify-content-end mt-24">
+                <button type="submit" class="btn btn-primary px-32 d-flex align-items-center gap-2">
+                    <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
+                    Add Fuel Type
+                </button>
             </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── Fuel Type List ── -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h6 class="mb-0">All Fuel Types</h6>
+        <input type="text"
+               id="bikeTypeSearch"
+               class="form-control form-control-sm"
+               placeholder="Search by name..."
+               style="width:220px;">
+    </div>
+
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="bikeTypeTable">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3" style="width:60px;">#</th>
+                        <th style="width:90px;">Icon</th>
+                        <th>Name</th>
+                        <th class="text-center" style="width:120px;">Status</th>
+                        <th class="text-center" style="width:110px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($bikeTypes as $index => $bikeType)
+                    <tr data-search="{{ strtolower($bikeType->name) }}">
+                        <td class="ps-3 text-secondary-light">{{ $bikeTypes->firstItem() + $index }}</td>
+                        <td>
+                            @if($bikeType->icon_image)
+                                <img src="{{ asset($bikeType->icon_image) }}" alt="{{ $bikeType->name }}" style="width:36px;height:36px;object-fit:contain;">
+                            @else
+                                <div class="rounded d-flex align-items-center justify-content-center bg-light" style="width:36px;height:36px;">
+                                    <iconify-icon icon="solar:folder-outline" class="text-secondary-light"></iconify-icon>
+                                </div>
+                            @endif
+                        </td>
+                        <td class="fw-medium">{{ $bikeType->name }}</td>
+                        <td class="text-center">
+                            @if($bikeType->status === 'active')
+                                <span class="badge bg-success-light text-success px-3 py-2">Active</span>
+                            @else
+                                <span class="badge bg-danger-light text-danger px-3 py-2">Inactive</span>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex gap-1 justify-content-center">
+                                <a href="{{ route('categories.edit', $bikeType) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                    <iconify-icon icon="solar:pen-outline"></iconify-icon>
+                                </a>
+                                <form action="{{ route('categories.destroy', $bikeType) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this Fuel Type and all its brands?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                        <iconify-icon icon="ic:outline-delete"></iconify-icon>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <iconify-icon icon="solar:folder-outline" style="font-size:3rem;" class="text-secondary-light"></iconify-icon>
+                            <p class="text-secondary-light mt-2 mb-0">No Fuel Types yet.</p>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
+
+        @if($bikeTypes->hasPages())
+        <div class="d-flex justify-content-center mt-4 p-3">
+            {{ $bikeTypes->links() }}
+        </div>
+        @endif
     </div>
 </div>
 
@@ -279,19 +205,14 @@
 
 @push('styles')
 <style>
-.form-group {
-    margin-bottom: 1.5rem;
-}
+.form-group { margin-bottom: 1.5rem; }
 
-/* Image Upload */
-.image-upload-container {
-    position: relative;
-}
+.image-upload-container { position: relative; }
 
 .image-upload-box {
     border: 2px dashed var(--bs-border-color);
     border-radius: 0.5rem;
-    padding: 2rem;
+    padding: 1rem;
     text-align: center;
     cursor: pointer;
     transition: all 0.2s;
@@ -315,9 +236,7 @@
     cursor: pointer;
 }
 
-.upload-placeholder {
-    pointer-events: none;
-}
+.upload-placeholder { pointer-events: none; }
 
 .upload-preview {
     position: relative;
@@ -328,16 +247,17 @@
 
 .upload-preview img {
     width: 100%;
-    height: 200px;
-    object-fit: cover;
+    height: 90px;
+    object-fit: contain;
+    background: var(--bs-light-bg);
 }
 
 .remove-image {
     position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 32px;
-    height: 32px;
+    top: 4px;
+    right: 4px;
+    width: 26px;
+    height: 26px;
     padding: 0;
     display: flex;
     align-items: center;
@@ -346,104 +266,53 @@
 }
 
 .icon-2x { font-size: 2rem; }
-.icon-4x { font-size: 4rem; }
 
 /* Status Toggle Switch */
-.status-toggle-wrap {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    height: 46px;
-}
-
-.status-switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 26px;
-    flex-shrink: 0;
-}
-
-.status-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
+.status-toggle-wrap { display: flex; align-items: center; gap: 0.75rem; height: 46px; }
+.status-switch { position: relative; display: inline-block; width: 50px; height: 26px; flex-shrink: 0; }
+.status-switch input { opacity: 0; width: 0; height: 0; }
 .status-slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #d9dde3;
-    transition: 0.25s;
-    border-radius: 999px;
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #d9dde3; transition: 0.25s; border-radius: 999px;
 }
-
 .status-slider::before {
-    position: absolute;
-    content: "";
-    height: 20px;
-    width: 20px;
-    left: 3px;
-    bottom: 3px;
-    background-color: #fff;
-    transition: 0.25s;
-    border-radius: 50%;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px;
+    background-color: #fff; transition: 0.25s; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.25);
 }
-
-.status-switch input:checked + .status-slider {
-    background-color: #28a745;
-}
-
-.status-switch input:checked + .status-slider::before {
-    transform: translateX(24px);
-}
-
-.status-toggle-label {
-    font-size: 0.95rem;
-    transition: color 0.2s;
-}
+.status-switch input:checked + .status-slider { background-color: #28a745; }
+.status-switch input:checked + .status-slider::before { transform: translateX(24px); }
+.status-toggle-label { font-size: 0.95rem; transition: color 0.2s; }
 </style>
 @endpush
 
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // Live image preview on upload (banner / thumbnail / icon)
-    function setupImageUpload(uploadId, previewId) {
-        const uploadBox = $('#' + uploadId);
-        const previewBox = $('#' + previewId);
-        const input = uploadBox.find('input');
+    // Live icon preview
+    const uploadBox = $('#iconImageUpload');
+    const previewBox = $('#iconImagePreview');
+    const input = uploadBox.find('input');
 
-        input.change(function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewBox.find('img').attr('src', e.target.result);
-                    previewBox.removeClass('d-none');
-                    uploadBox.addClass('d-none');
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+    input.change(function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewBox.find('img').attr('src', e.target.result);
+                previewBox.removeClass('d-none');
+                uploadBox.addClass('d-none');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 
-        previewBox.find('.remove-image').click(function() {
-            previewBox.addClass('d-none');
-            uploadBox.removeClass('d-none');
-            input.val('');
-        });
-    }
+    previewBox.find('.remove-image').click(function() {
+        previewBox.addClass('d-none');
+        uploadBox.removeClass('d-none');
+        input.val('');
+    });
 
-    setupImageUpload('bannerImageUpload', 'bannerImagePreview');
-    setupImageUpload('thumbnailImageUpload', 'thumbnailImagePreview');
-    setupImageUpload('iconImageUpload', 'iconImagePreview');
-
-    // Status toggle switch
+    // Status toggle
     const statusToggle = document.getElementById('statusToggle');
     const statusLabel = document.getElementById('statusToggleLabel');
     const statusInput = document.getElementById('statusInput');
@@ -462,47 +331,13 @@ $(document).ready(function() {
         }
     });
 
-    // Description character counter
-    $('#description').on('input', function() {
-        const maxLength = $(this).attr('maxlength') || 500;
-        const currentLength = $(this).val().length;
-        $(this).closest('.form-group').find('.char-count').text(currentLength + '/' + maxLength);
-    }).trigger('input');
-
-    // Simple required-field check before submit (single page now, no step logic needed)
-    $('#categoryForm').submit(function(e) {
-        let isValid = true;
-        let firstInvalidField = null;
-
-        $(this).find('[required]').each(function() {
-            const $field = $(this);
-
-            if ($field.attr('type') === 'file') {
-                if (!$field[0].files || $field[0].files.length === 0) {
-                    $field.addClass('is-invalid');
-                    if (!firstInvalidField) firstInvalidField = $field;
-                    isValid = false;
-                } else {
-                    $field.removeClass('is-invalid');
-                }
-            } else {
-                if (!$field.val() || !$field.val().trim()) {
-                    $field.addClass('is-invalid');
-                    if (!firstInvalidField) firstInvalidField = $field;
-                    isValid = false;
-                } else {
-                    $field.removeClass('is-invalid');
-                }
-            }
+    // Table search
+    $('#bikeTypeSearch').on('input', function() {
+        const search = $(this).val().toLowerCase();
+        $('#bikeTypeTable tbody tr').each(function() {
+            const match = !search || ($(this).data('search') || '').toString().includes(search);
+            $(this).toggle(match);
         });
-
-        if (!isValid) {
-            e.preventDefault();
-            if (firstInvalidField) {
-                $('html, body').animate({ scrollTop: firstInvalidField.offset().top - 100 }, 300);
-            }
-            return false;
-        }
     });
 });
 </script>

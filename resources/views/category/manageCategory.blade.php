@@ -13,7 +13,21 @@
             </ol>
         </nav>
     </div>
+    <div class="d-flex gap-2">
+        <a href="{{ route('add.category') }}" class="btn btn-outline-primary d-flex align-items-center gap-2">
+            <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
+            Add Fuel Type
+        </a>
+        <a href="{{ route('add.subcategory') }}" class="btn btn-primary d-flex align-items-center gap-2">
+            <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
+            Add Brand
+        </a>
+    </div>
 </div>
+
+@if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
 
 <!-- ── Stat Cards ── -->
 <div class="row g-3 mb-24">
@@ -21,7 +35,7 @@
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-secondary-light mb-1">Bike Types</h6>
+                    <h6 class="text-secondary-light mb-1">Fuel Types</h6>
                     <h4 class="mb-0">{{ $totalCategories }}</h4>
                 </div>
                 <div class="stat-icon bg-primary-light">
@@ -45,7 +59,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-secondary-light">Brands under bike types</small>
+                <small class="text-secondary-light">Brands under Fuel Types</small>
             </div>
         </div>
     </div>
@@ -69,8 +83,8 @@
 
 
 {{-- ═══════════════════════════════════════════════════════════
-     SINGLE TABLE — All Categories (Brands grouped under Bike Type)
-     Columns: # | Bike Type | Brand Name | Logo/Icon | Status
+     SINGLE TABLE — All Categories (Brands grouped under Fuel Type)
+     Columns: # | Fuel Type | Brand Name | Icon | Status
 ══════════════════════════════════════════════════════════════ --}}
 @php
     $bikeTypes = $categories->filter(fn($c) => $c->parent_id === null);
@@ -84,13 +98,20 @@
             <input type="text"
                    id="categorySearch"
                    class="form-control form-control-sm"
-                   placeholder="Search brand or bike type..."
+                   placeholder="Search brand or Fuel Type..."
                    style="width:220px;">
-            <!-- Filter by bike type -->
+            <!-- Filter by Fuel Type -->
             <select id="bikeTypeFilter" class="form-select form-select-sm" style="width:170px;">
-                <option value="">All Bike Types</option>
+                <option value="">All Fuel Types</option>
                 @foreach($bikeTypes as $bt)
                     <option value="{{ $bt->id }}">{{ $bt->name }}</option>
+                @endforeach
+            </select>
+            <!-- Filter by brand -->
+            <select id="brandFilter" class="form-select form-select-sm" style="width:170px;">
+                <option value="">All Brands</option>
+                @foreach($allBrands as $b)
+                    <option value="{{ $b->id }}">{{ $b->name }}</option>
                 @endforeach
             </select>
         </div>
@@ -102,10 +123,11 @@
                 <thead class="table-light">
                     <tr>
                         <th class="ps-3" style="width:60px;">#</th>
-                        <th style="width:220px;">Bike Type</th>
+                        <th style="width:220px;">Fuel Type</th>
                         <th>Brand Name</th>
-                        <th class="text-center" style="width:110px;">Logo / Icon</th>
+                        <th class="text-center" style="width:90px;">Icon</th>
                         <th class="text-center" style="width:120px;">Status</th>
+                        <th class="text-center" style="width:110px;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,10 +137,11 @@
                         @if($brands->count() > 0)
                             @foreach($brands as $brand)
                             <tr data-bike-type-id="{{ $bikeType->id }}"
+                                data-brand-id="{{ $brand->id }}"
                                 data-search="{{ strtolower($bikeType->name . ' ' . $brand->name) }}">
                                 <td class="ps-3 text-secondary-light">{{ $rowNum++ }}</td>
 
-                                {{-- Bike Type (only show on first brand row of each type) --}}
+                                {{-- Fuel Type (only show on first brand row of each type) --}}
                                 <td>
                                     @if($loop->first)
                                     <div class="d-flex align-items-center gap-2">
@@ -142,20 +165,15 @@
                                 {{-- Brand Name --}}
                                 <td class="fw-medium">{{ $brand->name }}</td>
 
-                                {{-- Logo / Icon --}}
+                                {{-- Icon --}}
                                 <td class="text-center">
                                     @if($brand->icon_image)
                                         <img src="{{ asset($brand->icon_image) }}"
                                              alt="{{ $brand->name }}"
-                                             style="width:38px;height:38px;object-fit:contain;">
-                                    @elseif($brand->thumbnail_image)
-                                        <img src="{{ asset($brand->thumbnail_image) }}"
-                                             alt="{{ $brand->name }}"
-                                             class="rounded"
-                                             style="width:38px;height:38px;object-fit:cover;">
+                                             style="width:34px;height:34px;object-fit:contain;">
                                     @else
                                         <div class="rounded d-flex align-items-center justify-content-center bg-light mx-auto"
-                                             style="width:38px;height:38px;">
+                                             style="width:34px;height:34px;">
                                             <iconify-icon icon="solar:tag-outline" class="text-secondary-light"></iconify-icon>
                                         </div>
                                     @endif
@@ -169,11 +187,28 @@
                                         <span class="badge bg-danger-light text-danger px-3 py-2">Inactive</span>
                                     @endif
                                 </td>
+
+                                {{-- Action --}}
+                                <td class="text-center">
+                                    <div class="d-flex gap-1 justify-content-center">
+                                        <a href="{{ route('categories.edit', $brand) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                            <iconify-icon icon="solar:pen-outline"></iconify-icon>
+                                        </a>
+                                        <form action="{{ route('categories.destroy', $brand) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this brand?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                                <iconify-icon icon="ic:outline-delete"></iconify-icon>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                             @endforeach
                         @else
-                            {{-- Bike type exists but has no brands yet --}}
+                            {{-- Fuel Type exists but has no brands yet --}}
                             <tr data-bike-type-id="{{ $bikeType->id }}"
+                                data-brand-id=""
                                 data-search="{{ strtolower($bikeType->name) }}">
                                 <td class="ps-3 text-secondary-light">{{ $rowNum++ }}</td>
                                 <td>
@@ -200,11 +235,25 @@
                                         <span class="badge bg-danger-light text-danger px-3 py-2">Inactive</span>
                                     @endif
                                 </td>
+                                <td class="text-center">
+                                    <div class="d-flex gap-1 justify-content-center">
+                                        <a href="{{ route('categories.edit', $bikeType) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                            <iconify-icon icon="solar:pen-outline"></iconify-icon>
+                                        </a>
+                                        <form action="{{ route('categories.destroy', $bikeType) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this Fuel Type?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                                <iconify-icon icon="ic:outline-delete"></iconify-icon>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         @endif
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center py-5">
+                        <td colspan="6" class="text-center py-5">
                             <iconify-icon icon="solar:folder-outline"
                                           style="font-size:3rem;"
                                           class="text-secondary-light"></iconify-icon>
@@ -231,16 +280,19 @@ document.addEventListener('DOMContentLoaded', function () {
     function filterTable() {
         const search     = document.getElementById('categorySearch').value.toLowerCase();
         const filterType = document.getElementById('bikeTypeFilter').value;
+        const filterBrand = document.getElementById('brandFilter').value;
 
         document.querySelectorAll('#categoryTable tbody tr').forEach(row => {
             const matchSearch = !search || row.getAttribute('data-search').includes(search);
             const matchType   = !filterType || row.getAttribute('data-bike-type-id') === filterType;
-            row.style.display = (matchSearch && matchType) ? '' : 'none';
+            const matchBrand  = !filterBrand || row.getAttribute('data-brand-id') === filterBrand;
+            row.style.display = (matchSearch && matchType && matchBrand) ? '' : 'none';
         });
     }
 
     document.getElementById('categorySearch').addEventListener('input', filterTable);
     document.getElementById('bikeTypeFilter').addEventListener('change', filterTable);
+    document.getElementById('brandFilter').addEventListener('change', filterTable);
 });
 </script>
 
@@ -259,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function () {
 .table th { font-size:.8rem; text-transform:uppercase; letter-spacing:.04em; }
 .table td { vertical-align:middle; }
 
-/* ── Group separator between bike types ── */
+/* ── Group separator between Fuel Types ── */
 #categoryTable tbody tr:not([data-bike-type-id=""]) + tr[data-bike-type-id]:not(:first-child) td {
     border-top: 2px solid #e9ecef;
 }

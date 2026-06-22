@@ -22,9 +22,9 @@ class Product extends Model
         'barcode',
         'price',
         'sale_price',
-        'loan_amount',   // ✅ NEW
-        'rmv',           // ✅ NEW
-        'service_charge', // ✅ NEW
+        'loan_amount',   
+        'rmv',           
+        'service_charge', 
         'cost_price',
         'quantity',
         'low_stock_alert',

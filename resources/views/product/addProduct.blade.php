@@ -102,25 +102,25 @@
                                     <div class="invalid-feedback">Product name is required</div>
                                 </div>
 
-                               <!-- Bike Type (Category) -->
+                               <!-- Fuel Type (Category) -->
                                 <div class="col-md-6">
-                                    <label class="form-label" for="categorySelect">Bike Type <span class="text-danger">*</span></label>
+                                    <label class="form-label" for="categorySelect">Fuel Type <span class="text-danger">*</span></label>
                                     <select class="form-select" name="category_id" id="categorySelect" required>
-                                        <option value="">Select Bike Type</option>
+                                        <option value="">Select Fuel Type</option>
                                         @foreach($categories as $category)
                                         <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                         @endforeach
                                     </select>
-                                    <div class="invalid-feedback">Bike type is required</div>
+                                    <div class="invalid-feedback">Fuel Type is required</div>
                                 </div>
 
                                 <!-- Brand (Subcategory) -->
                                 <div class="col-md-6">
                                     <label class="form-label" for="subcategorySelect">Brand</label>
                                     <select class="form-select" name="subcategory_id" id="subcategorySelect">
-                                        <option value="">Select Bike Type first</option>
+                                        <option value="">Select Fuel Type first</option>
                                     </select>
-                                    <small class="text-secondary-light">Select bike type above to load brands</small>
+                                    <small class="text-secondary-light">Select Fuel Type above to load brands</small>
                                 </div>
 
                                 <!-- Product Status -->
@@ -909,13 +909,13 @@ $(document).ready(function() {
     // Initialize wizard
     initWizard();
 });
-// Load brands when bike type is selected
+// Load brands when Fuel Type is selected
     $('#categorySelect').on('change', function() {
         const categoryId = $(this).val();
         const brandSelect = $('#subcategorySelect');
         brandSelect.html('<option value="">Loading...</option>');
         if (!categoryId) {
-            brandSelect.html('<option value="">Select Bike Type first</option>');
+            brandSelect.html('<option value="">Select Fuel Type first</option>');
             return;
         }
         $.get('/categories/' + categoryId + '/subcategories', function(data) {

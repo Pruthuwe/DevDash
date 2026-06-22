@@ -86,7 +86,7 @@
 
                                         <!-- Category -->
                                         <div class="col-md-6">
-                                            <label class="form-label">Category</label>
+                                            <label class="form-label">Fuel Type</label>
                                             <select class="form-select" name="category_id" id="categorySelect">
                                                 <option value="">Select Category</option>
                                                 @foreach($categories ?? [] as $category)
@@ -99,7 +99,7 @@
 
                                         <!-- Subcategory -->
                                         <div class="col-md-6">
-                                            <label class="form-label">Subcategory</label>
+                                            <label class="form-label">Brand</label>
                                             <select class="form-select" name="subcategory_id" id="subcategorySelect">
                                                 <option value="">Select Subcategory</option>
                                                 @if($product->subcategory)

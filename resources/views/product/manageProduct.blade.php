@@ -122,8 +122,8 @@
                         <th>Product</th>
                         <th>SKU</th>
                         <th>Image</th>
-                        <th>Category</th>
-                        <th>Subcategory</th>
+                        <th>Fuel Type</th>
+                        <th>Brand</th>
                         <th>Price</th>
                         <th>Stock</th>
                         <th>Status</th>

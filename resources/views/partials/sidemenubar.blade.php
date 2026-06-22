@@ -32,7 +32,7 @@
                 <ul class="sidebar-submenu">
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-categories')))
                     <li>
-                        <a href="{{ route('add.category') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Bike Type</a>
+                        <a href="{{ route('add.category') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Fuel Type</a>
                     </li>
                     <li>
                         <a href="{{ route('add.subcategory') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Brand</a>
@@ -52,7 +52,9 @@
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="material-symbols:order-approve-sharp" class="menu-icon"></iconify-icon>
-                    <span>Products</span>
+                    <span>Motor Bikes
+
+                    </span>
                 </a>
                 <ul class="sidebar-submenu">
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-products')))
@@ -62,7 +64,7 @@
                     @endif
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-products')))
                     <li>
-                        <a href="{{ route('manage.products') }}"><iconify-icon icon="solar:settings-bold" class="submenu-icon"></iconify-icon> Motor Bikes</a>
+                        <a href="{{ route('manage.products') }}"><iconify-icon icon="solar:settings-bold" class="submenu-icon"></iconify-icon> Manage all Bikes</a>
                     </li>
                     @endif
                 </ul>

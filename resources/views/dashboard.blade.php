@@ -207,7 +207,7 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Category</th>
+                                <th>Fuel Type</th>
                                 <th>Price</th>
                                 <th>Stock</th>
                                 <th>Status</th>
