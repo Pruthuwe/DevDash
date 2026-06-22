@@ -325,6 +325,9 @@
             <a href="{{ route('add.service') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Service</a>
         </li>
         @endif
+        <li>
+            <a href="{{ route('manage.finance-companies') }}"><iconify-icon icon="solar:buildings-2-bold" class="submenu-icon"></iconify-icon>Finance Companies</a>
+        </li>
     </ul>
 </li>
 @endif --}}

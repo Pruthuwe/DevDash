@@ -131,6 +131,11 @@ Route::post('/loan-inquiries/{loanInquiry}/update-status', [\App\Http\Controller
 Route::delete('/loan-inquiries/{loanInquiry}', [\App\Http\Controllers\LoanInquiryController::class, 'destroy'])->middleware('permission:delete-loan-inquiries')->name('loan-inquiries.destroy');
 // Loan Calculator
 Route::get('/loan-calculator', [\App\Http\Controllers\LoanCalculatorController::class, 'index'])->name('loan.calculator');
+// Finance Company Routes (admin-managed list shown in the public loan calculator dropdown)
+Route::get('/manage-finance-companies', [\App\Http\Controllers\FinanceCompanyController::class, 'index'])->name('manage.finance-companies');
+Route::post('/finance-companies', [\App\Http\Controllers\FinanceCompanyController::class, 'store'])->name('finance-companies.store');
+Route::put('/finance-companies/{financeCompany}', [\App\Http\Controllers\FinanceCompanyController::class, 'update'])->name('finance-companies.update');
+Route::delete('/finance-companies/{financeCompany}', [\App\Http\Controllers\FinanceCompanyController::class, 'destroy'])->name('finance-companies.destroy');
 // Product Enquiry Routes
 Route::get('/manage-product-enquiries', [\App\Http\Controllers\ProductEnquiryController::class, 'manage'])->middleware('permission:view-product-enquiries')->name('manage.product-enquiries');
 Route::post('/product-enquiries/{productEnquiry}/update-status', [\App\Http\Controllers\ProductEnquiryController::class, 'updateStatus'])->middleware('permission:edit-product-enquiries')->name('product-enquiries.update-status');
