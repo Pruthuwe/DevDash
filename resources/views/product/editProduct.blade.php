@@ -258,10 +258,10 @@
                                         <!-- Low Stock Alert -->
                                         <div class="col-md-6">
                                             <label class="form-label">Low Stock Alert</label>
-                                            <input type="number" class="form-control" name="low_stock_alert" value="{{ old('low_stock_alert', $product->low_stock_alert) }}" min="0" placeholder="Alert threshold">
+                                            <input type="number" class="form-control" name="low_stock_alert" value="{{ old('low_stock_alert', $product->low_stock_alert ?? 2) }}" min="0" placeholder="2">
                                         </div>
 
-                                        <!-- Loan Amount -->
+                                       {{--  <!-- Loan Amount -->
                                         <div class="col-md-6">
                                             <label class="form-label">Loan Amount</label>
                                             <div class="input-group">
@@ -298,7 +298,7 @@
                                                 <input type="text" inputmode="decimal" class="form-control decimal-input" id="editServiceChargeInput" name="service_charge" value="{{ old('service_charge', $product->service_charge ?? 25000) }}" placeholder="25000.00">
                                             </div>
                                             <small class="text-secondary-light">Pick a mode above, or just type a custom amount</small>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>

@@ -102,22 +102,25 @@
                                     <div class="invalid-feedback">Product name is required</div>
                                 </div>
 
-                                <!-- Category -->
+                               <!-- Bike Type (Category) -->
                                 <div class="col-md-6">
-                                    <label class="form-label" for="categorySelect">Category <span class="text-danger">*</span></label>
+                                    <label class="form-label" for="categorySelect">Bike Type <span class="text-danger">*</span></label>
                                     <select class="form-select" name="category_id" id="categorySelect" required>
-                                        <option value="">Select Category</option>
+                                        <option value="">Select Bike Type</option>
                                         @foreach($categories as $category)
                                         <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                         @endforeach
                                     </select>
-                                    <div class="invalid-feedback">Category is required</div>
+                                    <div class="invalid-feedback">Bike type is required</div>
                                 </div>
 
-                                <!-- Brand -->
+                                <!-- Brand (Subcategory) -->
                                 <div class="col-md-6">
-                                    <label class="form-label" for="brandInput">Brand</label>
-                                    <input type="text" class="form-control" id="brandInput" name="brand" placeholder="Enter brand name" value="{{ old('brand') }}">
+                                    <label class="form-label" for="subcategorySelect">Brand</label>
+                                    <select class="form-select" name="subcategory_id" id="subcategorySelect">
+                                        <option value="">Select Bike Type first</option>
+                                    </select>
+                                    <small class="text-secondary-light">Select bike type above to load brands</small>
                                 </div>
 
                                 <!-- Product Status -->
@@ -207,7 +210,7 @@
                                 <!-- Low Stock Alert -->
                                 <div class="col-md-6">
                                     <label class="form-label" for="lowStockInput">Low Stock Alert</label>
-                                    <input type="number" class="form-control" name="low_stock_alert" id="lowStockInput" placeholder="10" min="0" value="{{ old('low_stock_alert') }}">
+                                    <input type="number" class="form-control" name="low_stock_alert" id="lowStockInput" placeholder="2" min="0" value="{{ old('low_stock_alert', 2) }}">
                                     <small class="text-secondary-light">Alert when stock falls below this number</small>
                                 </div>
 
@@ -906,5 +909,31 @@ $(document).ready(function() {
     // Initialize wizard
     initWizard();
 });
+// Load brands when bike type is selected
+    $('#categorySelect').on('change', function() {
+        const categoryId = $(this).val();
+        const brandSelect = $('#subcategorySelect');
+        brandSelect.html('<option value="">Loading...</option>');
+        if (!categoryId) {
+            brandSelect.html('<option value="">Select Bike Type first</option>');
+            return;
+        }
+        $.get('/categories/' + categoryId + '/subcategories', function(data) {
+            brandSelect.html('<option value="">Select Brand</option>');
+            if (data.subcategories && data.subcategories.length > 0) {
+                data.subcategories.forEach(function(sub) {
+                    const selected = '{{ old("subcategory_id") }}' == sub.id ? 'selected' : '';
+                    brandSelect.append('<option value="' + sub.id + '" ' + selected + '>' + sub.name + '</option>');
+                });
+            } else {
+                brandSelect.html('<option value="">No brands found</option>');
+            }
+        });
+    });
+
+    // Trigger on page load if old value exists
+    if ($('#categorySelect').val()) {
+        $('#categorySelect').trigger('change');
+    }
 </script>
 @endpush
