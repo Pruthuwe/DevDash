@@ -211,7 +211,7 @@
                                     <small class="text-secondary-light">Alert when stock falls below this number</small>
                                 </div>
 
-                                <!-- Loan Amount -->
+                             {{-- <!-- Loan Amount -->
                                 <div class="col-md-6">
                                     <label class="form-label" for="loanAmountInput">Loan Amount</label>
                                     <div class="input-group">
@@ -219,7 +219,7 @@
                                         <input type="text" inputmode="decimal" class="form-control decimal-input" name="loan_amount" id="loanAmountInput" placeholder="0.00" value="{{ old('loan_amount') }}">
                                     </div>
                                     <small class="text-secondary-light">Amount financed via loan (leave 0 for full cash)</small>
-                                </div>
+                                </div> 
 
                                 <!-- RMV Fee -->
                                 <div class="col-md-6">
@@ -238,7 +238,7 @@
                                         <span class="input-group-text">Rs</span>
                                         <input type="text" inputmode="decimal" class="form-control decimal-input" name="service_charge" id="serviceChargeInput" placeholder="25000.00" value="{{ old('service_charge') }}">
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
 
                             <div class="d-flex justify-content-between mt-40 pt-4 border-top">

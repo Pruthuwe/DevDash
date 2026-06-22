@@ -57,12 +57,12 @@
                 <ul class="sidebar-submenu">
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-products')))
                     <li>
-                        <a href="{{ route('add.product') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Product</a>
+                        <a href="{{ route('add.product') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Bike</a>
                     </li>
                     @endif
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-products')))
                     <li>
-                        <a href="{{ route('manage.products') }}"><iconify-icon icon="solar:settings-bold" class="submenu-icon"></iconify-icon> Manage Product</a>
+                        <a href="{{ route('manage.products') }}"><iconify-icon icon="solar:settings-bold" class="submenu-icon"></iconify-icon> Motor Bikes</a>
                     </li>
                     @endif
                 </ul>
