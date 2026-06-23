@@ -136,6 +136,11 @@ Route::get('/manage-finance-companies', [\App\Http\Controllers\FinanceCompanyCon
 Route::post('/finance-companies', [\App\Http\Controllers\FinanceCompanyController::class, 'store'])->name('finance-companies.store');
 Route::put('/finance-companies/{financeCompany}', [\App\Http\Controllers\FinanceCompanyController::class, 'update'])->name('finance-companies.update');
 Route::delete('/finance-companies/{financeCompany}', [\App\Http\Controllers\FinanceCompanyController::class, 'destroy'])->name('finance-companies.destroy');
+// Bike Loan Plans (per-bike, per-finance-company saved rate/RMV)
+Route::get('/products/{product}/loan-plans', [\App\Http\Controllers\BikeLoanPlanController::class, 'index'])->name('bike-loan-plans.index');
+Route::post('/bike-loan-plans', [\App\Http\Controllers\BikeLoanPlanController::class, 'store'])->name('bike-loan-plans.store');
+Route::delete('/bike-loan-plans/{bikeLoanPlan}', [\App\Http\Controllers\BikeLoanPlanController::class, 'destroy'])->name('bike-loan-plans.destroy');
+Route::get('/loan-plans', [\App\Http\Controllers\BikeLoanPlanController::class, 'loanPlans'])->name('manage.loan-plans');
 // Product Enquiry Routes
 Route::get('/manage-product-enquiries', [\App\Http\Controllers\ProductEnquiryController::class, 'manage'])->middleware('permission:view-product-enquiries')->name('manage.product-enquiries');
 Route::post('/product-enquiries/{productEnquiry}/update-status', [\App\Http\Controllers\ProductEnquiryController::class, 'updateStatus'])->middleware('permission:edit-product-enquiries')->name('product-enquiries.update-status');

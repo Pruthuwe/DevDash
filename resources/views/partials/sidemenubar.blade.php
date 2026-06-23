@@ -152,12 +152,23 @@
             {{-- Features --}}
             <li class="sidebar-menu-group-title">Features</li>
 
-            {{-- Loan Calculator --}}
-<li>
-    <a href="{{ route('loan.calculator') }}">
-        <iconify-icon icon="solar:calculator-outline" class="menu-icon"></iconify-icon>
-        <span>Loan Calculator</span>
+            {{-- Loan Management --}}
+<li class="dropdown">
+    <a href="javascript:void(0)">
+        <iconify-icon icon="solar:wallet-money-outline" class="menu-icon"></iconify-icon>
+        <span>Loan Management</span>
     </a>
+    <ul class="sidebar-submenu">
+        <li>
+            <a href="{{ route('manage.finance-companies') }}"><iconify-icon icon="solar:buildings-2-bold" class="submenu-icon"></iconify-icon> Add Finance Company</a>
+        </li>
+        <li>
+            <a href="{{ route('loan.calculator') }}"><iconify-icon icon="solar:calculator-outline" class="submenu-icon"></iconify-icon> Loan Calculator</a>
+        </li>
+        <li>
+            <a href="{{ route('manage.loan-plans') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon> View All Loan Plans</a>
+        </li>
+    </ul>
 </li>
 
             

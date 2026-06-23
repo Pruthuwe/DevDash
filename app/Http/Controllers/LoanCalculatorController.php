@@ -53,7 +53,9 @@ class LoanCalculatorController extends Controller
             ];
         })->values()->toArray();
 
-        return view('loan_calculator.index', compact('fuelTypes', 'products'));
+        $financeCompanies = \App\Models\FinanceCompany::where('status', 'active')->orderBy('name')->get(['id', 'name']);
+
+        return view('loan_calculator.index', compact('fuelTypes', 'products', 'financeCompanies'));
     }
 
     /**

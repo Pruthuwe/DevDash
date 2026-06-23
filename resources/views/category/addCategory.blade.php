@@ -111,24 +111,7 @@
                     </div>
                 </div>
 
-                <!-- Minimum Down Payment % (Loan Calculator) -->
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="form-label fw-medium">Minimum Down Payment %</label>
-                        <div class="input-group">
-                            <input type="number" step="0.01" min="0" max="100"
-                                   class="form-control @error('min_down_payment_percent') is-invalid @enderror"
-                                   name="min_down_payment_percent"
-                                   value="{{ old('min_down_payment_percent') }}"
-                                   placeholder="e.g. 20">
-                            <span class="input-group-text">%</span>
-                        </div>
-                        <small class="text-secondary-light">Used by the Loan Calculator for bikes of this Fuel Type. A Brand can override this.</small>
-                        @error('min_down_payment_percent')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
+                
             </div>
 
             <div class="d-flex justify-content-end mt-24">

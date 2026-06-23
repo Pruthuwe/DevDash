@@ -213,46 +213,6 @@
                                     <input type="number" class="form-control" name="low_stock_alert" id="lowStockInput" placeholder="2" min="0" value="{{ old('low_stock_alert', 2) }}">
                                     <small class="text-secondary-light">Alert when stock falls below this number</small>
                                 </div>
-
-                             <!-- Loan Amount -->
-                                <div class="col-md-6">
-                                    <label class="form-label" for="loanAmountInput">Loan Amount</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">Rs</span>
-                                        <input type="text" inputmode="decimal" class="form-control decimal-input" name="loan_amount" id="loanAmountInput" placeholder="0.00" value="{{ old('loan_amount') }}">
-                                    </div>
-                                    <small class="text-secondary-light">Amount financed via loan (leave 0 for full cash)</small>
-                                </div> 
-
-                                <!-- RMV Fee -->
-                                <div class="col-md-6">
-                                    <label class="form-label" for="rmvInput">RMV Fee</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">Rs</span>
-                                        <input type="text" inputmode="decimal" class="form-control decimal-input" name="rmv" id="rmvInput" placeholder="10160.00" value="{{ old('rmv', 10160) }}">
-                                    </div>
-                                    <small class="text-secondary-light">Revenue & Motor Vehicle Department registration fee</small>
-                                </div>
-
-                                <!-- Service Charge -->
-                                <div class="col-md-6">
-                                    <label class="form-label" for="serviceChargeInput">Service Charge</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">Rs</span>
-                                        <input type="text" inputmode="decimal" class="form-control decimal-input" name="service_charge" id="serviceChargeInput" placeholder="25000.00" value="{{ old('service_charge') }}">
-                                    </div>
-                                    <small class="text-secondary-light">Auto-suggested as 5% of Loan Amount, capped at Rs 25,000 &mdash; type to override</small>
-                                </div>
-
-                                <!-- Interest Rate -->
-                                <div class="col-md-6">
-                                    <label class="form-label" for="interestRateInput">Interest Rate</label>
-                                    <div class="input-group">
-                                        <input type="text" inputmode="decimal" class="form-control decimal-input" name="interest_rate" id="interestRateInput" placeholder="1.5" value="{{ old('interest_rate', 1.5) }}">
-                                        <span class="input-group-text">%</span>
-                                    </div>
-                                    <small class="text-secondary-light">Defaults to 1.5% &mdash; change if this bike's loan rate differs</small>
-                                </div>
                             </div>
 
                             <div class="d-flex justify-content-between mt-40 pt-4 border-top">
@@ -299,24 +259,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Product Gallery 
-                                <div class="col-12">
-                                    <label class="form-label" for="galleryInput">Product Gallery (Optional)</label>
-                                    <div class="gallery-upload-box">
-                                        <input type="file" class="gallery-upload-input" name="gallery_images[]" accept="image/*" id="galleryInput" aria-label="Upload gallery images" multiple>
-                                        <div class="upload-placeholder">
-                                            <iconify-icon icon="solar:gallery-add-outline" class="icon-4x text-primary mb-3"></iconify-icon>
-                                            <h6>Drop multiple images here, or <span class="text-primary">browse</span></h6>
-                                            <p class="text-secondary-light mb-0">Upload up to 5 additional images</p>
-                                        </div>
-                                    </div>
-                                    <div class="gallery-upload-container mt-3">
-                                        <div class="gallery-grid" id="galleryGrid">
-                                            
-                                        </div>
-                                    </div>
-                                </div>-->
                             </div>
 
                             <div class="d-flex justify-content-between mt-40 pt-4 border-top">
@@ -570,43 +512,6 @@
     border-radius: 50%;
 }
 
-/* Gallery Grid */
-.gallery-upload-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 1rem;
-}
-
-.gallery-grid {
-    display: contents;
-}
-
-.gallery-item {
-    position: relative;
-    aspect-ratio: 1;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    border: 1px solid var(--bs-border-color);
-}
-
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.gallery-item .remove-btn {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-
-.gallery-item:hover .remove-btn {
-    opacity: 1;
-}
-
 /* Success Icon */
 .success-icon {
     width: 80px;
@@ -638,10 +543,6 @@
         gap: 1rem;
     }
     
-    .gallery-upload-container {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    
     .step-actions {
         flex-direction: column;
         gap: 1rem;
@@ -661,13 +562,11 @@ $(document).ready(function() {
     let currentStep = 1;
     const totalSteps = 4;
     
-    // Initialize wizard
     function initWizard() {
         updateProgressBar();
         updateStepVisibility();
     }
     
-    // Update progress bar
     function updateProgressBar() {
         const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
         $('#progressBar').css('width', progress + '%');
@@ -684,81 +583,62 @@ $(document).ready(function() {
         });
     }
     
-    // Update step visibility
     function updateStepVisibility() {
         $('.wizard-step-content').removeClass('active');
         $('#step-' + currentStep).addClass('active');
     }
     
-    // Navigate to next step
     $(document).on('click', '.next-step', function(e) {
         e.preventDefault();
-        
         const nextStep = parseInt($(this).data('next'));
-        
-        if (!validateStep(currentStep)) {
-            return;
-        }
-        
+        if (!validateStep(currentStep)) return;
         currentStep = nextStep;
         updateProgressBar();
         updateStepVisibility();
-        
-        $('html, body').animate({
-            scrollTop: $('.wizard-step-content.active').offset().top - 100
-        }, 300);
+        $('html, body').animate({ scrollTop: $('.wizard-step-content.active').offset().top - 100 }, 300);
     });
     
-    // Navigate to previous step
     $(document).on('click', '.prev-step', function(e) {
         e.preventDefault();
-        
         const prevStep = parseInt($(this).data('prev'));
         currentStep = prevStep;
         updateProgressBar();
         updateStepVisibility();
-        
-        $('html, body').animate({
-            scrollTop: $('.wizard-step-content.active').offset().top - 100
-        }, 300);
+        $('html, body').animate({ scrollTop: $('.wizard-step-content.active').offset().top - 100 }, 300);
     });
     
-    // Validate step
-   function validateStep(step) {
-    const stepContent = $('#step-' + step);
-    let isValid = true;
+    function validateStep(step) {
+        const stepContent = $('#step-' + step);
+        let isValid = true;
 
-    stepContent.find('[required]').each(function() {
-        if (!$(this).val().trim()) {
-            $(this).addClass('is-invalid');
-            isValid = false;
-        } else {
-            $(this).removeClass('is-invalid');
-        }
-    });
+        stepContent.find('[required]').each(function() {
+            if (!$(this).val().trim()) {
+                $(this).addClass('is-invalid');
+                isValid = false;
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
 
-    // Validate main image on step 3
-    if (step === 3) {
-        const mainImageInput = $('#mainImageInput')[0];
-        if (!mainImageInput || mainImageInput.files.length === 0) {
-            $('#mainImageUpload').css('border-color', 'red');
-            $('#mainImageError').remove();
-            $('#mainImageUpload').after('<div id="mainImageError" class="text-danger mt-1 small">Please upload a main product image</div>');
-            isValid = false;
-        } else {
-            $('#mainImageUpload').css('border-color', '');
-            $('#mainImageError').remove();
+        if (step === 3) {
+            const mainImageInput = $('#mainImageInput')[0];
+            if (!mainImageInput || mainImageInput.files.length === 0) {
+                $('#mainImageUpload').css('border-color', 'red');
+                $('#mainImageError').remove();
+                $('#mainImageUpload').after('<div id="mainImageError" class="text-danger mt-1 small">Please upload a main product image</div>');
+                isValid = false;
+            } else {
+                $('#mainImageUpload').css('border-color', '');
+                $('#mainImageError').remove();
+            }
         }
+
+        return isValid;
     }
-
-    return isValid;
-}
     
-    // Calculate discount percentage — runs when either price field changes
     function calculateDiscount() {
         const price = parseFloat($('#regularPrice').val()) || 0;
         const salePrice = parseFloat($('#salePrice').val()) || 0;
-        
         if (price > 0 && salePrice > 0 && salePrice < price) {
             const discount = ((price - salePrice) / price) * 100;
             $('#discountPercent').val(discount.toFixed(2) + '%');
@@ -769,35 +649,13 @@ $(document).ready(function() {
     
     $('#regularPrice, #salePrice').on('input', calculateDiscount);
 
-    // Plain-text currency fields (Purchase Cost, Loan Amount, RMV, Service Charge)
-    // No native number spinner — digits + single decimal point only.
     $('.decimal-input').on('input', function() {
         let val = $(this).val().replace(/[^0-9.]/g, '');
         const parts = val.split('.');
-        if (parts.length > 2) {
-            val = parts[0] + '.' + parts.slice(1).join('');
-        }
+        if (parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
         $(this).val(val);
     });
-
-    // Service Charge suggestion — Rs 25,000 flat, or 5% of loan amount once a loan amount is entered.
-    // Stops auto-filling the moment the admin types into the field themselves.
-    let serviceChargeTouched = $('#serviceChargeInput').val() !== '';
-    $('#serviceChargeInput').on('input', function() {
-        serviceChargeTouched = true;
-    });
-
-    function suggestServiceCharge() {
-        if (serviceChargeTouched) return;
-        const loanAmount = parseFloat($('#loanAmountInput').val()) || 0;
-        // Bug fix: this used to be uncapped (loanAmount * 0.05 with no
-        // ceiling). Now capped at Rs 25,000 to match the backend rule.
-        const suggested = loanAmount > 0 ? Math.min(loanAmount * 0.05, 25000) : 25000;
-        $('#serviceChargeInput').val(suggested.toFixed(2));
-    }
-    $('#loanAmountInput').on('input', suggestServiceCharge);
     
-    // Main image upload
     $('#mainImageInput').change(function() {
         const file = this.files[0];
         if (file) {
@@ -811,46 +669,12 @@ $(document).ready(function() {
         }
     });
     
-    // Remove main image
     $(document).on('click', '.remove-image', function() {
         $('#mainImagePreview').addClass('d-none');
         $('#mainImageUpload').show();
         $('#mainImageInput').val('');
     });
     
-    // Gallery image upload
-    $('.gallery-upload-input').change(function(e) {
-        const files = e.target.files;
-        const galleryGrid = $('#galleryGrid');
-        
-        for (let i = 0; i < Math.min(files.length, 5); i++) {
-            const file = files[i];
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                const galleryItem = `
-                    <div class="gallery-item">
-                        <img src="${e.target.result}" alt="Gallery image">
-                        <button type="button" class="btn btn-danger btn-sm remove-btn" aria-label="Remove image">
-                            <iconify-icon icon="solar:trash-bin-outline"></iconify-icon>
-                        </button>
-                    </div>
-                `;
-                galleryGrid.append(galleryItem);
-            };
-            
-            reader.readAsDataURL(file);
-        }
-        
-        $(this).val('');
-    });
-    
-    // Remove gallery image
-    $(document).on('click', '.gallery-item .remove-btn', function() {
-        $(this).closest('.gallery-item').remove();
-    });
-    
-    // Drag and drop
     $('.image-upload-box, .gallery-upload-box').on('dragover', function(e) {
         e.preventDefault();
         $(this).addClass('drag-over');
@@ -864,7 +688,6 @@ $(document).ready(function() {
     $('.image-upload-box, .gallery-upload-box').on('drop', function(e) {
         e.preventDefault();
         $(this).removeClass('drag-over');
-        
         const files = e.originalEvent.dataTransfer.files;
         if (files.length > 0) {
             $(this).find('input')[0].files = files;
@@ -872,24 +695,17 @@ $(document).ready(function() {
         }
     });
     
-    // Character counter for short description
     $('[maxlength]').on('input', function() {
         const maxLength = parseInt($(this).attr('maxlength'));
         const currentLength = $(this).val().length;
         const charCount = $(this).closest('.col-12').find('.char-count');
-        
         if (charCount.length) {
             charCount.text(currentLength + '/' + maxLength);
-            
-            if (currentLength >= maxLength) {
-                charCount.addClass('text-danger');
-            } else {
-                charCount.removeClass('text-danger');
-            }
+            if (currentLength >= maxLength) charCount.addClass('text-danger');
+            else charCount.removeClass('text-danger');
         }
     });
     
-    // Form submission
     $('#productForm').submit(function(e) {
         let allValid = true;
         for (let i = 1; i <= totalSteps; i++) {
@@ -902,51 +718,45 @@ $(document).ready(function() {
                 break;
             }
         }
-        
         if (!allValid) {
-            $('html, body').animate({
-                scrollTop: $('.is-invalid').first().offset().top - 100
-            }, 300);
+            $('html, body').animate({ scrollTop: $('.is-invalid').first().offset().top - 100 }, 300);
             return false;
         }
-        
         return true;
     });
     
-    // Save as draft
     $('#saveAsDraftBtn, #saveDraft').click(function() {
         $('[name="save_draft"]').val('1');
         $('#productForm').submit();
     });
     
-    // Initialize wizard
     initWizard();
 });
-// Load brands when Fuel Type is selected
-    $('#categorySelect').on('change', function() {
-        const categoryId = $(this).val();
-        const brandSelect = $('#subcategorySelect');
-        brandSelect.html('<option value="">Loading...</option>');
-        if (!categoryId) {
-            brandSelect.html('<option value="">Select Fuel Type first</option>');
-            return;
-        }
-        $.get('/categories/' + categoryId + '/subcategories', function(data) {
-            brandSelect.html('<option value="">Select Brand</option>');
-            if (data.subcategories && data.subcategories.length > 0) {
-                data.subcategories.forEach(function(sub) {
-                    const selected = '{{ old("subcategory_id") }}' == sub.id ? 'selected' : '';
-                    brandSelect.append('<option value="' + sub.id + '" ' + selected + '>' + sub.name + '</option>');
-                });
-            } else {
-                brandSelect.html('<option value="">No brands found</option>');
-            }
-        });
-    });
 
-    // Trigger on page load if old value exists
-    if ($('#categorySelect').val()) {
-        $('#categorySelect').trigger('change');
+// Load brands when Fuel Type is selected
+$('#categorySelect').on('change', function() {
+    const categoryId = $(this).val();
+    const brandSelect = $('#subcategorySelect');
+    brandSelect.html('<option value="">Loading...</option>');
+    if (!categoryId) {
+        brandSelect.html('<option value="">Select Fuel Type first</option>');
+        return;
     }
+    $.get('/categories/' + categoryId + '/subcategories', function(data) {
+        brandSelect.html('<option value="">Select Brand</option>');
+        if (data.subcategories && data.subcategories.length > 0) {
+            data.subcategories.forEach(function(sub) {
+                const selected = '{{ old("subcategory_id") }}' == sub.id ? 'selected' : '';
+                brandSelect.append('<option value="' + sub.id + '" ' + selected + '>' + sub.name + '</option>');
+            });
+        } else {
+            brandSelect.html('<option value="">No brands found</option>');
+        }
+    });
+});
+
+if ($('#categorySelect').val()) {
+    $('#categorySelect').trigger('change');
+}
 </script>
 @endpush

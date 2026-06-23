@@ -13,6 +13,7 @@
         </nav>
     </div>
     <div class="d-flex gap-2">
+        <button type="button" class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addFinanceCompanyModal">
             <iconify-icon icon="heroicons:plus-circle-20-solid"></iconify-icon>
             Add Finance Company
         </button>

@@ -23,7 +23,12 @@ class FinanceCompanyController extends Controller
 
         $financeCompanies = FinanceCompany::orderBy('name')->get();
 
-        return view('finance_company.manage', compact('financeCompanies'));
+$allLoanPlans = \App\Models\BikeLoanPlan::with(['product', 'financeCompany'])
+    ->get()
+    ->sortBy(fn($p) => $p->product->name ?? '')
+    ->values();
+
+return view('finance_company.manage', compact('financeCompanies', 'allLoanPlans'));
     }
 
     /**
