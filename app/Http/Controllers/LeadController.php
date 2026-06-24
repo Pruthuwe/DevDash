@@ -71,6 +71,7 @@ class LeadController extends Controller
 
         return response()->json(['models' => $models]);
     }
+    
 
     /**
      * Import leads from Excel
