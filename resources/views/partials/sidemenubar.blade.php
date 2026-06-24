@@ -210,48 +210,7 @@
                 </ul>
             </li> -->
             
-            {{-- Customer Management --}}
-            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-customers')))
-            <li class="dropdown">
-                <a href="javascript:void(3)">
-                    <iconify-icon icon="solar:user-plus-outline" class="menu-icon"></iconify-icon>
-                    <span>Customer Management</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-customers')))
-                    <li>
-                        <a href="{{ route('manage.customers') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Manage Customers</a>
-                    </li>
-                    @endif
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-customers')))
-                    <li>
-                        <a href="{{ route('add.customer') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Customer</a>
-                    </li>
-                    @endif
-                </ul>
-            </li>
-            @endif            
-            {{-- Supplier Management --}}
-            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-suppliers')))
-            <li class="dropdown">
-                <a href="javascript:void(4)">
-                    <iconify-icon icon="solar:delivery-outline" class="menu-icon"></iconify-icon>
-                    <span>Supplier Management</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-suppliers')))
-                    <li>
-                        <a href="{{ route('manage.suppliers') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Supplier Management</a>
-                    </li>
-                    @endif
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-suppliers')))
-                    <li>
-                        <a href="{{ route('add.supplier') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Supplier</a>
-                    </li>
-                    @endif
-                </ul>
-            </li>
-            @endif
+           
             {{-- {{-- Appointment Management 
 @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-blogs')))
 <li>
@@ -262,23 +221,55 @@
 </li>
 @endif --}}
 
-            {{-- Loan Inquiries --}}
-@if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-loan-inquiries')))
-<li>
-    <a href="{{ route('manage.loan-inquiries') }}">
-        <iconify-icon icon="solar:wallet-money-outline" class="menu-icon"></iconify-icon>
-        <span>Loan Inquiries</span>
-    </a>
-</li>
-@endif
 
+            {{-- ═══════════════════════════════════════════════════ --}}
+            {{-- LEAD MANAGEMENT                                     --}}
+            {{-- ═══════════════════════════════════════════════════ --}}
+         
 
-{{-- Product Enquiries --}}
-@if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-product-enquiries')))
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="solar:users-group-rounded-outline" class="menu-icon"></iconify-icon>
+                    <span>Lead Management</span>
+                    @php $unassignedLeads = \App\Models\Lead::where('status','Unassigned')->count(); @endphp
+                    @if($unassignedLeads > 0)
+                        <span class="badge bg-danger ms-auto">{{ $unassignedLeads }}</span>
+                    @endif
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('leads.capture') }}">
+                            <iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>
+                            Lead Capture
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('leads.list') }}">
+                            <iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>
+                            Lead List
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('leads.assignment') }}">
+                            <iconify-icon icon="solar:user-plus-bold" class="submenu-icon"></iconify-icon>
+                            Lead Assignment
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('leads.follow-up') }}">
+                            <iconify-icon icon="solar:chat-line-outline" class="submenu-icon"></iconify-icon>
+                            Lead Follow-Up
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            {{-- All Inquiries (Loan + Product combined) --}}
+@if(Auth::user()->user_type === 'admin' || (Auth::user()->role && (Auth::user()->role->permissions->contains('name', 'view-loan-inquiries') || Auth::user()->role->permissions->contains('name', 'view-product-enquiries'))))
 <li>
-    <a href="{{ route('manage.product-enquiries') }}">
-        <iconify-icon icon="solar:chat-square-like-outline" class="menu-icon"></iconify-icon>
-        <span>Product Enquiries</span>
+    <a href="{{ route('manage.all-inquiries') }}">
+        <iconify-icon icon="solar:clipboard-list-outline" class="menu-icon"></iconify-icon>
+        <span>All Inquiries</span>
     </a>
 </li>
 @endif
@@ -374,6 +365,48 @@
                 </ul>
             </li>
             @endif
+             {{-- Customer Management --}}
+            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-customers')))
+            <li class="dropdown">
+                <a href="javascript:void(3)">
+                    <iconify-icon icon="solar:user-plus-outline" class="menu-icon"></iconify-icon>
+                    <span>Customer Management</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-customers')))
+                    <li>
+                        <a href="{{ route('manage.customers') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Manage Customers</a>
+                    </li>
+                    @endif
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-customers')))
+                    <li>
+                        <a href="{{ route('add.customer') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Customer</a>
+                    </li>
+                    @endif
+                </ul>
+            </li>
+            @endif            
+            {{-- Supplier Management --}}
+            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-suppliers')))
+            <li class="dropdown">
+                <a href="javascript:void(4)">
+                    <iconify-icon icon="solar:delivery-outline" class="menu-icon"></iconify-icon>
+                    <span>Supplier Management</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-suppliers')))
+                    <li>
+                        <a href="{{ route('manage.suppliers') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Supplier Management</a>
+                    </li>
+                    @endif
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-suppliers')))
+                    <li>
+                        <a href="{{ route('add.supplier') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Supplier</a>
+                    </li>
+                    @endif
+                </ul>
+            </li>
+            @endif
             
             <!-- {{-- Sales & Transactions --}}
             <li class="dropdown">
@@ -409,7 +442,25 @@
         </ul>
     </div>
 </aside>
+<style>
+    .sidebar-menu > li {
+        margin-bottom: 6px;
+    }
 
+    .sidebar-menu > li.dropdown > a,
+    .sidebar-menu > li > a {
+        border-radius: 8px;
+    }
+
+    .sidebar-menu .sidebar-submenu > li {
+        margin-bottom: 2px;
+    }
+
+    .sidebar-menu-group-title {
+        margin-top: 14px;
+        margin-bottom: 6px;
+    }
+</style>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const dropdownLinks = document.querySelectorAll('.sidebar-menu .dropdown > a');

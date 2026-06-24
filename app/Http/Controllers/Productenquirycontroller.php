@@ -19,6 +19,7 @@ class ProductEnquiryController extends Controller
             'product_id' => 'nullable|exists:products,id',
             'name'        => 'required|string|max:255',
             'phone'       => 'required|string|max:30',
+            'city'        => 'nullable|string|max:120',
             'message'     => 'nullable|string|max:1000',
         ]);
 
@@ -58,7 +59,8 @@ class ProductEnquiryController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('city', 'like', "%{$search}%");
             });
         }
 

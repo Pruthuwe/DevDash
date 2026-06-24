@@ -1,0 +1,603 @@
+/* ============================================================
+   DevDash — Mobile Responsive Stylesheet
+   Covers: sidebar, navbar, all views, tables, forms, loan calc
+   Breakpoints used:
+     xs  < 480px
+     sm  < 576px
+     md  < 768px
+     lg  < 992px
+   ============================================================ */
+
+/* ────────────────────────────────────────────────────────────
+   1. SIDEBAR & LAYOUT
+   ──────────────────────────────────────────────────────────── */
+
+/* Sidebar overlays on mobile (< 1200px) — handled by style.css.
+   Extra fixes for the close button and overlay scroll lock. */
+@media (max-width: 1199.98px) {
+    /* Prevent body scroll when sidebar open */
+    body.sidebar-open-mobile {
+        overflow: hidden;
+    }
+
+    /* Sidebar slides in from left; no layout shift */
+    .sidebar {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 1050;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        overflow-y: auto;
+    }
+
+    .sidebar.sidebar-open {
+        transform: translateX(0);
+    }
+
+    /* Overlay backdrop */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 1040;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+
+    /* Main content takes full width */
+    .dashboard-main {
+        margin-inline-start: 0 !important;
+    }
+
+    .sidebar-close-btn {
+        display: flex !important;
+    }
+
+    /* Show mobile toggle, hide desktop toggle */
+    .sidebar-toggle {
+        display: none !important;
+    }
+
+    .sidebar-mobile-toggle {
+        display: flex !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .sidebar-mobile-toggle {
+        display: none !important;
+    }
+
+    .sidebar-close-btn {
+        display: none !important;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   2. NAVBAR (top bar)
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    .navbar-header {
+        padding: 0.5rem 0.75rem !important;
+    }
+
+    /* Hide the search bar on small screens — too cramped */
+    .navbar-search {
+        display: none !important;
+    }
+
+    /* Tighten the icon row on the right */
+    .navbar-header .d-flex.gap-3 {
+        gap: 0.5rem !important;
+    }
+
+    /* Smaller icon buttons */
+    .navbar-header .w-40-px.h-40-px {
+        width: 34px !important;
+        height: 34px !important;
+    }
+
+    /* Dropdown menus: full width on mobile */
+    .navbar-header .dropdown-menu.to-top {
+        right: 0 !important;
+        left: auto !important;
+        width: calc(100vw - 2rem) !important;
+        max-width: 360px;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   3. DASHBOARD MAIN BODY PADDING
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 575.98px) {
+    .dashboard-main-body {
+        padding: 0.75rem !important;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   4. DASHBOARD PAGE
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 575.98px) {
+    /* Stat cards: 1 column on xs */
+    .row.row-cols-sm-2.row-cols-1 > .col {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    /* Dashboard tables — reduce padding in cells */
+    .dashboard-main-body .table th,
+    .dashboard-main-body .table td {
+        padding: 0.4rem 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    /* 2-col stat cards on sm */
+    .row-cols-sm-2 > .col {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+/* Page header: stack on mobile */
+@media (max-width: 575.98px) {
+    .d-flex.flex-wrap.align-items-center.justify-content-between.gap-3.mb-24 {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 0.75rem !important;
+    }
+
+    .d-flex.flex-wrap.align-items-center.justify-content-between.gap-3.mb-24 > div:last-child,
+    .d-flex.flex-wrap.align-items-center.justify-content-between.gap-3.mb-24 > a:last-child {
+        width: 100%;
+    }
+
+    .d-flex.flex-wrap.align-items-center.justify-content-between.gap-3.mb-24 .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   5. CARD HEADERS WITH FILTERS (All Inquiries, Contact, etc.)
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    .card-header.d-flex.justify-content-between.align-items-center,
+    .card-header.d-flex.justify-content-between.align-items-center.flex-wrap {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.75rem !important;
+    }
+
+    .card-header .d-flex.gap-2 {
+        width: 100%;
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+
+    .card-header .d-flex.gap-2 input,
+    .card-header .d-flex.gap-2 select {
+        width: 100% !important;
+        min-width: unset !important;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   6. TABLES — general mobile fixes
+   ──────────────────────────────────────────────────────────── */
+
+/* Ensure table-responsive wrapper doesn't clip */
+.table-responsive {
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 767.98px) {
+    /* Smaller font & tighter cells in all tables */
+    .table th,
+    .table td {
+        font-size: 0.78rem;
+        padding: 0.45rem 0.5rem;
+        white-space: nowrap;
+    }
+
+    /* Action button columns: keep buttons small */
+    .table .d-flex.gap-1,
+    .table .d-flex.gap-2 {
+        flex-wrap: nowrap;
+        gap: 0.25rem !important;
+    }
+
+    .table .btn-sm {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.75rem;
+    }
+
+    /* Status selects inside tables */
+    .table .form-select-sm {
+        font-size: 0.75rem;
+        padding: 0.2rem 1.6rem 0.2rem 0.5rem;
+        min-width: 90px;
+    }
+
+    /* Stat cards for inquiry/contact pages: 2-col on sm */
+    .row.g-3.mb-24 .col-md-3,
+    .row.g-3.mb-24 .col-md-4 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 479.98px) {
+    /* On very small screens stat cards go full width */
+    .row.g-3.mb-24 .col-sm-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   7. LOAN CALCULATOR PAGE
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    /* 3-col bike selection becomes 1-col */
+    #fuelType,
+    #brand,
+    #bikeModel {
+        margin-bottom: 0.75rem;
+    }
+
+    /* Loan Details row 1: stacks */
+    /* row already uses col-lg-4 col-md-4, Bootstrap handles md→full */
+
+    /* Save button: full width, remove phantom label */
+    #saveLoanPlanBtn {
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+
+    .loan-term-cell {
+        display: block;
+    }
+
+    /* Down Payment Breakdown — RMV + Minimum DP */
+    .card-body .row.g-3 .col-md-6 {
+        /* Already col-md-6 so it stacks below 768 — no change needed */
+    }
+
+    /* Calculation Results — 4 summary cards: 2×2 on mobile */
+    #resultsArea .col-6.col-md-3 {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+    }
+
+    /* Detail tables in results area */
+    #resultsArea .col-md-6 {
+        margin-bottom: 1rem;
+    }
+
+    /* Loan term select inside table cell */
+    #loanTerm {
+        width: 100% !important;
+        min-width: unset !important;
+    }
+
+    /* Minimum DP highlight box */
+    #resultsArea .fw-bold.text-white.fs-5 {
+        font-size: 1rem !important;
+    }
+}
+
+@media (max-width: 479.98px) {
+    /* 4 summary cards: 1-col on xs */
+    #resultsArea .col-6.col-md-3 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   8. ADD PRODUCT WIZARD
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    /* Wizard step labels: hide on xs to avoid overflow */
+    .wizard-step .step-label {
+        display: none;
+    }
+
+    /* Step icons smaller */
+    .wizard-step .step-icon {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.85rem;
+    }
+
+    /* Step navigation buttons: stack vertically */
+    .wizard-step-content .d-flex.justify-content-between.mt-40 {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .wizard-step-content .d-flex.justify-content-between.mt-40 > div {
+        width: 100%;
+    }
+
+    .wizard-step-content .d-flex.justify-content-between.mt-40 .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Step 4 — two submit buttons side by side still */
+    .wizard-step-content .d-flex.gap-3 {
+        flex-direction: column;
+        gap: 0.5rem !important;
+    }
+
+    .wizard-step-content .d-flex.gap-3 .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Card header with Save Draft badge */
+    .card-header .d-flex.align-items-center.gap-2 {
+        flex-wrap: wrap;
+        gap: 0.5rem !important;
+    }
+}
+
+@media (max-width: 479.98px) {
+    /* Wizard step labels completely off, progress bar only */
+    .wizard-progress .d-flex.justify-content-between {
+        justify-content: space-evenly !important;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   9. ADD CATEGORY / ADD SUBCATEGORY FORMS
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    /* col-md-5, col-md-4 etc. → full width */
+    .card-body .row.g-4 > [class*="col-md-"] {
+        /* Bootstrap already stacks these; no override needed.
+           Extra: remove min-width constraints on inputs */
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   10. FINANCE COMPANY PAGE
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    /* Finance company table action column */
+    .table .d-flex.gap-1 {
+        flex-direction: row !important;
+        flex-wrap: nowrap;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   11. MANAGE PRODUCTS TABLE
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 991.98px) {
+    /* The stat cards row: col-md-4 col-sm-6 */
+    .row.g-3.mb-24 > .col-md-4 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .row.g-3.mb-24 > .col-md-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   12. BLOG MANAGE / ADD BLOG
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    /* Blog image thumbnails */
+    .table img {
+        width: 48px !important;
+        height: 48px !important;
+        object-fit: cover;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   13. ALL INQUIRIES — card header filter row
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    /* The 3-filter row (search + type + status) */
+    #allInquiriesTable th:nth-child(4),   /* City */
+    #allInquiriesTable td:nth-child(4),
+    #allInquiriesTable th:nth-child(6),   /* Details */
+    #allInquiriesTable td:nth-child(6),
+    #allInquiriesTable th:nth-child(7),   /* Submitted */
+    #allInquiriesTable td:nth-child(7) {
+        display: none;  /* hide less critical columns on mobile */
+    }
+}
+
+@media (max-width: 479.98px) {
+    /* Hide even more columns on xs */
+    #allInquiriesTable th:nth-child(5),
+    #allInquiriesTable td:nth-child(5) {   /* Bike */
+        display: none;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   14. CONTACT MESSAGES TABLE
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    #contactsTable th:nth-child(2),  /* Email */
+    #contactsTable td:nth-child(2),
+    #contactsTable th:nth-child(5),  /* Received */
+    #contactsTable td:nth-child(5) {
+        display: none;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   15. PRODUCT ENQUIRIES TABLE
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    #productEnquiriesTable th:nth-child(4),  /* Message */
+    #productEnquiriesTable td:nth-child(4),
+    #productEnquiriesTable th:nth-child(5),  /* Submitted */
+    #productEnquiriesTable td:nth-child(5) {
+        display: none;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   16. MANAGE CATEGORY TABLE
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    /* Hide min down payment % column if present */
+    .table th:last-child,
+    .table td:last-child {
+        /* Keep actions always visible */
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   17. CUSTOMER / SUPPLIER MANAGE TABLES
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    /* Customer table: hide email on mobile */
+    #customersTable th:nth-child(2),
+    #customersTable td:nth-child(2) {
+        display: none;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   18. MODALS — full-width on mobile
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 575.98px) {
+    .modal-dialog {
+        margin: 0.5rem !important;
+        max-width: calc(100% - 1rem) !important;
+    }
+
+    .modal-body {
+        padding: 1rem !important;
+    }
+
+    /* Success modal buttons */
+    .modal-body .d-flex.justify-content-center.gap-3 {
+        flex-direction: column;
+        gap: 0.5rem !important;
+    }
+
+    .modal-body .d-flex.justify-content-center.gap-3 .btn {
+        width: 100%;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   19. ROLES & USERS PAGES
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    /* Permission checkbox grid */
+    .row.g-2 .col-md-4,
+    .row.g-2 .col-md-3 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 479.98px) {
+    .row.g-2 .col-md-4,
+    .row.g-2 .col-md-3 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   20. UTILITY — miscellaneous small-screen fixes
+   ──────────────────────────────────────────────────────────── */
+
+/* Breadcrumb wraps gracefully */
+.breadcrumb {
+    flex-wrap: wrap;
+}
+
+/* Input group doesn't overflow */
+@media (max-width: 575.98px) {
+    .input-group {
+        flex-wrap: nowrap;
+    }
+
+    .input-group .form-control {
+        min-width: 0;
+    }
+}
+
+/* Prevent long text from blowing up table cells */
+.table td {
+    word-break: break-word;
+    max-width: 200px;
+}
+
+/* Image upload preview — mobile-friendly size */
+@media (max-width: 575.98px) {
+    .upload-preview {
+        width: 150px !important;
+        height: 150px !important;
+    }
+}
+
+/* Pagination — center on mobile */
+@media (max-width: 575.98px) {
+    .pagination {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+/* Badge — keep visible on tiny cards */
+.badge {
+    white-space: normal;
+    text-align: center;
+}
+
+/* ────────────────────────────────────────────────────────────
+   21. BIKE LOAN PLANS TABLE
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    /* Loan plans table — hide less critical columns */
+    #loanPlansTable th:nth-child(5),  /* Total Payable */
+    #loanPlansTable td:nth-child(5) {
+        display: none;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
+   22. SIDEBAR BADGE (unread count)
+   ──────────────────────────────────────────────────────────── */
+.sidebar-menu .badge.bg-danger.ms-auto {
+    margin-left: auto !important;
+    font-size: 0.65rem;
+    padding: 0.25em 0.45em;
+}
+
+/* ────────────────────────────────────────────────────────────
+   23. FOOTER
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 575.98px) {
+    .d-footer {
+        padding: 1rem 0.75rem !important;
+        text-align: center;
+        font-size: 0.8rem;
+    }
+}

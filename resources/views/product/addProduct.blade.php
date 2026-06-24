@@ -25,7 +25,7 @@
 <div class="row justify-content-center">
     <div class="col-xl-10">
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <h6 class="mb-0 text-lg">Product Creation Wizard</h6>
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-primary-light text-primary">Draft</span>
@@ -531,18 +531,16 @@
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-    .wizard-progress .d-flex {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
+    /* Steps row stays horizontal — just shrink icons and hide labels */
+    .wizard-progress .d-flex.justify-content-between {
+        justify-content: space-between !important;
     }
-    
+
     .wizard-step {
-        flex-direction: row;
-        align-items: center;
-        gap: 1rem;
+        flex: 1;
+        text-align: center;
     }
-    
+
     .step-actions {
         flex-direction: column;
         gap: 1rem;

@@ -78,11 +78,11 @@
 
 <!-- Messages Table -->
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h6 class="mb-0">All Contact Messages</h6>
-        <div class="d-flex gap-2">
-            <input type="text" class="form-control" id="searchInput" placeholder="Search messages...">
-            <select class="form-select" id="statusFilter">
+        <div class="d-flex gap-2 flex-wrap w-100 w-md-auto">
+            <input type="text" class="form-control flex-fill" id="searchInput" placeholder="Search messages...">
+            <select class="form-select flex-fill" id="statusFilter">
                 <option value="">All</option>
                 <option value="unread">Unread</option>
                 <option value="read">Read</option>

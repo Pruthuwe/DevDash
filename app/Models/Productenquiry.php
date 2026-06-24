@@ -10,6 +10,7 @@ class ProductEnquiry extends Model
         'product_id',
         'name',
         'phone',
+        'city',
         'message',
         'status',
     ];

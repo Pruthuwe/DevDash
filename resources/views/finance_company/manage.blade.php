@@ -30,8 +30,7 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">All Finance Companies</h4>
-                    <p class="text-muted mb-0">These appear in the loan calculator's "Finance Company" dropdown on the website. Only "Active" companies are shown to customers.</p>
-                </div>
+                    </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-striped">

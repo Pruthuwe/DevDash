@@ -146,8 +146,8 @@
                         <small class="text-secondary-light">Revenue & Motor Vehicle Department fee</small>
                     </div>
                     <div class="col-lg-4 col-md-6 d-flex flex-column">
-                        <label class="form-label fw-medium opacity-0 d-none d-lg-block">Save</label>
-                        <button type="button" id="saveLoanPlanBtn" class="btn w-100"
+                        <label class="form-label fw-medium d-none d-lg-block opacity-0">Save</label>
+                        <button type="button" id="saveLoanPlanBtn" class="btn w-100 mt-2 mt-md-0"
                                 style="background:#0ea5e9; color:#fff;" onclick="saveLoanPlan()" disabled>
                             <iconify-icon icon="solar:diskette-bold" class="me-1"></iconify-icon>
                             Save Loan Plan
@@ -333,7 +333,7 @@
                             <tr>
                                 <td class="text-secondary-light">Loan Term</td>
                                 <td class="text-end">
-                                    <select id="loanTerm" class="form-select form-select-sm d-inline-block w-auto"
+                                    <select id="loanTerm" class="form-select form-select-sm"
                                             onchange="recalculate()">
                                         <option value="3">3 Months</option>
                                         <option value="6">6 Months</option>

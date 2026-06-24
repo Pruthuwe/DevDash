@@ -89,11 +89,11 @@
 
 <!-- Product Enquiries Table -->
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h6 class="mb-0">All Product Enquiries</h6>
-        <div class="d-flex gap-2">
-            <input type="text" class="form-control" id="searchInput" placeholder="Search name, phone...">
-            <select class="form-select" id="statusFilter">
+        <div class="d-flex gap-2 flex-wrap w-100 w-md-auto">
+            <input type="text" class="form-control flex-fill" id="searchInput" placeholder="Search name, phone...">
+            <select class="form-select flex-fill" id="statusFilter">
                 <option value="">All Status</option>
                 <option value="new">New</option>
                 <option value="contacted">Contacted</option>

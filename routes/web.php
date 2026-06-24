@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LeadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -145,8 +146,24 @@ Route::get('/loan-plans', [\App\Http\Controllers\BikeLoanPlanController::class, 
 Route::get('/manage-product-enquiries', [\App\Http\Controllers\ProductEnquiryController::class, 'manage'])->middleware('permission:view-product-enquiries')->name('manage.product-enquiries');
 Route::post('/product-enquiries/{productEnquiry}/update-status', [\App\Http\Controllers\ProductEnquiryController::class, 'updateStatus'])->middleware('permission:edit-product-enquiries')->name('product-enquiries.update-status');
 Route::delete('/product-enquiries/{productEnquiry}', [\App\Http\Controllers\ProductEnquiryController::class, 'destroy'])->middleware('permission:delete-product-enquiries')->name('product-enquiries.destroy');
+// All Inquiries (combined Loan + Product)
+Route::get('/manage-all-inquiries', [\App\Http\Controllers\AllInquiriesController::class, 'manage'])->name('manage.all-inquiries');
 
-
+// ── Lead Management ─────────────────────────────────────────────
+Route::get('/leads/capture',                [LeadController::class, 'create'])->name('leads.capture');
+Route::post('/leads',                       [LeadController::class, 'store'])->name('leads.store');
+Route::post('/leads/import-excel',          [LeadController::class, 'importExcel'])->name('leads.import-excel');
+Route::get('/leads/list',                   [LeadController::class, 'list'])->name('leads.list');
+Route::get('/leads/assignment',             [LeadController::class, 'assignment'])->name('leads.assignment');
+Route::post('/leads/assign',                [LeadController::class, 'assignLeads'])->name('leads.assign');
+Route::get('/leads/follow-up',              [LeadController::class, 'followUp'])->name('leads.follow-up');
+Route::get('/leads/{lead}',                 [LeadController::class, 'show'])->name('leads.show');
+Route::put('/leads/{lead}',                 [LeadController::class, 'update'])->name('leads.update');
+Route::delete('/leads/{lead}',              [LeadController::class, 'destroy'])->name('leads.destroy');
+Route::get('/leads/{lead}/assignment-history', [LeadController::class, 'assignmentHistory'])->name('leads.assignment-history');
+Route::get('/leads/{lead}/follow-up-detail',   [LeadController::class, 'followUpDetail'])->name('leads.follow-up-detail');
+Route::post('/leads/{lead}/follow-up',         [LeadController::class, 'storeFollowUp'])->name('leads.store-followup');
+Route::get('/categories/{brand}/models', [LeadController::class, 'getModelsForBrand'])->name('leads.models-for-brand');
     // Role Routes
     Route::resource('roles', \App\Http\Controllers\RoleController::class)->middleware([
         'permission:view-roles'

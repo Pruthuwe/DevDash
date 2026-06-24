@@ -54,6 +54,9 @@
     
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+
+    <!-- Mobile Responsive CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/mobile-responsive.css') }}">
     
     <!-- Custom Sticky Navbar CSS -->
     <style>

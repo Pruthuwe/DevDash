@@ -54,7 +54,7 @@
                                    id="categoryName"
                                    name="name"
                                    value="{{ old('name') }}"
-                                   placeholder="e.g., Electric Bikes"
+                                   placeholder="e.g., Electric"
                                    required>
                         </div>
                         @error('name')
