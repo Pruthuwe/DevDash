@@ -99,6 +99,12 @@ class ProductEnquiryController extends Controller
 
         $productEnquiry->update(['status' => $request->status]);
 
+        // "Contacted" web/product enquiries automatically become (or
+        // update) a Lead, so sales staff manage them from one place.
+        if ($request->status === 'contacted') {
+            \App\Models\Lead::fromContactedEnquiry($productEnquiry);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Status updated successfully',

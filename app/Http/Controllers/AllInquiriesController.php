@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\LoanInquiry;
 use App\Models\ProductEnquiry;
+use App\Models\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -70,5 +71,85 @@ class AllInquiriesController extends Controller
         ];
 
         return view('all_inquiries.manage', compact('loanInquiries', 'productEnquiries', 'stats'));
+    }
+
+    /**
+     * Update loan inquiry status — auto-create lead when status = 'contacted'
+     */
+    public function updateLoanInquiryStatus(Request $request, LoanInquiry $loanInquiry)
+    {
+        $request->validate(['status' => 'required|in:new,contacted,closed']);
+
+        $oldStatus = $loanInquiry->status;
+        $loanInquiry->update(['status' => $request->status]);
+
+        // Auto-create lead when status changes to 'contacted' and wasn't contacted before
+        if ($request->status === 'contacted' && $oldStatus !== 'contacted') {
+            $this->createLeadFromLoanInquiry($loanInquiry);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Status updated.']);
+    }
+
+    /**
+     * Update product enquiry status — auto-create lead when status = 'contacted'
+     */
+    public function updateProductEnquiryStatus(Request $request, ProductEnquiry $productEnquiry)
+    {
+        $request->validate(['status' => 'required|in:new,contacted,closed']);
+
+        $oldStatus = $productEnquiry->status;
+        $productEnquiry->update(['status' => $request->status]);
+
+        // Auto-create lead when status changes to 'contacted' and wasn't contacted before
+        if ($request->status === 'contacted' && $oldStatus !== 'contacted') {
+            $this->createLeadFromProductEnquiry($productEnquiry);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Status updated.']);
+    }
+
+    /**
+     * Create a Lead from Loan Inquiry (Web Enquiry source)
+     */
+    private function createLeadFromLoanInquiry(LoanInquiry $inquiry)
+    {
+        // Check if lead already exists with same phone
+        $existing = Lead::where('phone', $inquiry->phone)->first();
+        if ($existing) return;
+
+        Lead::create([
+            'name'          => $inquiry->name,
+            'phone'         => $inquiry->phone,
+            'email'         => $inquiry->email,
+            'address'       => $inquiry->address,
+            'city'          => $inquiry->city,
+            'customer_type' => 'Individual',
+            'lead_source'   => 'Web Enquiry',
+            'status'        => 'Unassigned',
+            'notes'         => 'Auto-created from Loan Inquiry #' . $inquiry->id,
+        ]);
+    }
+
+    /**
+     * Create a Lead from Product Enquiry (Web Enquiry source)
+     */
+    private function createLeadFromProductEnquiry(ProductEnquiry $enquiry)
+    {
+        // Check if lead already exists with same phone
+        $existing = Lead::where('phone', $enquiry->phone)->first();
+        if ($existing) return;
+
+        Lead::create([
+            'name'          => $enquiry->name,
+            'phone'         => $enquiry->phone,
+            'email'         => $enquiry->email,
+            'address'       => $enquiry->address,
+            'city'          => $enquiry->city,
+            'customer_type' => 'Individual',
+            'lead_source'   => 'Web Enquiry',
+            'status'        => 'Unassigned',
+            'notes'         => 'Auto-created from Product Enquiry #' . $enquiry->id,
+        ]);
     }
 }

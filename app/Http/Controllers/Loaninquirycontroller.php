@@ -97,6 +97,12 @@ class LoanInquiryController extends Controller
 
         $loanInquiry->update(['status' => $request->status]);
 
+        // "Contacted" web/loan enquiries automatically become (or update) a
+        // Lead, so sales staff manage them from one place going forward.
+        if ($request->status === 'contacted') {
+            \App\Models\Lead::fromContactedEnquiry($loanInquiry);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Status updated successfully',
