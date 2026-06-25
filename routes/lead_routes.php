@@ -1,9 +1,10 @@
 <?php
-
 // ═══════════════════════════════════════════════════════════════════════
-// LEAD MANAGEMENT ROUTES
-// Add these inside the Route::middleware('auth')->group(function () { ... });
-// block in routes/web.php — same placement style as the Loan Inquiry routes.
+// LEAD MANAGEMENT ROUTES — REFERENCE ONLY
+// These have already been applied directly into routes/web.php (inside the
+// 'auth' middleware group, same placement as the Loan Inquiry routes). This
+// file is kept in sync as documentation of the intended permission map —
+// it is NOT loaded anywhere, so editing only this file has no effect.
 //
 // Permission strings (view-leads / create-leads / edit-leads / delete-leads)
 // are generated automatically by database/seeders/PermissionSeeder.php once
@@ -18,10 +19,11 @@ Route::post('/leads',               [LeadController::class, 'store'])->middlewar
 Route::post('/leads/import-excel',  [LeadController::class, 'importExcel'])->middleware('permission:create-leads')->name('leads.import-excel');
 
 // ── Brand → Model cascade (shared by Capture, List filters, Assignment filters) ──
-Route::get('/categories/{brand}/models', [LeadController::class, 'getModelsForBrand'])->middleware('permission:view-leads')->name('leads.models-for-brand');
+Route::get('/categories/{brand}/models', [LeadController::class, 'getModelsForBrand'])->middleware('permission:view-leads|create-leads')->name('leads.models-for-brand');
 
 // ── Sub-cat 2: Lead List ────────────────────────────────────────────────
 Route::get('/leads/list',           [LeadController::class, 'list'])->middleware('permission:view-leads')->name('leads.list');
+Route::get('/leads/export',         [LeadController::class, 'exportList'])->middleware('permission:view-leads')->name('leads.export');
 Route::get('/leads/{lead}',         [LeadController::class, 'show'])->middleware('permission:view-leads')->name('leads.show');
 Route::put('/leads/{lead}',         [LeadController::class, 'update'])->middleware('permission:edit-leads')->name('leads.update');
 Route::delete('/leads/{lead}',      [LeadController::class, 'destroy'])->middleware('permission:delete-leads')->name('leads.destroy');
@@ -35,6 +37,3 @@ Route::get('/leads/{lead}/assignment-history', [LeadController::class, 'assignme
 Route::get('/leads/follow-up',               [LeadController::class, 'followUp'])->middleware('permission:view-leads')->name('leads.follow-up');
 Route::get('/leads/{lead}/follow-up-detail', [LeadController::class, 'followUpDetail'])->middleware('permission:view-leads')->name('leads.follow-up-detail');
 Route::post('/leads/{lead}/follow-up',       [LeadController::class, 'storeFollowUp'])->middleware('permission:edit-leads')->name('leads.store-followup');
-
-// ── Dashboard: Today's Due Follow-Ups ───────────────────────────────────
-Route::get('/api/today-followups-due', [LeadController::class, 'todayFollowupsDue'])->middleware('permission:view-leads')->name('leads.today-followups');

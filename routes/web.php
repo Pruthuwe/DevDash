@@ -35,6 +35,14 @@ Route::middleware('auth')->group(function () {
     $latestCustomers = \App\Models\Customer::latest()->take(5)->get();
     $latestProducts = \App\Models\Product::latest()->take(5)->get();
 
+    $totalLeads = \App\Models\Lead::count();
+    $dueFollowups = \App\Models\Lead::with(['officer', 'latestFollowup'])
+        ->followupDue()
+        ->orderBy('updated_at')
+        ->limit(5)
+        ->get();
+    $dueFollowupsCount = \App\Models\Lead::followupDue()->count();
+
     return view('dashboard', compact(
         'totalProducts',
         'totalCustomers',
@@ -44,7 +52,10 @@ Route::middleware('auth')->group(function () {
         'totalProductEnquiries',
         'totalContactMessages',
         'latestCustomers',
-        'latestProducts'
+        'latestProducts',
+        'totalLeads',
+        'dueFollowups',
+        'dueFollowupsCount'
     ));
 })->name('dashboard');
         
@@ -150,20 +161,21 @@ Route::delete('/product-enquiries/{productEnquiry}', [\App\Http\Controllers\Prod
 Route::get('/manage-all-inquiries', [\App\Http\Controllers\AllInquiriesController::class, 'manage'])->name('manage.all-inquiries');
 
 // ── Lead Management ─────────────────────────────────────────────
-Route::get('/leads/capture',                [LeadController::class, 'create'])->name('leads.capture');
-Route::post('/leads',                       [LeadController::class, 'store'])->name('leads.store');
-Route::post('/leads/import-excel',          [LeadController::class, 'importExcel'])->name('leads.import-excel');
-Route::get('/leads/list',                   [LeadController::class, 'list'])->name('leads.list');
-Route::get('/leads/assignment',             [LeadController::class, 'assignment'])->name('leads.assignment');
-Route::post('/leads/assign',                [LeadController::class, 'assignLeads'])->name('leads.assign');
-Route::get('/leads/follow-up',              [LeadController::class, 'followUp'])->name('leads.follow-up');
-Route::get('/leads/{lead}',                 [LeadController::class, 'show'])->name('leads.show');
-Route::put('/leads/{lead}',                 [LeadController::class, 'update'])->name('leads.update');
-Route::delete('/leads/{lead}',              [LeadController::class, 'destroy'])->name('leads.destroy');
-Route::get('/leads/{lead}/assignment-history', [LeadController::class, 'assignmentHistory'])->name('leads.assignment-history');
-Route::get('/leads/{lead}/follow-up-detail',   [LeadController::class, 'followUpDetail'])->name('leads.follow-up-detail');
-Route::post('/leads/{lead}/follow-up',         [LeadController::class, 'storeFollowUp'])->name('leads.store-followup');
-Route::get('/categories/{brand}/models', [LeadController::class, 'getModelsForBrand'])->name('leads.models-for-brand');
+Route::get('/leads/capture',                [LeadController::class, 'create'])->middleware('permission:create-leads')->name('leads.capture');
+Route::post('/leads',                       [LeadController::class, 'store'])->middleware('permission:create-leads')->name('leads.store');
+Route::post('/leads/import-excel',          [LeadController::class, 'importExcel'])->middleware('permission:create-leads')->name('leads.import-excel');
+Route::get('/leads/list',                   [LeadController::class, 'list'])->middleware('permission:view-leads')->name('leads.list');
+Route::get('/leads/export',                 [LeadController::class, 'exportList'])->middleware('permission:view-leads')->name('leads.export');
+Route::get('/leads/assignment',             [LeadController::class, 'assignment'])->middleware('permission:view-leads')->name('leads.assignment');
+Route::post('/leads/assign',                [LeadController::class, 'assignLeads'])->middleware('permission:edit-leads')->name('leads.assign');
+Route::get('/leads/follow-up',              [LeadController::class, 'followUp'])->middleware('permission:view-leads')->name('leads.follow-up');
+Route::get('/leads/{lead}',                 [LeadController::class, 'show'])->middleware('permission:view-leads')->name('leads.show');
+Route::put('/leads/{lead}',                 [LeadController::class, 'update'])->middleware('permission:edit-leads')->name('leads.update');
+Route::delete('/leads/{lead}',              [LeadController::class, 'destroy'])->middleware('permission:delete-leads')->name('leads.destroy');
+Route::get('/leads/{lead}/assignment-history', [LeadController::class, 'assignmentHistory'])->middleware('permission:view-leads')->name('leads.assignment-history');
+Route::get('/leads/{lead}/follow-up-detail',   [LeadController::class, 'followUpDetail'])->middleware('permission:view-leads')->name('leads.follow-up-detail');
+Route::post('/leads/{lead}/follow-up',         [LeadController::class, 'storeFollowUp'])->middleware('permission:edit-leads')->name('leads.store-followup');
+Route::get('/categories/{brand}/models', [LeadController::class, 'getModelsForBrand'])->middleware('permission:view-leads|create-leads')->name('leads.models-for-brand');
     // Role Routes
     Route::resource('roles', \App\Http\Controllers\RoleController::class)->middleware([
         'permission:view-roles'
