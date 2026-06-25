@@ -8,10 +8,10 @@ class Lead extends Model
 {
     protected $fillable = [
         'name', 'phone', 'email', 'address', 'city',
-        'customer_type', 'company_name',
+        'customer_type',
         'vehicle_brand_id', 'vehicle_model_product_id', 'vehicle_model_text',
         'budget_range', 'quantity_needed',
-        'lead_source', 'assigned_to', 'status', 'priority', 'notes',
+        'lead_source', 'assigned_to', 'status', 'next_followup_at', 'notes',
     ];
 
     /** Sales officer this lead is assigned to */
@@ -60,7 +60,7 @@ class Lead extends Model
         return match ($this->status) {
             'Converted'       => 'bg-success-100 text-success-600',
             'Interested'      => 'bg-info-100 text-info-600',
-            'Closed'          => 'bg-neutral-200 text-neutral-600',
+            'Sales Done'      => 'bg-neutral-200 text-neutral-600',
             'Not Interested'  => 'bg-danger-100 text-danger-600',
             'Follow Up Later' => 'bg-warning-100 text-warning-600',
             'Need More Info'  => 'bg-purple-100 text-purple-600',
@@ -68,13 +68,9 @@ class Lead extends Model
         };
     }
 
-    /** Priority badge colour helper */
-    public function priorityBadgeClass(): string
+    /** Scope: leads with follow-up due today */
+    public function scopeDueToday($query)
     {
-        return match ($this->priority) {
-            'High'   => 'bg-danger-100 text-danger-600',
-            'Low'    => 'bg-neutral-200 text-neutral-600',
-            default  => 'bg-info-100 text-info-600',
-        };
+        return $query->whereDate('next_followup_at', today());
     }
 }

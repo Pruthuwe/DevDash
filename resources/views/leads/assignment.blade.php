@@ -70,7 +70,7 @@
             <div class="col-6 col-md-4 col-lg-2">
                 <select name="status" class="form-select">
                     <option value="">All Status</option>
-                    @foreach(['Unassigned','Interested','Need More Info','Follow Up Later','Not Interested','Converted','Closed'] as $s)
+                    @foreach(['Unassigned','Interested','Need More Info','Follow Up Later','Not Interested','Converted','Sales Done'] as $s)
                         <option value="{{ $s }}" @selected(request('status')===$s)>{{ $s }}</option>
                     @endforeach
                 </select>
@@ -179,16 +179,36 @@
     </div>
 </div>
 
-{{-- Assignment History Modal --}}
+{{-- Assignment Detail Modal (2 tabs: Lead Details + Assignment History) --}}
 <div class="modal fade" id="assignmentModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Lead Details &amp; Follow-Up History</h5>
+                <h5 class="modal-title" id="assignmentModalTitle">Lead Details &amp; Assignment History</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" id="assignmentModalBody">
-                <div class="text-center py-4"><div class="spinner-border text-primary-600"></div></div>
+            <div class="modal-body">
+                {{-- Tabs --}}
+                <ul class="nav nav-tabs mb-3" id="assignmentTab">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tabLeadDetails">Lead Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tabAssignmentHistory">Assignment History</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tabLeadDetails">
+                        <div id="leadDetailsContent">
+                            <div class="text-center py-3"><div class="spinner-border text-primary-600"></div></div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tabAssignmentHistory">
+                        <div id="assignmentHistoryContent">
+                            <div class="text-center py-3"><div class="spinner-border text-primary-600"></div></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -274,12 +294,14 @@ document.getElementById('btnAssign').addEventListener('click', function () {
     });
 });
 
-// View details modal (lead info + follow-up history — this is read-only,
-// renamed from "Assignment History" since that's what it actually shows)
+// View details modal (2 tabs: Lead Details + Assignment History)
 document.querySelectorAll('.btn-view-assignment').forEach(btn => {
     btn.addEventListener('click', function () {
-        document.getElementById('assignmentModalBody').innerHTML =
-            '<div class="text-center py-4"><div class="spinner-border text-primary-600"></div></div>';
+        document.getElementById('leadDetailsContent').innerHTML =
+            '<div class="text-center py-3"><div class="spinner-border text-primary-600"></div></div>';
+        document.getElementById('assignmentHistoryContent').innerHTML =
+            '<div class="text-center py-3"><div class="spinner-border text-primary-600"></div></div>';
+        
         const modal = new bootstrap.Modal(document.getElementById('assignmentModal'));
         modal.show();
 
@@ -290,15 +312,24 @@ document.querySelectorAll('.btn-view-assignment').forEach(btn => {
                 const d = res.data;
                 const followups = d.followups || [];
                 const brandModel = d.brand ? `${d.brand.name}${d.model_product ? ' / ' + d.model_product.name : (d.vehicle_model_text ? ' / ' + d.vehicle_model_text : '')}` : '—';
-                document.getElementById('assignmentModalBody').innerHTML = `
-                <div class="row g-2 mb-3">
+
+                // Tab 1: Lead Details
+                document.getElementById('leadDetailsContent').innerHTML = `
+                <div class="row g-2">
                     <div class="col-12 col-md-6"><strong>Customer Name:</strong> ${d.name}</div>
                     <div class="col-12 col-md-6"><strong>Contact Number:</strong> ${d.phone}</div>
+                    <div class="col-12 col-md-6"><strong>Email:</strong> ${d.email ?? '—'}</div>
+                    <div class="col-12 col-md-6"><strong>Location:</strong> ${d.city ?? '—'}</div>
                     <div class="col-12 col-md-6"><strong>Customer Type:</strong> ${d.customer_type}</div>
+                    <div class="col-12 col-md-6"><strong>Lead Source:</strong> ${d.lead_source}</div>
                     <div class="col-12 col-md-6"><strong>Brand / Model:</strong> ${brandModel}</div>
+                    <div class="col-12 col-md-6"><strong>Budget Range:</strong> ${d.budget_range ? 'LKR ' + Number(d.budget_range).toLocaleString() : '—'}</div>
                     <div class="col-12 col-md-6"><strong>Current Officer:</strong> ${d.officer?.name ?? '<span class="text-warning-600">Unassigned</span>'}</div>
-                </div>
-                <h6 class="fw-semibold mb-2">Follow-Up History</h6>
+                    <div class="col-12 col-md-6"><strong>Status:</strong> <span class="badge">${d.status}</span></div>
+                </div>`;
+
+                // Tab 2: Assignment History (follow-ups)
+                document.getElementById('assignmentHistoryContent').innerHTML = `
                 <div class="table-responsive">
                     <table class="table table-sm">
                         <thead><tr><th>Date</th><th>Method</th><th>Feedback</th><th>Status</th><th>By</th></tr></thead>
@@ -307,7 +338,7 @@ document.querySelectorAll('.btn-view-assignment').forEach(btn => {
                                 <td>${new Date(f.created_at).toLocaleDateString()}</td>
                                 <td>${f.method}</td>
                                 <td>${f.feedback ?? '—'}</td>
-                                <td>${f.status}</td>
+                                <td><span class="badge ${getStatusBadge(f.status)}">${f.status}</span></td>
                                 <td>${f.done_by?.name ?? '—'}</td>
                             </tr>`).join('') : '<tr><td colspan="5" class="text-center text-secondary-light">No follow-up history found.</td></tr>'}
                         </tbody>
@@ -316,5 +347,17 @@ document.querySelectorAll('.btn-view-assignment').forEach(btn => {
             });
     });
 });
+
+function getStatusBadge(status) {
+    const badges = {
+        'Interested': 'bg-info-100 text-info-600',
+        'Need More Info': 'bg-purple-100 text-purple-600',
+        'Follow Up Later': 'bg-warning-100 text-warning-600',
+        'Not Interested': 'bg-danger-100 text-danger-600',
+        'Converted': 'bg-success-100 text-success-600',
+        'Sales Done': 'bg-neutral-200 text-neutral-600',
+    };
+    return badges[status] || 'bg-secondary-100 text-secondary-600';
+}
 </script>
 @endpush

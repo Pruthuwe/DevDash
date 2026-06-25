@@ -32,7 +32,6 @@ class LeadController extends Controller
             'address'                   => 'nullable|string|max:500',
             'city'                      => 'nullable|string|max:120',
             'customer_type'             => 'required|in:Individual,Dealer,Other',
-            'company_name'              => 'nullable|string|max:255',
             'vehicle_brand_id'          => 'nullable|exists:categories,id',
             'vehicle_model_product_id'  => 'nullable|exists:products,id',
             'vehicle_model_text'        => 'nullable|string|max:150',
@@ -46,11 +45,7 @@ class LeadController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Web Enquiry source gets High priority (as per business rule)
-        $data = $validator->validated();
-        $data['priority'] = ($data['lead_source'] === 'Web Enquiry') ? 'High' : 'Normal';
-
-        Lead::create($data);
+        Lead::create($validator->validated());
 
         return redirect()->route('leads.list')
             ->with('success', 'Lead added successfully.');
@@ -76,7 +71,7 @@ class LeadController extends Controller
     /**
      * Import leads from Excel
      * Required columns: name, phone
-     * Optional: email, address, city, customer_type, company_name,
+     * Optional: email, address, city, customer_type,
      *           vehicle_brand, vehicle_model, budget_range, quantity_needed,
      *           lead_source
      * vehicle_brand is matched against existing Brand (subcategory) names;
@@ -136,14 +131,12 @@ class LeadController extends Controller
                     'address'                  => $values[$headerMap['address']          ?? 99] ?? null,
                     'city'                     => $values[$headerMap['city']             ?? 99] ?? null,
                     'customer_type'            => in_array($customerType, ['Individual', 'Dealer', 'Other']) ? $customerType : 'Individual',
-                    'company_name'             => $values[$headerMap['company_name']     ?? 99] ?? null,
                     'vehicle_brand_id'         => $brand?->id,
                     'vehicle_model_product_id' => $modelProductId,
                     'vehicle_model_text'       => $modelText ?: null,
                     'budget_range'             => $values[$headerMap['budget_range']     ?? 99] ?? null,
                     'quantity_needed'          => $values[$headerMap['quantity_needed']  ?? 99] ?? 1,
                     'lead_source'              => in_array($source, ['Walk-in','Web Enquiry','Social Media','Phone Call','Other']) ? $source : 'Other',
-                    'priority'                 => ($source === 'Web Enquiry') ? 'High' : 'Normal',
                 ]);
                 $imported++;
             }
@@ -179,18 +172,16 @@ class LeadController extends Controller
         }
 
         // Filters
-        if ($request->filled('status'))      $query->where('status',      $request->status);
         if ($request->filled('source'))      $query->where('lead_source', $request->source);
-        if ($request->filled('priority'))    $query->where('priority',    $request->priority);
-        if ($request->filled('assigned_to')) $query->where('assigned_to', $request->assigned_to);
+        if ($request->filled('customer_type')) $query->where('customer_type', $request->customer_type);
+        if ($request->filled('lead_source')) $query->where('lead_source', $request->lead_source);
 
         // Date range
         if ($request->filled('date_from')) $query->whereDate('created_at', '>=', $request->date_from);
         if ($request->filled('date_to'))   $query->whereDate('created_at', '<=', $request->date_to);
 
-        // Web Enquiry leads always float to top (priority rule from notes)
+        // Sort by latest contact method (web enquiries first, then by date)
         $query->orderByRaw("FIELD(lead_source, 'Web Enquiry') DESC")
-              ->orderByRaw("FIELD(priority, 'High', 'Normal', 'Low')")
               ->orderBy('created_at', 'desc');
 
         $leads = $query->paginate(15)->withQueryString();
@@ -202,14 +193,9 @@ class LeadController extends Controller
             'converted'  => Lead::where('status', 'Converted')->count(),
         ];
 
-        $officers = User::where('status', 'active')
-                        ->whereNotNull('role_id')
-                        ->orderBy('name')
-                        ->get();
-
         $brands = Category::whereNotNull('parent_id')->orderBy('name')->get(['id', 'name']);
 
-        return view('leads.list', compact('leads', 'stats', 'officers', 'brands'));
+        return view('leads.list', compact('leads', 'stats', 'brands'));
     }
 
     /**
@@ -233,7 +219,6 @@ class LeadController extends Controller
             'address'                   => 'nullable|string|max:500',
             'city'                      => 'nullable|string|max:120',
             'customer_type'             => 'required|in:Individual,Dealer,Other',
-            'company_name'              => 'nullable|string|max:255',
             'vehicle_brand_id'          => 'nullable|exists:categories,id',
             'vehicle_model_product_id'  => 'nullable|exists:products,id',
             'vehicle_model_text'        => 'nullable|string|max:150',
@@ -295,7 +280,16 @@ class LeadController extends Controller
             'assigned_today'  => Lead::whereNotNull('assigned_to')->whereDate('updated_at', today())->count(),
         ];
 
-        $officers = User::where('status','active')->whereNotNull('role_id')->orderBy('name')->get();
+        // Filter officers by roles with leads permissions
+        $officers = User::where('status', 'active')
+            ->whereHas('role', function ($q) {
+                $q->whereHas('permissions', function ($p) {
+                    $p->whereIn('name', ['view-leads', 'edit-leads']);
+                });
+            })
+            ->orderBy('name')
+            ->get();
+
         $brands   = Category::whereNotNull('parent_id')->orderBy('name')->get(['id', 'name']);
 
         return view('leads.assignment', compact('leads','stats','officers','brands'));
@@ -339,24 +333,23 @@ class LeadController extends Controller
 
     public function followUp(Request $request)
     {
-        $officers = User::where('status','active')->whereNotNull('role_id')->orderBy('name')->get();
-        $selectedOfficer = null;
-        $leads = collect();
+        $leads = Lead::with(['followups.doneBy', 'officer', 'brand', 'modelProduct'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        if ($request->filled('officer_id')) {
-            $selectedOfficer = User::find($request->officer_id);
-            $query = Lead::with(['followups.doneBy', 'officer', 'brand', 'modelProduct'])
-                         ->where('assigned_to', $request->officer_id);
+        $selectedLead = null;
+        $followups = collect();
 
-            if ($request->filled('search')) {
-                $s = $request->search;
-                $query->where(fn($q) => $q->where('name','like',"%{$s}%")->orWhere('phone','like',"%{$s}%"));
+        if ($request->filled('lead_id')) {
+            $selectedLead = Lead::with(['followups.doneBy', 'officer', 'brand', 'modelProduct'])
+                ->find($request->lead_id);
+            
+            if ($selectedLead) {
+                $followups = $selectedLead->followups()->with('doneBy')->orderBy('created_at', 'desc')->get();
             }
-
-            $leads = $query->orderBy('created_at','desc')->paginate(10)->withQueryString();
         }
 
-        return view('leads.followup', compact('officers','selectedOfficer','leads'));
+        return view('leads.followup', compact('leads', 'selectedLead', 'followups'));
     }
 
     /**
@@ -375,9 +368,10 @@ class LeadController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'followup_at' => 'required|date',
-            'method'      => 'required|in:Call,Visit,WhatsApp,Email,Other',
+            'method'      => 'required|in:Call,WhatsApp,Visit,Email,Other',
             'feedback'    => 'nullable|string|max:1000',
-            'status'      => 'required|in:Interested,Need More Info,Follow Up Later,Not Interested,Converted,Closed',
+            'status'      => 'required|in:Interested,Need More Info,Follow Up Later,Not Interested,Converted,Sales Done',
+            'next_followup_at' => 'nullable|date',
         ]);
 
         if ($validator->fails()) {
@@ -389,8 +383,11 @@ class LeadController extends Controller
             'done_by' => Auth::id(),
         ]);
 
-        // Update lead status to match latest follow-up status
-        $lead->update(['status' => $request->status]);
+        // Update lead status and next follow-up date
+        $lead->update([
+            'status' => $request->status,
+            'next_followup_at' => $request->next_followup_at,
+        ]);
 
         $followup->load('doneBy');
 
@@ -399,6 +396,23 @@ class LeadController extends Controller
             'message'  => 'Follow-up saved successfully.',
             'followup' => $followup,
             'lead_status' => $lead->status,
+        ]);
+    }
+
+    /**
+     * Get today's due follow-ups for dashboard widget
+     */
+    public function todayFollowupsDue()
+    {
+        $leads = Lead::with(['officer', 'brand', 'modelProduct'])
+            ->whereDate('next_followup_at', today())
+            ->orderBy('next_followup_at')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $leads,
+            'count' => $leads->count(),
         ]);
     }
 }

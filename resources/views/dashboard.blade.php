@@ -147,6 +147,49 @@
 
 </div>
 
+{{-- ═══════════════════════════════════════════════════════════════ --}}
+{{-- NEW: Today's Due Follow-Ups Widget                             --}}
+{{-- ═══════════════════════════════════════════════════════════════ --}}
+<div class="row gy-4 mt-1">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h6 class="fw-semibold mb-0">
+                    <iconify-icon icon="solar:bell-bold" class="text-warning-600 me-2"></iconify-icon>
+                    Today's Due Follow-Ups
+                </h6>
+                <a href="{{ route('leads.follow-up') }}" class="text-primary-600 hover-text-primary text-sm">
+                    View All
+                </a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Lead ID</th>
+                                <th>Customer Name</th>
+                                <th>Phone</th>
+                                <th>Brand / Model</th>
+                                <th>Next Follow-Up</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dueFollowupsBody">
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-secondary-light">
+                                    <div class="spinner-border spinner-border-sm text-primary-600"></div> Loading...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{-- Tables Row --}}
 <div class="row gy-4 mt-1">
 
@@ -240,3 +283,40 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+// ── Load Today's Due Follow-Ups ───────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('/api/today-followups-due')
+        .then(r => r.json())
+        .then(res => {
+            const tbody = document.getElementById('dueFollowupsBody');
+            if (!res.success || !res.data.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-secondary-light">No follow-ups due today.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = res.data.map(lead => `
+                <tr>
+                    <td><span class="fw-semibold">#${lead.id}</span></td>
+                    <td>${lead.name}</td>
+                    <td>${lead.phone}</td>
+                    <td>${lead.brand?.name ?? '—'}${lead.vehicle_model_display ? ' / ' + lead.vehicle_model_display : ''}</td>
+                    <td><span class="text-warning-600 fw-medium">${lead.next_followup_at ? new Date(lead.next_followup_at).toLocaleString() : '—'}</span></td>
+                    <td><span class="badge ${lead.status_badge_class || ''}">${lead.status}</span></td>
+                    <td>
+                        <a href="{{ route('leads.follow-up') }}?lead_id=${lead.id}" class="btn btn-sm btn-primary-600">
+                            <iconify-icon icon="solar:chat-round-dots-bold" class="me-1"></iconify-icon> Follow Up
+                        </a>
+                    </td>
+                </tr>
+            `).join('');
+        })
+        .catch(() => {
+            document.getElementById('dueFollowupsBody').innerHTML = 
+                '<tr><td colspan="7" class="text-center py-4 text-secondary-light">Failed to load follow-ups.</td></tr>';
+        });
+});
+</script>
+@endpush
