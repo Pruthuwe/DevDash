@@ -1,4 +1,5 @@
 <?php
+
 // ═══════════════════════════════════════════════════════════════════════
 // LEAD MANAGEMENT ROUTES
 // Add these inside the Route::middleware('auth')->group(function () { ... });
@@ -34,3 +35,6 @@ Route::get('/leads/{lead}/assignment-history', [LeadController::class, 'assignme
 Route::get('/leads/follow-up',               [LeadController::class, 'followUp'])->middleware('permission:view-leads')->name('leads.follow-up');
 Route::get('/leads/{lead}/follow-up-detail', [LeadController::class, 'followUpDetail'])->middleware('permission:view-leads')->name('leads.follow-up-detail');
 Route::post('/leads/{lead}/follow-up',       [LeadController::class, 'storeFollowUp'])->middleware('permission:edit-leads')->name('leads.store-followup');
+
+// ── Dashboard: Today's Due Follow-Ups ───────────────────────────────────
+Route::get('/api/today-followups-due', [LeadController::class, 'todayFollowupsDue'])->middleware('permission:view-leads')->name('leads.today-followups');

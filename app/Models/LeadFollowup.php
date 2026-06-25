@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class LeadFollowup extends Model
 {
     protected $fillable = [
-        'lead_id', 'done_by', 'followup_at', 'method', 'feedback', 'status',
+        'lead_id', 'done_by', 'followup_at', 'method', 'feedback', 'status', 'next_followup_at',
     ];
 
     protected $casts = [
         'followup_at' => 'datetime',
+        'next_followup_at' => 'datetime',
     ];
 
     public function lead()
@@ -29,7 +30,7 @@ class LeadFollowup extends Model
         return match ($this->status) {
             'Converted'       => 'bg-success-100 text-success-600',
             'Interested'      => 'bg-info-100 text-info-600',
-            'Closed'          => 'bg-neutral-200 text-neutral-600',
+            'Sales Done'      => 'bg-neutral-200 text-neutral-600',
             'Not Interested'  => 'bg-danger-100 text-danger-600',
             'Follow Up Later' => 'bg-warning-100 text-warning-600',
             'Need More Info'  => 'bg-purple-100 text-purple-600',
