@@ -133,7 +133,7 @@
                     @forelse($leads as $lead)
                     <tr>
                         <td><input type="checkbox" class="lead-checkbox" value="{{ $lead->id }}"></td>
-                        <td><span class="fw-semibold">#{{ $lead->id }}</span></td>
+                        <td><span class="fw-semibold">{{ $lead->id }}</span></td>
                         <td>
                             <div class="fw-medium">{{ $lead->name }}</div>
                             @if($lead->lead_source === 'Web Enquiry')

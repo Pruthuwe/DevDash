@@ -66,10 +66,12 @@
     <div class="card-body">
         <form method="GET" action="{{ route('leads.list') }}" class="row g-3">
             <div class="col-12 col-md-6 col-lg-4">
+                <label class="form-label text-sm text-secondary-light mb-1">Search</label>
                 <input type="text" name="search" class="form-control" placeholder="Search name, phone, email..."
                     value="{{ request('search') }}">
             </div>
             <div class="col-6 col-md-3 col-lg-2">
+                <label class="form-label text-sm text-secondary-light mb-1">Source</label>
                 <select name="source" class="form-select">
                     <option value="">All Sources</option>
                     @foreach(['Walk-in','Web Enquiry','Social Media','Phone Call','Other'] as $src)
@@ -78,12 +80,14 @@
                 </select>
             </div>
             <div class="col-6 col-md-3 col-lg-2">
-                <input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}" title="From date">
+                <label class="form-label text-sm text-secondary-light mb-1">From date</label>
+                <input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}">
             </div>
             <div class="col-6 col-md-3 col-lg-2">
-                <input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}" title="To date">
+                <label class="form-label text-sm text-secondary-light mb-1">To date</label>
+                <input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}">
             </div>
-            <div class="col-6 col-md-3 col-lg-2 d-flex flex-wrap gap-2">
+            <div class="col-6 col-md-3 col-lg-2 d-flex flex-wrap gap-2 align-self-end">
                 <button type="submit" class="btn btn-primary-600 flex-fill">Filter</button>
                 <a href="{{ route('leads.list') }}" class="btn btn-outline-secondary flex-fill">Clear</a>
             </div>
@@ -111,7 +115,7 @@
                 <tbody>
                     @forelse($leads as $lead)
                     <tr>
-                        <td><span class="fw-semibold">#{{ $lead->id }}</span></td>
+                        <td><span class="fw-semibold">{{ $lead->id }}</span></td>
                         <td>
                             <div class="fw-medium">{{ $lead->name }}</div>
                             @if($lead->company_name)
@@ -131,11 +135,9 @@
                             @endif
                         </td>
                         <td>
-                            @if($lead->lead_source === 'Web Enquiry')
-                                <span class="badge bg-primary-100 text-primary-600">Web Enquiry</span>
-                            @else
-                                <span class="text-sm">{{ $lead->lead_source }}</span>
-                            @endif
+                            <span class="badge {{ $lead->lead_source === 'Web Enquiry' ? 'bg-primary-100 text-primary-600' : 'bg-secondary-100 text-secondary-600' }}">
+                                {{ $lead->lead_source }}
+                            </span>
                         </td>
                         <td class="text-sm text-secondary-light">{{ $lead->created_at->format('Y-m-d') }}</td>
                         <td>

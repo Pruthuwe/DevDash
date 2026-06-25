@@ -14,6 +14,10 @@ class Lead extends Model
         'lead_source', 'source_type', 'source_id', 'assigned_to', 'status', 'notes',
     ];
 
+    protected $casts = [
+        'next_followup_at' => 'datetime',
+    ];
+
     /** Sales officer this lead is assigned to */
     public function officer()
     {
@@ -75,35 +79,35 @@ class Lead extends Model
     }
 
     /**
-     * Leads with a scheduled next follow-up that's due today or overdue,
-     * and whose status hasn't moved on since (still "Need More Info" or
-     * "Follow Up Later" — once a new follow-up changes the status, the old
-     * reminder no longer applies).
+     * Leads with a scheduled next follow-up that's due today or overdue.
+     * Reads straight off the cached leads.next_followup_at column kept in
+     * sync by syncNextFollowupAt().
      */
     public function scopeFollowupDue($query)
     {
         return $query->whereIn('status', ['Need More Info', 'Follow Up Later'])
-            ->whereHas('latestFollowup', function ($q) {
-                $q->whereNotNull('next_followup_at')
-                  ->where('next_followup_at', '<=', now());
-            });
-    }
-
-    /**
-     * The next scheduled follow-up date/time, taken from the most recent
-     * follow-up record that has one set (only "Need More Info" and
-     * "Follow Up Later" follow-ups carry a next_followup_at).
-     */
-    public function getNextFollowupAtAttribute()
-    {
-        return $this->latestFollowup?->next_followup_at;
+            ->whereNotNull('next_followup_at')
+            ->where('next_followup_at', '<=', now());
     }
 
     /** True when this lead has a scheduled follow-up that's due today or overdue. */
     public function getFollowupDueAttribute(): bool
     {
-        $next = $this->next_followup_at;
-        return $next !== null && $next->isPast();
+        return $this->next_followup_at !== null && $this->next_followup_at->isPast();
+    }
+
+    /**
+     * Keeps leads.next_followup_at as a denormalized copy of the latest
+     * follow-up's date — lets dashboard/list queries filter "who's due"
+     * directly on the leads table instead of joining lead_followups every
+     * time. The lead_followups row is still the source of truth; this is
+     * just a cache, refreshed every time a follow-up is saved.
+     */
+    public function syncNextFollowupAt(): void
+    {
+        $this->forceFill([
+            'next_followup_at' => $this->followups()->latest()->value('next_followup_at'),
+        ])->save();
     }
 
     /**

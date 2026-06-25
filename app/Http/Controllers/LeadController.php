@@ -173,13 +173,11 @@ class LeadController extends Controller
 
     public function list(Request $request)
     {
-        $query = Lead::with(['officer', 'latestFollowup', 'brand', 'modelProduct']);
+        $query = Lead::with(['officer', 'brand', 'modelProduct']);
 
         $this->applyListFilters($query, $request);
 
-        // Web Enquiry leads float to top, then most recently updated first.
-        $query->orderByRaw("FIELD(lead_source, 'Web Enquiry') DESC")
-              ->orderBy('updated_at', 'desc');
+        $query->orderBy('created_at', 'desc');
 
         $leads = $query->paginate(15)->withQueryString();
 
@@ -318,7 +316,7 @@ class LeadController extends Controller
 
     public function assignment(Request $request)
     {
-        $query = Lead::with(['officer', 'latestFollowup', 'brand', 'modelProduct']);
+        $query = Lead::with(['officer', 'brand', 'modelProduct']);
 
         if ($request->filled('customer_type'))     $query->where('customer_type',      $request->customer_type);
         if ($request->filled('vehicle_brand_id'))   $query->where('vehicle_brand_id',   $request->vehicle_brand_id);
@@ -330,8 +328,7 @@ class LeadController extends Controller
             $query->where(fn($q) => $q->where('name','like',"%{$s}%")->orWhere('phone','like',"%{$s}%")->orWhere('id','like',"%{$s}%"));
         }
 
-        $leads = $query->orderByRaw("FIELD(lead_source,'Web Enquiry') DESC")
-                       ->orderBy('created_at','desc')
+        $leads = $query->orderBy('created_at', 'desc')
                        ->paginate(10)
                        ->withQueryString();
 
@@ -401,7 +398,7 @@ class LeadController extends Controller
 
         if ($request->filled('officer_id')) {
             $selectedOfficer = User::find($request->officer_id);
-            $query = Lead::with(['latestFollowup', 'officer', 'brand', 'modelProduct'])
+            $query = Lead::with(['officer', 'brand', 'modelProduct'])
                          ->withCount('followups')
                          ->where('assigned_to', $request->officer_id);
 
@@ -418,7 +415,7 @@ class LeadController extends Controller
         // (i.e. everyone, for admins/leads-permission viewers) so it's a
         // useful "what's due" list rather than just the currently selected
         // officer's leads.
-        $dueFollowups = Lead::with(['officer', 'latestFollowup'])
+        $dueFollowups = Lead::with('officer')
             ->followupDue()
             ->orderBy('updated_at')
             ->limit(10)
@@ -467,8 +464,10 @@ class LeadController extends Controller
             'done_by' => Auth::id(),
         ]);
 
-        // Update lead status to match latest follow-up status
+        // Update lead status to match latest follow-up status, and refresh
+        // the cached next_followup_at to match this (now-latest) follow-up.
         $lead->update(['status' => $data['status']]);
+        $lead->syncNextFollowupAt();
 
         $followup->load('doneBy');
 

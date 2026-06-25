@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
     $latestProducts = \App\Models\Product::latest()->take(5)->get();
 
     $totalLeads = \App\Models\Lead::count();
-    $dueFollowups = \App\Models\Lead::with(['officer', 'latestFollowup'])
+    $dueFollowups = \App\Models\Lead::with('officer')
         ->followupDue()
         ->orderBy('updated_at')
         ->limit(5)

@@ -88,11 +88,10 @@
                 <tbody>
                     @forelse($leads as $lead)
                     @php
-                        $latestFollowup = $lead->latestFollowup;
-                        $followupCount  = $lead->followups_count;
+                        $followupCount = $lead->followups_count;
                     @endphp
                     <tr>
-                        <td><span class="fw-semibold">#{{ $lead->id }}</span></td>
+                        <td><span class="fw-semibold">{{ $lead->id }}</span></td>
                         <td>{{ $lead->name }}</td>
                         <td>{{ $lead->phone }}</td>
                         <td>{{ $lead->customer_type }}</td>
@@ -104,9 +103,9 @@
                             @endif
                         </td>
                         <td>
-                            @if($latestFollowup?->next_followup_at)
-                                <span class="text-sm {{ $latestFollowup->next_followup_at->isPast() ? 'text-danger-600 fw-semibold' : '' }}">
-                                    {{ $latestFollowup->next_followup_at->format('Y-m-d H:i') }}
+                            @if($lead->next_followup_at)
+                                <span class="text-sm {{ $lead->next_followup_at->isPast() ? 'text-danger-600 fw-semibold' : '' }}">
+                                    {{ $lead->next_followup_at->format('Y-m-d H:i') }}
                                 </span>
                             @else
                                 <span class="text-secondary-light text-sm">—</span>
