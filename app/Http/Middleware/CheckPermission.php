@@ -27,8 +27,11 @@ class CheckPermission
             return $next($request);
         }
 
-        // Check if user has a role and the role has the required permission
-        if ($user->role && $user->role->permissions->contains('name', $permission)) {
+        // Supports "permission:view-leads|create-leads" — any one match passes.
+        // Existing single-permission usages elsewhere are unaffected.
+        $required = explode('|', $permission);
+
+        if ($user->role && $user->role->permissions->pluck('name')->intersect($required)->isNotEmpty()) {
             return $next($request);
         }
 
