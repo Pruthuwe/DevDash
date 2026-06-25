@@ -226,7 +226,7 @@
             {{-- LEAD MANAGEMENT                                     --}}
             {{-- ═══════════════════════════════════════════════════ --}}
          
-
+            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-leads')))
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="solar:users-group-rounded-outline" class="menu-icon"></iconify-icon>
@@ -237,12 +237,14 @@
                     @endif
                 </a>
                 <ul class="sidebar-submenu">
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-leads')))
                     <li>
                         <a href="{{ route('leads.capture') }}">
                             <iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>
                             Lead Capture
                         </a>
                     </li>
+                    @endif
                     <li>
                         <a href="{{ route('leads.list') }}">
                             <iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>
@@ -263,6 +265,7 @@
                     </li>
                 </ul>
             </li>
+            @endif
 
             {{-- All Inquiries (Loan + Product combined) --}}
 @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && (Auth::user()->role->permissions->contains('name', 'view-loan-inquiries') || Auth::user()->role->permissions->contains('name', 'view-product-enquiries'))))
