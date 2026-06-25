@@ -22,6 +22,17 @@
     </div>
 @endif
 
+{{-- Due Lead Follow-Ups Reminder --}}
+@if((Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-leads'))) && $dueFollowupsCount > 0)
+<div class="alert alert-warning d-flex flex-wrap align-items-center justify-content-between gap-2 mb-24">
+    <span class="d-flex align-items-center gap-2">
+        <iconify-icon icon="solar:bell-bing-bold" class="fs-20"></iconify-icon>
+        <strong>{{ $dueFollowupsCount }}</strong> lead follow-up{{ $dueFollowupsCount > 1 ? 's' : '' }} due today or overdue.
+    </span>
+    <a href="{{ route('leads.follow-up') }}" class="btn btn-sm btn-warning">View Follow-Ups</a>
+</div>
+@endif
+
 {{-- Statistics Cards --}}
 <div class="row row-cols-xxxl-5 row-cols-lg-3 row-cols-sm-2 row-cols-1 gy-4">
 
@@ -125,6 +136,28 @@
         </div>
     </div>
 
+    {{-- Total Leads --}}
+    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-leads')))
+    <div class="col">
+        <div class="card shadow-none border bg-gradient-start-3 h-100">
+            <div class="card-body p-20">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <div>
+                        <p class="fw-medium text-primary-light mb-1">Total Leads</p>
+                        <h6 class="mb-0">{{ $totalLeads }}</h6>
+                    </div>
+                    <div class="w-50-px h-50-px bg-warning rounded-circle d-flex justify-content-center align-items-center">
+                        <iconify-icon icon="solar:users-group-rounded-outline" class="text-white text-2xl mb-0"></iconify-icon>
+                    </div>
+                </div>
+                <p class="fw-medium text-sm text-primary-light mt-12 mb-0">
+                    <a href="{{ route('leads.list') }}" class="text-primary">View all leads</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    @endif
+
     {{-- Total Contact Messages --}}
     <div class="col">
         <div class="card shadow-none border bg-gradient-start-2 h-100">
@@ -145,49 +178,6 @@
         </div>
     </div>
 
-</div>
-
-{{-- ═══════════════════════════════════════════════════════════════ --}}
-{{-- NEW: Today's Due Follow-Ups Widget                             --}}
-{{-- ═══════════════════════════════════════════════════════════════ --}}
-<div class="row gy-4 mt-1">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h6 class="fw-semibold mb-0">
-                    <iconify-icon icon="solar:bell-bold" class="text-warning-600 me-2"></iconify-icon>
-                    Today's Due Follow-Ups
-                </h6>
-                <a href="{{ route('leads.follow-up') }}" class="text-primary-600 hover-text-primary text-sm">
-                    View All
-                </a>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th>Lead ID</th>
-                                <th>Customer Name</th>
-                                <th>Phone</th>
-                                <th>Brand / Model</th>
-                                <th>Next Follow-Up</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dueFollowupsBody">
-                            <tr>
-                                <td colspan="7" class="text-center py-4 text-secondary-light">
-                                    <div class="spinner-border spinner-border-sm text-primary-600"></div> Loading...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 {{-- Tables Row --}}
@@ -281,42 +271,48 @@
         </div>
     </div>
 
+    {{-- Leads Needing Follow-Up --}}
+    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-leads')))
+    <div class="col-xxl-6 col-xl-12">
+        <div class="card h-100">
+            <div class="card-body p-24">
+                <div class="d-flex flex-wrap align-items-center justify-content-between mb-16">
+                    <h6 class="text-lg mb-0 fw-semibold">Leads Needing Follow-Up</h6>
+                    <a href="{{ route('leads.follow-up') }}" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
+                        View All
+                        <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
+                    </a>
+                </div>
+                <div class="table-responsive scroll-sm">
+                    <table class="table bordered-table sm-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Officer</th>
+                                <th>Was Due</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($dueFollowups as $due)
+                            <tr>
+                                <td>{{ $due->name }}</td>
+                                <td>{{ $due->phone }}</td>
+                                <td>{{ $due->officer?->name ?? '—' }}</td>
+                                <td class="text-danger-600 fw-medium">{{ $due->next_followup_at->format('d M Y, H:i') }}</td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="text-center">No follow-ups due right now</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
 </div>
 @endsection
-
-@push('scripts')
-<script>
-// ── Load Today's Due Follow-Ups ───────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function () {
-    fetch('/api/today-followups-due')
-        .then(r => r.json())
-        .then(res => {
-            const tbody = document.getElementById('dueFollowupsBody');
-            if (!res.success || !res.data.length) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-secondary-light">No follow-ups due today.</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = res.data.map(lead => `
-                <tr>
-                    <td><span class="fw-semibold">#${lead.id}</span></td>
-                    <td>${lead.name}</td>
-                    <td>${lead.phone}</td>
-                    <td>${lead.brand?.name ?? '—'}${lead.vehicle_model_display ? ' / ' + lead.vehicle_model_display : ''}</td>
-                    <td><span class="text-warning-600 fw-medium">${lead.next_followup_at ? new Date(lead.next_followup_at).toLocaleString() : '—'}</span></td>
-                    <td><span class="badge ${lead.status_badge_class || ''}">${lead.status}</span></td>
-                    <td>
-                        <a href="{{ route('leads.follow-up') }}?lead_id=${lead.id}" class="btn btn-sm btn-primary-600">
-                            <iconify-icon icon="solar:chat-round-dots-bold" class="me-1"></iconify-icon> Follow Up
-                        </a>
-                    </td>
-                </tr>
-            `).join('');
-        })
-        .catch(() => {
-            document.getElementById('dueFollowupsBody').innerHTML = 
-                '<tr><td colspan="7" class="text-center py-4 text-secondary-light">Failed to load follow-ups.</td></tr>';
-        });
-});
-</script>
-@endpush
