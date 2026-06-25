@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class LeadFollowup extends Model
 {
     protected $fillable = [
-        'lead_id', 'done_by', 'followup_at', 'method', 'feedback', 'status', 'next_followup_at',
+        'lead_id', 'done_by', 'followup_at', 'next_followup_at', 'method', 'feedback', 'status',
     ];
 
     protected $casts = [
-        'followup_at' => 'datetime',
+        'followup_at'      => 'datetime',
         'next_followup_at' => 'datetime',
     ];
 

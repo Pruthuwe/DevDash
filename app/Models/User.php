@@ -50,4 +50,33 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+
+    /**
+     * Active users whose role carries the given leads permission — used to
+     * populate "assign to" / "sales officer" dropdowns. There's no
+     * hardcoded "Officer" or "Lead" role name in this system; any role the
+     * business has granted leads permissions to qualifies, so the dropdown
+     * keeps working if they rename or restructure roles later.
+     */
+    public function scopeWithLeadsPermission($query, string $action = 'edit')
+    {
+        return $query->where('status', 'active')
+            ->whereHas('role.permissions', function ($q) use ($action) {
+                $q->where('name', "{$action}-leads");
+            });
+    }
+
+    /**
+     * Whether this user can do {action} on {module} — admins always can;
+     * everyone else needs their role to carry the matching permission
+     * (e.g. hasPermission('edit', 'leads') checks for 'edit-leads').
+     */
+    public function hasPermission(string $action, string $module): bool
+    {
+        if ($this->user_type === 'admin') {
+            return true;
+        }
+
+        return $this->role && $this->role->permissions->contains('name', "{$action}-{$module}");
+    }
 }
