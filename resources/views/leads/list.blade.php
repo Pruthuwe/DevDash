@@ -20,9 +20,9 @@
         <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#importModal">
             <iconify-icon icon="solar:upload-minimalistic-outline"></iconify-icon> Import Excel
         </button>
-        <button type="button" class="btn btn-outline-success d-flex align-items-center gap-2" id="btnExport">
-            <iconify-icon icon="solar:download-minimalistic-outline"></iconify-icon> Export
-        </button>
+        <a href="{{ route('leads.export', request()->query()) }}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+            <iconify-icon icon="solar:file-download-outline"></iconify-icon> Export
+        </a>
     </div>
 </div>
 
@@ -61,15 +61,15 @@
     @endforeach
 </div>
 
-{{-- Filters & Search Bar --}}
+{{-- Filters --}}
 <div class="card mb-24">
     <div class="card-body">
         <form method="GET" action="{{ route('leads.list') }}" class="row g-3">
-            <div class="col-12 col-md-6 col-lg-3">
+            <div class="col-12 col-md-6 col-lg-4">
                 <input type="text" name="search" class="form-control" placeholder="Search name, phone, email..."
                     value="{{ request('search') }}">
             </div>
-            <div class="col-6 col-md-4 col-lg-2">
+            <div class="col-6 col-md-3 col-lg-2">
                 <select name="source" class="form-select">
                     <option value="">All Sources</option>
                     @foreach(['Walk-in','Web Enquiry','Social Media','Phone Call','Other'] as $src)
@@ -77,21 +77,13 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-6 col-md-4 col-lg-2">
-                <select name="customer_type" class="form-select">
-                    <option value="">All Types</option>
-                    @foreach(['Individual','Dealer','Other'] as $t)
-                        <option value="{{ $t }}" @selected(request('customer_type')===$t)>{{ $t }}</option>
-                    @endforeach
-                </select>
+            <div class="col-6 col-md-3 col-lg-2">
+                <input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}" title="From date">
             </div>
-            <div class="col-6 col-md-4 col-lg-2">
-                <input type="date" name="date_from" class="form-control" placeholder="From" value="{{ request('date_from') }}">
+            <div class="col-6 col-md-3 col-lg-2">
+                <input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}" title="To date">
             </div>
-            <div class="col-6 col-md-4 col-lg-2">
-                <input type="date" name="date_to" class="form-control" placeholder="To" value="{{ request('date_to') }}">
-            </div>
-            <div class="col-12 col-lg-1 d-flex flex-wrap gap-2">
+            <div class="col-6 col-md-3 col-lg-2 d-flex flex-wrap gap-2">
                 <button type="submit" class="btn btn-primary-600 flex-fill">Filter</button>
                 <a href="{{ route('leads.list') }}" class="btn btn-outline-secondary flex-fill">Clear</a>
             </div>
@@ -103,7 +95,7 @@
 <div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover mb-0" id="leadsTable">
+            <table class="table table-hover mb-0">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -112,7 +104,6 @@
                         <th>Location</th>
                         <th>Brand / Model</th>
                         <th>Source</th>
-                        <th>Status</th>
                         <th>Created</th>
                         <th>Action</th>
                     </tr>
@@ -123,6 +114,9 @@
                         <td><span class="fw-semibold">#{{ $lead->id }}</span></td>
                         <td>
                             <div class="fw-medium">{{ $lead->name }}</div>
+                            @if($lead->company_name)
+                                <small class="text-secondary-light">{{ $lead->company_name }}</small>
+                            @endif
                         </td>
                         <td>{{ $lead->phone }}</td>
                         <td>{{ $lead->city ?? '—' }}</td>
@@ -143,21 +137,18 @@
                                 <span class="text-sm">{{ $lead->lead_source }}</span>
                             @endif
                         </td>
-                        <td>
-                            <span class="badge {{ $lead->statusBadgeClass() }}">{{ $lead->status }}</span>
-                        </td>
                         <td class="text-sm text-secondary-light">{{ $lead->created_at->format('Y-m-d') }}</td>
                         <td>
                             <div class="d-flex gap-1">
                                 <button class="btn btn-sm btn-outline-info btn-view-lead"
                                     data-id="{{ $lead->id }}"
-                                    title="View">
+                                    title="View Details">
                                     <iconify-icon icon="solar:eye-outline"></iconify-icon>
                                 </button>
-                                <button class="btn btn-sm btn-outline-primary btn-edit-lead"
+                                <button class="btn btn-sm btn-outline-primary btn-view-lead"
                                     data-id="{{ $lead->id }}"
-                                    title="Edit">
-                                    <iconify-icon icon="solar:pen-new-square-outline"></iconify-icon>
+                                    title="Edit Lead">
+                                    <iconify-icon icon="solar:pen-outline"></iconify-icon>
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger btn-delete-lead"
                                     data-id="{{ $lead->id }}"
@@ -170,7 +161,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="9" class="text-center py-4 text-secondary-light">No leads found.</td>
+                        <td colspan="8" class="text-center py-4 text-secondary-light">No leads found.</td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -217,7 +208,7 @@
             <div class="modal-body">
                 <div class="alert alert-info text-sm mb-3">
                     <strong>Required columns:</strong> name, phone<br>
-                    <strong>Optional:</strong> email, address, city, customer_type, vehicle_brand, vehicle_model, budget_range, quantity_needed, lead_source
+                    <strong>Optional:</strong> email, address, city, customer_type, company_name, vehicle_brand, vehicle_model, budget_range, quantity_needed, lead_source
                 </div>
                 <input type="file" class="form-control" id="excelFile" accept=".xlsx,.xls,.csv">
                 <div id="importMsg" class="mt-2"></div>
@@ -250,38 +241,12 @@
 <script>
 const LEAD_BRANDS = @json($brands->map(fn($b) => ['id' => $b->id, 'name' => $b->name]));
 
-// ── Export to Excel ───────────────────────────────────────────────────────
-document.getElementById('btnExport').addEventListener('click', function () {
-    const table = document.getElementById('leadsTable');
-    let csv = [];
-    const rows = table.querySelectorAll('tr');
-    
-    for (let i = 0; i < rows.length; i++) {
-        const row = [], cols = rows[i].querySelectorAll('td, th');
-        for (let j = 0; j < cols.length; j++) {
-            let data = cols[j].innerText.replace(/"/g, '""');
-            row.push('"' + data + '"');
-        }
-        csv.push(row.join(','));
-    }
-    
-    const csvContent = 'data:text/csv;charset=utf-8,' + csv.join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'leads_export_' + new Date().toISOString().slice(0,10) + '.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-});
-
-// ── View lead modal ───────────────────────────────────────────────────────
+// ── View/Edit lead modal ────────────────────────────────────────────────
 document.querySelectorAll('.btn-view-lead').forEach(btn => {
     btn.addEventListener('click', function () {
         const id = this.dataset.id;
         document.getElementById('leadDetailBody').innerHTML =
             '<div class="text-center py-4"><div class="spinner-border text-primary-600"></div></div>';
-        document.getElementById('leadDetailTitle').textContent = 'Lead Details';
         const modal = new bootstrap.Modal(document.getElementById('leadDetailModal'));
         modal.show();
 
@@ -290,29 +255,10 @@ document.querySelectorAll('.btn-view-lead').forEach(btn => {
             .then(res => {
                 if (!res.success) return;
                 const d = res.data;
-                document.getElementById('leadDetailBody').innerHTML = buildLeadViewHTML(d);
-            });
-    });
-});
+                document.getElementById('leadDetailTitle').textContent = `Details & Follow-Ups For ${d.name}`;
+                document.getElementById('leadDetailBody').innerHTML = buildLeadDetailHTML(d);
 
-// ── Edit lead modal ───────────────────────────────────────────────────────
-document.querySelectorAll('.btn-edit-lead').forEach(btn => {
-    btn.addEventListener('click', function () {
-        const id = this.dataset.id;
-        document.getElementById('leadDetailBody').innerHTML =
-            '<div class="text-center py-4"><div class="spinner-border text-primary-600"></div></div>';
-        document.getElementById('leadDetailTitle').textContent = 'Edit Lead';
-        const modal = new bootstrap.Modal(document.getElementById('leadDetailModal'));
-        modal.show();
-
-        fetch(`/leads/${id}`)
-            .then(r => r.json())
-            .then(res => {
-                if (!res.success) return;
-                const d = res.data;
-                document.getElementById('leadDetailBody').innerHTML = buildLeadEditHTML(d);
-
-                // Wire the brand -> model cascade
+                // Wire the brand -> model cascade now that the form exists in the DOM
                 const brandSel = document.getElementById('editBrandSelect');
                 const modelSel = document.getElementById('editModelSelect');
                 if (brandSel && modelSel) {
@@ -344,91 +290,73 @@ function loadEditModels(brandId, selectedModelId, modelSel) {
         });
 }
 
-function buildLeadViewHTML(d) {
-    const val = v => v ?? '—';
-    return `
-    <div class="row g-3">
-        <div class="col-12 col-md-6"><label class="form-label text-secondary-light text-sm">Full Name</label>
-            <div class="fw-medium">${val(d.name)}</div></div>
-        <div class="col-12 col-md-6"><label class="form-label text-secondary-light text-sm">Mobile Number</label>
-            <div>${val(d.phone)}</div></div>
-        <div class="col-12 col-md-6"><label class="form-label text-secondary-light text-sm">Email</label>
-            <div>${val(d.email)}</div></div>
-        <div class="col-12 col-md-6"><label class="form-label text-secondary-light text-sm">Location</label>
-            <div>${val(d.city)}</div></div>
-        <div class="col-12 col-md-6"><label class="form-label text-secondary-light text-sm">Customer Type</label>
-            <div>${val(d.customer_type)}</div></div>
-        <div class="col-12 col-md-6"><label class="form-label text-secondary-light text-sm">Lead Source</label>
-            <div>${val(d.lead_source)}</div></div>
-        <div class="col-12 col-md-6"><label class="form-label text-secondary-light text-sm">Brand / Model</label>
-            <div>${d.brand ? d.brand.name : '—'}${d.vehicle_model_display ? ' / ' + d.vehicle_model_display : ''}</div></div>
-        <div class="col-12 col-md-6"><label class="form-label text-secondary-light text-sm">Budget Range</label>
-            <div>${d.budget_range ? 'LKR ' + Number(d.budget_range).toLocaleString() : '—'}</div></div>
-        <div class="col-12 col-md-6"><label class="form-label text-secondary-light text-sm">Quantity Needed</label>
-            <div>${val(d.quantity_needed)}</div></div>
-        <div class="col-12 col-md-6"><label class="form-label text-secondary-light text-sm">Status</label>
-            <div><span class="badge ${d.status_badge_class || ''}">${val(d.status)}</span></div></div>
-        <div class="col-12 col-md-6"><label class="form-label text-secondary-light text-sm">Assigned To</label>
-            <div>${d.officer?.name ?? 'Unassigned'}</div></div>
-    </div>
-    <div class="d-flex justify-content-end mt-4">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-    </div>`;
-}
-
-function buildLeadEditHTML(d) {
+function buildLeadDetailHTML(d) {
     const val = v => v ?? '';
     const brandOptions = LEAD_BRANDS.map(b =>
         `<option value="${b.id}" ${d.vehicle_brand_id == b.id ? 'selected' : ''}>${b.name}</option>`
     ).join('');
 
     return `
-    <form id="leadEditForm" data-lead-id="${d.id}">
-        <h6 class="fw-semibold mb-3">Basic Information</h6>
-        <div class="row g-3">
-            <div class="col-12 col-md-6"><label class="form-label">Full Name *</label>
-                <input name="name" class="form-control" value="${val(d.name)}" required></div>
-            <div class="col-12 col-md-6"><label class="form-label">Mobile Number *</label>
-                <input name="phone" class="form-control" value="${val(d.phone)}" required></div>
-            <div class="col-12 col-md-6"><label class="form-label">Email</label>
-                <input name="email" class="form-control" value="${val(d.email)}"></div>
-            <div class="col-12 col-md-6"><label class="form-label">Address</label>
-                <input name="address" class="form-control" value="${val(d.address)}"></div>
-            <div class="col-12 col-md-6"><label class="form-label">City</label>
-                <input name="city" class="form-control" value="${val(d.city)}"></div>
+    <ul class="nav nav-tabs mb-3" id="ldTab">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#ldBasic">Lead Details</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#ldHistory">Follow-Up History</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="ldBasic">
+            <form id="leadEditForm" data-lead-id="${d.id}">
+                <h6 class="fw-semibold mb-3">Basic Information</h6>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6"><label class="form-label">Full Name *</label>
+                        <input name="name" class="form-control" value="${val(d.name)}" required></div>
+                    <div class="col-12 col-md-6"><label class="form-label">Mobile Number *</label>
+                        <input name="phone" class="form-control" value="${val(d.phone)}" required></div>
+                    <div class="col-12 col-md-6"><label class="form-label">Email</label>
+                        <input name="email" class="form-control" value="${val(d.email)}"></div>
+                    <div class="col-12 col-md-6"><label class="form-label">Address</label>
+                        <input name="address" class="form-control" value="${val(d.address)}"></div>
+                    <div class="col-12 col-md-6"><label class="form-label">City</label>
+                        <input name="city" class="form-control" value="${val(d.city)}"></div>
+                </div>
+                <h6 class="fw-semibold mt-4 mb-3">Business Information</h6>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6"><label class="form-label">Customer Type</label>
+                        <select name="customer_type" class="form-select">
+                            ${['Individual','Dealer','Other'].map(t=>`<option value="${t}" ${d.customer_type===t?'selected':''}>${t}</option>`).join('')}
+                        </select></div>
+                    <div class="col-12 col-md-6"><label class="form-label">Company Name</label>
+                        <input name="company_name" class="form-control" value="${val(d.company_name)}"></div>
+                </div>
+                <h6 class="fw-semibold mt-4 mb-3">Interest Details</h6>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6"><label class="form-label">Vehicle Brand</label>
+                        <select name="vehicle_brand_id" id="editBrandSelect" class="form-select">
+                            <option value="">Select Brand</option>
+                            ${brandOptions}
+                        </select></div>
+                    <div class="col-12 col-md-6"><label class="form-label">Vehicle Model</label>
+                        <select name="vehicle_model_product_id" id="editModelSelect" class="form-select" ${d.vehicle_brand_id ? '' : 'disabled'}>
+                            <option value="">Select Brand first</option>
+                        </select></div>
+                    <div class="col-6"><label class="form-label">Budget Range</label>
+                        <input name="budget_range" type="number" class="form-control" value="${val(d.budget_range)}"></div>
+                    <div class="col-6"><label class="form-label">Quantity Needed</label>
+                        <input name="quantity_needed" type="number" class="form-control" value="${val(d.quantity_needed)}"></div>
+                </div>
+                <div class="d-flex flex-wrap justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary-600">Save Lead Details</button>
+                </div>
+            </form>
+            <div id="leadEditMsg" class="mt-2"></div>
         </div>
-        <h6 class="fw-semibold mt-4 mb-3">Business Information</h6>
-        <div class="row g-3">
-            <div class="col-12 col-md-6"><label class="form-label">Customer Type</label>
-                <select name="customer_type" class="form-select">
-                    ${['Individual','Dealer','Other'].map(t=>`<option value="${t}" ${d.customer_type===t?'selected':''}>${t}</option>`).join('')}
-                </select></div>
+        <div class="tab-pane fade" id="ldHistory">
+            <p class="text-secondary-light text-sm">Follow-up history is managed from the <strong>Lead Follow-Up</strong> section.</p>
         </div>
-        <h6 class="fw-semibold mt-4 mb-3">Interest Details</h6>
-        <div class="row g-3">
-            <div class="col-12 col-md-6"><label class="form-label">Vehicle Brand</label>
-                <select name="vehicle_brand_id" id="editBrandSelect" class="form-select">
-                    <option value="">Select Brand</option>
-                    ${brandOptions}
-                </select></div>
-            <div class="col-12 col-md-6"><label class="form-label">Vehicle Model</label>
-                <select name="vehicle_model_product_id" id="editModelSelect" class="form-select" ${d.vehicle_brand_id ? '' : 'disabled'}>
-                    <option value="">Select Brand first</option>
-                </select></div>
-            <div class="col-6"><label class="form-label">Budget Range</label>
-                <input name="budget_range" type="number" class="form-control" value="${val(d.budget_range)}"></div>
-            <div class="col-6"><label class="form-label">Quantity Needed</label>
-                <input name="quantity_needed" type="number" class="form-control" value="${val(d.quantity_needed)}"></div>
-        </div>
-        <div class="d-flex flex-wrap justify-content-end gap-2 mt-4">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary-600">Save Lead Details</button>
-        </div>
-    </form>
-    <div id="leadEditMsg" class="mt-2"></div>`;
+    </div>`;
 }
 
-// Save lead details via AJAX
+// Save lead details via AJAX — delegated, and reads the lead id from the
+// form's own data-lead-id attribute (set when the form HTML is built above).
 document.addEventListener('submit', function (e) {
     if (e.target.id !== 'leadEditForm') return;
     e.preventDefault();

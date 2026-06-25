@@ -1,6 +1,8 @@
 {{-- ═══════════════════════════════════════════════════════════════
-    LEAD MANAGEMENT — add this block inside <ul class="sidebar-menu">
-    Suggested placement: after "All Inquiries" / before "Contact Messages"
+    LEAD MANAGEMENT — REFERENCE ONLY
+    Already applied directly into resources/views/partials/sidemenubar.blade.php
+    (the real sidebar — main.blade.php includes that file, not this one).
+    This file is not @include'd anywhere; kept as documentation only.
 ════════════════════════════════════════════════════════════════ --}}
 
 @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-leads')))
