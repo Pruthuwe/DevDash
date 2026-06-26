@@ -19,9 +19,15 @@ class LeadController extends Controller
 
     public function create()
     {
+        // Fuel Types = top-level categories (no parent_id) — drives the first dropdown
+        $fuelTypes = Category::whereNull('parent_id')->orderBy('name')->get(['id', 'name']);
+ 
+        // Brands are still passed for fallback use (e.g. old() repopulation helper)
         $brands = Category::whereNotNull('parent_id')->orderBy('name')->get(['id', 'name']);
-        return view('leads.capture', compact('brands'));
+ 
+        return view('leads.capture', compact('fuelTypes', 'brands'));
     }
+ 
 
     public function store(Request $request)
     {
@@ -33,6 +39,8 @@ class LeadController extends Controller
             'city'                      => 'nullable|string|max:120',
             'customer_type'             => 'required|in:Individual,Dealer,Other',
             'company_name'              => 'nullable|string|max:255',
+             'fuel_type_id'              => 'nullable|exists:categories,id',
+           'fuel_type_id'              => 'nullable|exists:categories,id',
             'vehicle_brand_id'          => 'nullable|exists:categories,id',
             'vehicle_model_product_id'  => 'nullable|exists:products,id',
             'vehicle_model_text'        => 'nullable|string|max:150',
@@ -280,6 +288,8 @@ class LeadController extends Controller
             'city'                      => 'nullable|string|max:120',
             'customer_type'             => 'required|in:Individual,Dealer,Other',
             'company_name'              => 'nullable|string|max:255',
+             'fuel_type_id'              => 'nullable|exists:categories,id',
+           'fuel_type_id'              => 'nullable|exists:categories,id',
             'vehicle_brand_id'          => 'nullable|exists:categories,id',
             'vehicle_model_product_id'  => 'nullable|exists:products,id',
             'vehicle_model_text'        => 'nullable|string|max:150',

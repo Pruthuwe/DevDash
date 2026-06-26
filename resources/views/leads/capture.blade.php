@@ -33,7 +33,10 @@
 
 <div class="card mb-24 lead-form-card">
     <div class="card-header">
-        <h6 class="mb-0"><iconify-icon icon="solar:user-outline" class="me-2 text-primary-600"></iconify-icon>Basic Information</h6>
+        <h6 class="mb-0 d-flex align-items-center gap-2">
+            <iconify-icon icon="solar:user-outline" class="text-primary-600 fs-18"></iconify-icon>
+            Basic Information
+        </h6>
     </div>
     <div class="card-body">
         <div class="row g-3">
@@ -81,7 +84,10 @@
 
 <div class="card mb-24 lead-form-card">
     <div class="card-header">
-        <h6 class="mb-0"><iconify-icon icon="solar:buildings-2-outline" class="me-2 text-primary-600"></iconify-icon>Business Information</h6>
+        <h6 class="mb-0 d-flex align-items-center gap-2">
+            <iconify-icon icon="solar:buildings-2-outline" class="text-primary-600 fs-18"></iconify-icon>
+            Business Information
+        </h6>
     </div>
     <div class="card-body">
         <div class="row g-3">
@@ -102,40 +108,70 @@
     </div>
 </div>
 
+{{-- ═══════════════════════════════════════════════════════════════
+     BIKE SELECTION — 3-level cascade: Fuel Type → Brand → Model
+     ═══════════════════════════════════════════════════════════════ --}}
 <div class="card mb-24 lead-form-card">
     <div class="card-header">
-        <h6 class="mb-0"><iconify-icon icon="solar:wheel-outline" class="me-2 text-primary-600"></iconify-icon>Interest Details — Bikes</h6>
+        <h6 class="mb-0 d-flex align-items-center gap-2">
+            <iconify-icon icon="solar:wheel-outline" class="text-primary-600 fs-18"></iconify-icon>
+            Bike Selection
+        </h6>
     </div>
     <div class="card-body">
         <div class="row g-3">
-            <div class="col-12 col-md-6">
-                <label class="form-label fw-medium">Vehicle Brand</label>
-                <select name="vehicle_brand_id" id="brandSelect" class="form-select">
-                    <option value="">Select Brand</option>
-                    @foreach($brands as $brand)
-                        <option value="{{ $brand->id }}" {{ old('vehicle_brand_id') == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
+
+            {{-- Level 1: Fuel Type (parent category, no parent_id) --}}
+            <div class="col-12 col-md-4">
+                <label class="form-label fw-medium">Fuel Type</label>
+                <select name="fuel_type_id" id="fuelTypeSelect" class="form-select">
+                    <option value="">Select Fuel Type</option>
+                    @foreach($fuelTypes as $ft)
+                        <option value="{{ $ft->id }}" {{ old('fuel_type_id') == $ft->id ? 'selected' : '' }}>
+                            {{ $ft->name }}
+                        </option>
                     @endforeach
                 </select>
+                <small class="text-secondary-light">e.g. Petrol, Electric, Hybrid</small>
             </div>
-            <div class="col-12 col-md-6">
-                <label class="form-label fw-medium">Vehicle Model</label>
+
+            {{-- Level 2: Brand (subcategory — parent_id = fuel type) --}}
+            <div class="col-12 col-md-4">
+                <label class="form-label fw-medium">Brand</label>
+                <select name="vehicle_brand_id" id="brandSelect" class="form-select" {{ old('fuel_type_id') ? '' : 'disabled' }}>
+                    <option value="">Select Brand</option>
+                </select>
+                <small class="text-secondary-light">Select Fuel Type first to load brands</small>
+            </div>
+
+            {{-- Level 3: Bike Model (product — subcategory_id = brand) --}}
+            <div class="col-12 col-md-4">
+                <label class="form-label fw-medium">Bike Model</label>
                 <select name="vehicle_model_product_id" id="modelSelect" class="form-select" {{ old('vehicle_brand_id') ? '' : 'disabled' }}>
-                    <option value="">Select Brand first</option>
+                    <option value="">Select Model</option>
                 </select>
                 <input type="hidden" name="vehicle_model_text" id="modelText">
-                <small class="text-secondary-light">Model not listed yet? <a href="javascript:void(0)" id="typeModelLink">Type it manually</a></small>
+                <small class="text-secondary-light">
+                    Model not listed?
+                    <a href="javascript:void(0)" id="typeModelLink">Type it manually</a>
+                </small>
             </div>
+
+            {{-- Budget + Quantity --}}
             <div class="col-12 col-md-6">
                 <label class="form-label fw-medium">Budget Range (LKR)</label>
-                <input type="number" name="budget_range" class="form-control" value="{{ old('budget_range') }}" placeholder="e.g. 50000" min="0">
+                <input type="number" name="budget_range" class="form-control"
+                    value="{{ old('budget_range') }}" placeholder="e.g. 50000" min="0">
             </div>
             <div class="col-12 col-md-6">
                 <label class="form-label fw-medium">Quantity Needed</label>
-                <input type="number" name="quantity_needed" class="form-control" value="{{ old('quantity_needed', 1) }}" min="1">
+                <input type="number" name="quantity_needed" class="form-control"
+                    value="{{ old('quantity_needed', 1) }}" min="1">
             </div>
             <div class="col-12">
                 <label class="form-label fw-medium">Notes</label>
-                <textarea name="notes" class="form-control" rows="3" placeholder="Any additional notes...">{{ old('notes') }}</textarea>
+                <textarea name="notes" class="form-control" rows="3"
+                    placeholder="Any additional notes...">{{ old('notes') }}</textarea>
             </div>
         </div>
     </div>
@@ -180,6 +216,14 @@
 <style>
 .lead-form-card .card-header {
     background: var(--neutral-50, #f8f9fb);
+}
+
+/* Ensure iconify icons sit inline with heading text */
+.lead-form-card .card-header h6 iconify-icon {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    line-height: 1;
 }
 
 /* Lead source — pill-style radio buttons instead of plain checkboxes */
@@ -229,15 +273,47 @@
 
 @push('scripts')
 <script>
-// ── Brand → Model cascade (same pattern as the bike Add Product form) ──
-const brandSelect = document.getElementById('brandSelect');
-const modelSelect = document.getElementById('modelSelect');
-const modelText   = document.getElementById('modelText');
+// ══════════════════════════════════════════════════════════════════
+// 3-level cascade: Fuel Type → Brand → Bike Model
+// ══════════════════════════════════════════════════════════════════
+const fuelTypeSelect = document.getElementById('fuelTypeSelect');
+const brandSelect    = document.getElementById('brandSelect');
+const modelSelect    = document.getElementById('modelSelect');
+const modelText      = document.getElementById('modelText');
 
+// Level 1 → 2: Fuel Type changes → reload Brands
+function loadBrandsForFuelType(fuelTypeId, selectedBrandId) {
+    if (!fuelTypeId) {
+        brandSelect.innerHTML = '<option value="">Select Brand</option>';
+        brandSelect.disabled = true;
+        resetModelSelect();
+        return;
+    }
+    brandSelect.disabled = false;
+    brandSelect.innerHTML = '<option value="">Loading...</option>';
+
+    fetch(`/categories/${fuelTypeId}/subcategories`)
+        .then(r => r.json())
+        .then(data => {
+            let opts = '<option value="">Select Brand</option>';
+            (data.subcategories || []).forEach(b => {
+                opts += `<option value="${b.id}" ${selectedBrandId == b.id ? 'selected' : ''}>${b.name}</option>`;
+            });
+            brandSelect.innerHTML = opts;
+
+            // If a brand was pre-selected (old input), load its models too
+            if (selectedBrandId) {
+                loadModelsForBrand(selectedBrandId, '{{ old('vehicle_model_product_id') }}');
+            } else {
+                resetModelSelect();
+            }
+        });
+}
+
+// Level 2 → 3: Brand changes → reload Models
 function loadModelsForBrand(brandId, selectedModelId) {
     if (!brandId) {
-        modelSelect.innerHTML = '<option value="">Select Brand first</option>';
-        modelSelect.disabled = true;
+        resetModelSelect();
         return;
     }
     modelSelect.disabled = false;
@@ -255,6 +331,18 @@ function loadModelsForBrand(brandId, selectedModelId) {
         });
 }
 
+function resetModelSelect() {
+    modelSelect.innerHTML = '<option value="">Select Model</option>';
+    modelSelect.disabled = true;
+    modelText.value = '';
+}
+
+// Event listeners
+fuelTypeSelect.addEventListener('change', function () {
+    modelText.value = '';
+    loadBrandsForFuelType(this.value, null);
+});
+
 brandSelect.addEventListener('change', function () {
     modelText.value = '';
     loadModelsForBrand(this.value, null);
@@ -264,7 +352,6 @@ modelSelect.addEventListener('change', function () {
     if (this.value === '__manual__') {
         const typed = prompt('Enter the model name:');
         modelText.value = typed || '';
-        // Keep the select showing the manual option but don't submit it as an id
         this.value = '';
     } else {
         modelText.value = '';
@@ -279,8 +366,9 @@ document.getElementById('typeModelLink').addEventListener('click', function () {
     }
 });
 
-@if(old('vehicle_brand_id'))
-loadModelsForBrand('{{ old('vehicle_brand_id') }}', '{{ old('vehicle_model_product_id') }}');
+// Restore old() values on validation failure
+@if(old('fuel_type_id'))
+loadBrandsForFuelType('{{ old('fuel_type_id') }}', '{{ old('vehicle_brand_id') }}');
 @endif
 
 // ── Import Excel ────────────────────────────────────────────────────────
