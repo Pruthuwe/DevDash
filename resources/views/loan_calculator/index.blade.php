@@ -105,7 +105,7 @@
                         <div class="input-group lc-input-group">
                             <span class="input-group-text lc-input-prefix">Rs</span>
                             <input type="number" id="loanAmount" class="form-control lc-input"
-                                   placeholder="Auto-filled from bike" oninput="recalculate()">
+                                   placeholder="Enter loan amount" oninput="recalculate()">
                         </div>
                         <small class="lc-hint mt-6 d-block">Amount financed via loan</small>
                     </div>
@@ -116,7 +116,7 @@
                                    value="1.5" step="0.1" min="0" max="100" oninput="recalculate()">
                             <span class="input-group-text lc-input-prefix">%</span>
                         </div>
-                        <small class="lc-hint mt-6 d-block">Default 1.5% — auto-filled from bike.</small>
+                        <small class="lc-hint mt-6 d-block">Default: 1.5% (change if different)</small>
                     </div>
                 </div>
 

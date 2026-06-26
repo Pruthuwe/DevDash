@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
-
 class LoanCalculatorController extends Controller
 {
     public function index()
-    {
+    {// All fuel types with their brands
         // All fuel types with their brands
         $fuelTypesRaw = Category::whereNull('parent_id')
             ->where('status', 'active')

@@ -122,13 +122,13 @@
                     <tr style="font-size:var(--font-xs); text-transform:uppercase; letter-spacing:.6px;">
                         <th>Product</th>
                         <th>SKU</th>
-                        <th>Image</th>
-                        <th>Fuel Type</th>
-                        <th>Brand</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th style="width:70px;">Image</th>
+                        <th style="width:90px; white-space:nowrap;">Fuel Type</th>
+                        <th style="width:80px; white-space:nowrap;">Brand</th>
+                        <th style="width:160px; white-space:nowrap;">Price</th>
+                        <th style="width:100px; white-space:nowrap;">Stock</th>
+                        <th style="width:80px; white-space:nowrap;">Status</th>
+                        <th style="width:110px; white-space:nowrap;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -164,30 +164,30 @@
                                 <span class="text-secondary-light">—</span>
                                 @endif
                             </td>
-                            <td>
+                            <td style="white-space:nowrap;">
                                 @if($product->sale_price && $product->sale_price > 0)
                                     <div>
-                                        <span class="text-decoration-line-through text-secondary-light" style="font-size:var(--font-xs);">Rs {{ number_format($product->price, 2) }}</span>
-                                        <strong class="text-success d-block" style="font-size:var(--font-sm);">Rs {{ number_format($product->sale_price, 2) }}</strong>
+                                        <span class="text-decoration-line-through text-secondary-light" style="font-size:var(--font-xs); white-space:nowrap;">Rs {{ number_format($product->price, 2) }}</span>
+                                        <strong class="text-success d-block" style="font-size:var(--font-sm); white-space:nowrap;">Rs {{ number_format($product->sale_price, 2) }}</strong>
                                     </div>
                                 @else
-                                    <strong style="font-size:var(--font-sm);">Rs {{ number_format($product->price, 2) }}</strong>
+                                    <strong style="font-size:var(--font-sm); white-space:nowrap;">Rs {{ number_format($product->price, 2) }}</strong>
                                 @endif
                             </td>
-                            <td>
+                            <td style="white-space:nowrap;">
                                 @if($product->quantity > 0)
-                                    <span class="badge bg-success-light text-success" style="font-size:var(--font-xs);">{{ $product->quantity }} in stock</span>
+                                    <span class="badge bg-success-light text-success" style="font-size:var(--font-xs); white-space:nowrap;">{{ $product->quantity }} in stock</span>
                                 @else
-                                    <span class="badge bg-danger-light text-danger" style="font-size:var(--font-xs);">Out of stock</span>
+                                    <span class="badge bg-danger-light text-danger" style="font-size:var(--font-xs); white-space:nowrap;">Out of stock</span>
                                 @endif
                             </td>
-                            <td>
+                            <td style="white-space:nowrap;">
                                 @if($product->status === 'active')
-                                    <span class="badge bg-success-light text-success" style="font-size:var(--font-xs);">Active</span>
+                                    <span class="badge bg-success-light text-success" style="font-size:var(--font-xs); white-space:nowrap;">Active</span>
                                 @elseif($product->status === 'draft')
-                                    <span class="badge bg-warning-light text-warning" style="font-size:var(--font-xs);">Draft</span>
+                                    <span class="badge bg-warning-light text-warning" style="font-size:var(--font-xs); white-space:nowrap;">Draft</span>
                                 @else
-                                    <span class="badge bg-danger-light text-danger" style="font-size:var(--font-xs);">Inactive</span>
+                                    <span class="badge bg-danger-light text-danger" style="font-size:var(--font-xs); white-space:nowrap;">Inactive</span>
                                 @endif
                             </td>
                             <td>
@@ -440,6 +440,7 @@ function filterProducts() {
     font-size: var(--font-xs);
     font-weight: 700;
     color: var(--neutral-500);
+    white-space: nowrap;
 }
 
 .table tbody td {

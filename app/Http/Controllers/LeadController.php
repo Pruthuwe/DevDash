@@ -470,12 +470,15 @@ class LeadController extends Controller
         $lead->syncNextFollowupAt();
 
         $followup->load('doneBy');
+        $lead->loadCount('followups');
 
         return response()->json([
-            'success'  => true,
-            'message'  => 'Follow-up saved successfully.',
-            'followup' => $followup,
-            'lead_status' => $lead->status,
+            'success'         => true,
+            'message'         => 'Follow-up saved successfully.',
+            'followup'        => $followup,
+            'lead_status'     => $lead->status,
+            'followups_count' => $lead->followups_count,
+            'next_followup_at'=> $lead->next_followup_at,
         ]);
     }
 }

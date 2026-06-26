@@ -149,63 +149,6 @@
                                     value="{{ old('low_stock_alert', $product->low_stock_alert ?? 2) }}" min="0" placeholder="2">
                                 <small class="text-secondary-light">Alert when stock falls below this number</small>
                             </div>
-
-                            {{--
-                            ───────────────────────────────────────────────────────────
-                            COMMENTED OUT: Loan Amount, RMV Fee, Service Charge, Interest Rate
-                            Reason: These fields do NOT exist on the "Add Product" wizard
-                            (resources/views/.../add-product.blade.php). The Edit page should
-                            only show/edit fields that the Add page also collects, to keep both
-                            forms in sync. If these are genuinely needed going forward, add them
-                            to the Add Product wizard first, then un-comment here.
-                            ───────────────────────────────────────────────────────────
-
-                            <div class="col-md-6">
-                                <label class="form-label">Loan Amount</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Rs</span>
-                                    <input type="text" inputmode="decimal" class="form-control decimal-input" id="editLoanAmountInput"
-                                        name="loan_amount" value="{{ old('loan_amount', $product->loan_amount) }}" placeholder="0.00">
-                                </div>
-                                <small class="text-secondary-light">Amount financed via loan (leave 0 for full cash)</small>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">RMV Fee</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Rs</span>
-                                    <input type="text" inputmode="decimal" class="form-control decimal-input" name="rmv"
-                                        value="{{ old('rmv', $product->rmv ?? 10160) }}" placeholder="10160.00">
-                                </div>
-                                <small class="text-secondary-light">Revenue & Motor Vehicle Department registration fee</small>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label d-block">Service Charge</label>
-                                <div class="btn-group btn-group-sm mb-2" role="group">
-                                    <input type="radio" class="btn-check" name="service_charge_type" id="scTypeFixed" autocomplete="off">
-                                    <label class="btn btn-outline-primary" for="scTypeFixed">Fixed Rs 25,000</label>
-                                    <input type="radio" class="btn-check" name="service_charge_type" id="scTypePercent" autocomplete="off">
-                                    <label class="btn btn-outline-primary" for="scTypePercent">5% of Loan Amount</label>
-                                </div>
-                                <div class="input-group">
-                                    <span class="input-group-text">Rs</span>
-                                    <input type="text" inputmode="decimal" class="form-control decimal-input" id="editServiceChargeInput"
-                                        name="service_charge" value="{{ old('service_charge', $product->service_charge ?? 25000) }}" placeholder="25000.00">
-                                </div>
-                                <small class="text-secondary-light">Pick a mode above, or type a custom amount</small>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Interest Rate</label>
-                                <div class="input-group">
-                                    <input type="text" inputmode="decimal" class="form-control decimal-input" name="interest_rate"
-                                        value="{{ old('interest_rate', $product->interest_rate ?? 1.5) }}" placeholder="1.5">
-                                    <span class="input-group-text">%</span>
-                                </div>
-                                <small class="text-secondary-light">Defaults to 1.5% — change if this bike's loan rate differs</small>
-                            </div>
-                            --}}
                         </div>
                     </div>
 
@@ -343,7 +286,19 @@ $(document).ready(function () {
         });
     });
 
-    if (categorySelect.val()) categorySelect.trigger('change');
+    // On page load: if a fuel type is already selected, reload brands and re-select the saved brand
+    if (categorySelect.val()) {
+        const savedBrandId = '{{ $product->subcategory_id }}';
+        $.get('/categories/' + categorySelect.val() + '/subcategories', function (data) {
+            subcategorySelect.html('<option value="">Select Brand</option>');
+            (data.subcategories || []).forEach(function (sub) {
+                const selected = (sub.id == savedBrandId) ? 'selected' : '';
+                subcategorySelect.append('<option value="' + sub.id + '" ' + selected + '>' + sub.name + '</option>');
+            });
+        }).fail(function () {
+            subcategorySelect.html('<option value="">No brands found</option>');
+        });
+    }
 
     // ── Discount auto-calc ─────────────────────────────────────────────
     function calcDiscount() {
@@ -365,42 +320,6 @@ $(document).ready(function () {
         if (pts.length > 2) val = pts[0] + '.' + pts.slice(1).join('');
         $(this).val(val);
     });
-
-    /*
-    ───────────────────────────────────────────────────────────────────────
-    COMMENTED OUT: Service Charge toggle logic (Fixed / 5% of Loan Amount)
-    Reason: depends on #editLoanAmountInput / #editServiceChargeInput /
-    #scTypeFixed / #scTypePercent, all of which were commented out above
-    because loan_amount, rmv, service_charge and interest_rate are not
-    part of the Add Product wizard's field set. Un-comment together with
-    the matching HTML block above if these fields come back.
-    ───────────────────────────────────────────────────────────────────────
-
-    const scFixedRadio   = $('#scTypeFixed');
-    const scPercentRadio = $('#scTypePercent');
-    const scInput        = $('#editServiceChargeInput');
-    const loanInput      = $('#editLoanAmountInput');
-
-    function calcPercentSC() {
-        return Math.min((parseFloat(loanInput.val()) || 0) * 0.05, 25000).toFixed(2);
-    }
-
-    // Guess initial mode
-    (function () {
-        const cur      = parseFloat(scInput.val()) || 0;
-        const fivePerc = parseFloat(calcPercentSC());
-        const loan     = parseFloat(loanInput.val()) || 0;
-        if (loan > 0 && Math.abs(cur - fivePerc) < 0.01) {
-            scPercentRadio.prop('checked', true);
-        } else {
-            scFixedRadio.prop('checked', true);
-        }
-    })();
-
-    scFixedRadio.on('change',   function () { if (this.checked) scInput.val('25000.00'); });
-    scPercentRadio.on('change', function () { if (this.checked) scInput.val(calcPercentSC()); });
-    loanInput.on('input', function () { if (scPercentRadio.is(':checked')) scInput.val(calcPercentSC()); });
-    */
 
     // ── Remove main image ──────────────────────────────────────────────
     $('#removeImageBtn').on('click', function () {

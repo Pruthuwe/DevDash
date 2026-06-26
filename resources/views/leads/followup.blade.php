@@ -71,37 +71,38 @@
             </span>
             <span class="text-secondary-light text-sm ms-2">for <strong>{{ $selectedOfficer->name }}</strong></span>
         </div>
-        {{-- Desktop table (md and up) --}}
-        <div class="table-responsive d-none d-md-block">
-            <table class="table table-sm table-hover align-middle mb-0">
-                <thead class="table-light">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
                     <tr>
-                        <th class="text-sm ps-3">Lead ID</th>
-                        <th class="text-sm">Customer Name</th>
-                        <th class="text-sm">Contact Number</th>
-                        <th class="text-sm d-none d-lg-table-cell">Customer Type</th>
-                        <th class="text-sm">Brand / Model</th>
-                        <th class="text-sm">Next Follow Up</th>
-                        <th class="text-sm text-center">Follow Ups</th>
-                        <th class="text-sm text-center">Action</th>
+
+                        <th>Customer Name</th>
+                        <th>Contact Number</th>
+                        <th>Customer Type</th>
+                        <th>Brand / Model</th>
+                        <th>Next Follow Up</th>
+                        <th>Follow Ups</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($leads as $lead)
-                    @php $followupCount = $lead->followups_count; @endphp
-                    <tr>
-                        <td class="ps-3"><span class="fw-semibold text-sm">{{ $lead->id }}</span></td>
-                        <td><div class="fw-medium text-sm">{{ $lead->name }}</div></td>
-                        <td class="text-sm">{{ $lead->phone }}</td>
-                        <td class="text-sm d-none d-lg-table-cell">{{ $lead->customer_type }}</td>
-                        <td class="text-sm">
+                    @php
+                        $followupCount = $lead->followups_count;
+                    @endphp
+                    <tr data-lead-id="{{ $lead->id }}">
+
+                        <td>{{ $lead->name }}</td>
+                        <td>{{ $lead->phone }}</td>
+                        <td>{{ $lead->customer_type }}</td>
+                        <td>
                             @if($lead->brand)
                                 {{ $lead->brand->name }}{{ $lead->vehicle_model_display ? ' / '.$lead->vehicle_model_display : '' }}
                             @else
                                 <span class="text-secondary-light">—</span>
                             @endif
                         </td>
-                        <td>
+                        <td data-cell="next-followup">
                             @if($lead->next_followup_at)
                                 <span class="text-sm {{ $lead->next_followup_at->isPast() ? 'text-danger-600 fw-semibold' : '' }}">
                                     {{ $lead->next_followup_at->format('Y-m-d H:i') }}
@@ -110,10 +111,12 @@
                                 <span class="text-secondary-light text-sm">—</span>
                             @endif
                         </td>
-                        <td class="text-center">
-                            <span class="badge bg-neutral-200 text-neutral-700 fs-12 fw-semibold">{{ $followupCount }}</span>
+                        <td data-cell="followup-count">
+                            <span class="badge bg-neutral-200 text-neutral-700 fs-12 fw-semibold px-8 py-2 radius-8">
+                                {{ $followupCount }}
+                            </span>
                         </td>
-                        <td class="text-center">
+                        <td>
                             <button class="btn btn-sm btn-outline-info btn-followup-detail"
                                 data-id="{{ $lead->id }}"
                                 data-name="{{ $lead->name }}"
@@ -124,55 +127,13 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center py-4 text-secondary-light">No leads assigned to this officer.</td>
+                        <td colspan="8" class="text-center py-4 text-secondary-light">
+                            No leads assigned to this officer.
+                        </td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
-        </div>
-
-        {{-- Mobile cards (below md) --}}
-        <div class="d-md-none">
-            @forelse($leads as $lead)
-            @php $followupCount = $lead->followups_count; @endphp
-            <div class="lead-mobile-card px-3 py-3 border-bottom">
-                <div class="d-flex align-items-start justify-content-between gap-2">
-                    <div class="flex-grow-1">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <span class="badge bg-neutral-100 text-neutral-600 fw-semibold">#{{ $lead->id }}</span>
-                            <span class="fw-semibold text-sm">{{ $lead->name }}</span>
-                        </div>
-                        <div class="text-sm text-secondary-light mb-1">{{ $lead->phone }}</div>
-                        @if($lead->brand)
-                        <div class="text-sm mb-1">
-                            <span class="text-secondary-light">Brand:</span>
-                            {{ $lead->brand->name }}{{ $lead->vehicle_model_display ? ' / '.$lead->vehicle_model_display : '' }}
-                        </div>
-                        @endif
-                        <div class="d-flex align-items-center gap-3 mt-2 flex-wrap">
-                            @if($lead->next_followup_at)
-                            <span class="text-xs {{ $lead->next_followup_at->isPast() ? 'text-danger-600 fw-semibold' : 'text-secondary-light' }}">
-                                <iconify-icon icon="solar:calendar-outline" class="me-1"></iconify-icon>{{ $lead->next_followup_at->format('Y-m-d H:i') }}
-                            </span>
-                            @else
-                            <span class="text-xs text-secondary-light">No follow-up scheduled</span>
-                            @endif
-                            <span class="badge bg-neutral-200 text-neutral-700 fs-12 fw-semibold">{{ $followupCount }} follow-up{{ $followupCount !== 1 ? 's' : '' }}</span>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <button class="btn btn-sm btn-outline-info btn-followup-detail"
-                            data-id="{{ $lead->id }}"
-                            data-name="{{ $lead->name }}"
-                            title="View / Add Follow-Up">
-                            <iconify-icon icon="solar:chat-line-outline"></iconify-icon>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            @empty
-            <div class="text-center py-4 text-secondary-light">No leads assigned to this officer.</div>
-            @endforelse
         </div>
 
         @if($leads->hasPages())
@@ -291,38 +252,6 @@
 
 @endsection
 
-@push('styles')
-<style>
-/* ── Compact desktop table rows ───────────────────────────── */
-.table td, .table th {
-    vertical-align: middle;
-}
-
-/* ── Follow-Up History table in modal ─────────────────────── */
-#fuHistoryRows td {
-    padding-top: 0.4rem;
-    padding-bottom: 0.4rem;
-    vertical-align: middle;
-    font-size: 0.8125rem;
-}
-
-/* ── Mobile lead cards ─────────────────────────────────────── */
-.lead-mobile-card {
-    background: #fff;
-    transition: background 0.15s;
-}
-.lead-mobile-card:last-child {
-    border-bottom: none !important;
-}
-.lead-mobile-card:active {
-    background: #f8f9fa;
-}
-.text-xs {
-    font-size: 0.75rem;
-}
-</style>
-@endpush
-
 @push('scripts')
 <script>
 const STATUS_BADGE = {
@@ -424,11 +353,12 @@ document.querySelectorAll('.btn-followup-detail').forEach(btn => {
 // Save follow-up
 document.getElementById('followupForm').addEventListener('submit', function (e) {
     e.preventDefault();
-    const btn = this.querySelector('[type=submit]');
+    const form = this;
+    const btn  = form.querySelector('[type=submit]');
     btn.disabled = true; btn.textContent = 'Saving...';
 
     const id   = document.getElementById('fuLeadId').value;
-    const data = Object.fromEntries(new FormData(this));
+    const data = Object.fromEntries(new FormData(form));
 
     fetch(`/leads/${id}/follow-up`, {
         method: 'POST',
@@ -454,7 +384,29 @@ document.getElementById('followupForm').addEventListener('submit', function (e) 
             const tbody = document.getElementById('fuHistoryRows');
             if (tbody.querySelector('.text-secondary-light')) tbody.innerHTML = '';
             tbody.insertAdjacentHTML('afterbegin', newRow);
-            this.reset();
+
+            // ── Instantly update the table row ──────────────────────
+            const row = document.querySelector(`tr[data-lead-id="${id}"]`);
+            if (row) {
+                // Set follow-up count from server (reliable, no guessing)
+                const countBadge = row.querySelector('[data-cell="followup-count"] .badge');
+                if (countBadge) countBadge.textContent = res.followups_count;
+
+                // Update Next Follow Up date cell
+                const nextCell = row.querySelector('[data-cell="next-followup"]');
+                if (nextCell) {
+                    if (res.next_followup_at) {
+                        const d    = new Date(res.next_followup_at);
+                        const past = d < new Date();
+                        nextCell.innerHTML = `<span class="text-sm${past ? ' text-danger-600 fw-semibold' : ''}">${res.next_followup_at.slice(0,16).replace('T',' ')}</span>`;
+                    } else {
+                        nextCell.innerHTML = '<span class="text-secondary-light text-sm">—</span>';
+                    }
+                }
+            }
+            // ────────────────────────────────────────────────────────
+
+            form.reset();
             fuNextDateWrap.style.display = 'none';
             fuNextDate.required = false;
             setTimeout(() => msg.innerHTML = '', 3000);
