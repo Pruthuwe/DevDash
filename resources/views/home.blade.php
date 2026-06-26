@@ -7,7 +7,7 @@
     {{-- Left Side Image Section --}}
     <div class="auth-left d-lg-block d-none">
         <div class="d-flex align-items-center flex-column h-100 justify-content-center">
-            <img src="{{ asset('assets/images/auth/.png') }}" alt="Authentication">
+            <img src="{{ asset('assets/images/auth/370x530 (1).png') }}" alt="Authentication">
         </div>
     </div>
 
