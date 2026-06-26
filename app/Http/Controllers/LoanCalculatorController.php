@@ -16,14 +16,18 @@ class LoanCalculatorController extends Controller
             ->get();
 
         // Build clean array for JS — no closures in the view
+        // NOTE: ids are cast to (int) here because MySQL/PDO can return
+        // bigint columns as numeric strings depending on environment/driver
+        // settings. @json() then serializes them as "33" instead of 33,
+        // which breaks strict (===) comparisons in the Blade view's JS.
         $fuelTypes = $fuelTypesRaw->map(function($ft) {
             return [
-                'id'                       => $ft->id,
+                'id'                       => (int) $ft->id,
                 'name'                     => $ft->name,
                 'min_down_payment_percent' => $ft->min_down_payment_percent,
                 'brands'                   => $ft->children->map(function($b) {
                     return [
-                        'id'                       => $b->id,
+                        'id'                       => (int) $b->id,
                         'name'                     => $b->name,
                         'min_down_payment_percent' => $b->min_down_payment_percent,
                     ];
@@ -41,14 +45,14 @@ class LoanCalculatorController extends Controller
 
         $products = $productsRaw->map(function($p) {
             return [
-                'id'            => $p->id,
-                'name'          => $p->name,
-                'category_id'   => $p->category_id,
-                'subcategory_id'=> $p->subcategory_id,
-                'price'         => floatval($p->sale_price ?? $p->price),
-                'loan_amount'   => floatval($p->loan_amount ?? 0),
-                'rmv'           => floatval($p->rmv ?? 10160),
-                'interest_rate' => floatval($p->interest_rate ?? 1.5),
+                'id'             => (int) $p->id,
+                'name'           => $p->name,
+                'category_id'    => (int) $p->category_id,
+                'subcategory_id' => (int) $p->subcategory_id,
+                'price'          => floatval($p->sale_price ?? $p->price),
+                'loan_amount'    => floatval($p->loan_amount ?? 0),
+                'rmv'            => floatval($p->rmv ?? 10160),
+                'interest_rate'  => floatval($p->interest_rate ?? 1.5),
             ];
         })->values()->toArray();
 
@@ -71,12 +75,12 @@ class LoanCalculatorController extends Controller
 
         $fuelTypes = $fuelTypesRaw->map(function($ft) {
             return [
-                'id'                       => $ft->id,
+                'id'                       => (int) $ft->id,
                 'name'                     => $ft->name,
                 'min_down_payment_percent' => $ft->min_down_payment_percent,
                 'brands'                   => $ft->children->map(function($b) {
                     return [
-                        'id'                       => $b->id,
+                        'id'                       => (int) $b->id,
                         'name'                     => $b->name,
                         'min_down_payment_percent' => $b->min_down_payment_percent,
                     ];
@@ -93,14 +97,14 @@ class LoanCalculatorController extends Controller
 
         $products = $productsRaw->map(function($p) {
             return [
-                'id'            => $p->id,
-                'name'          => $p->name,
-                'category_id'   => $p->category_id,
-                'subcategory_id'=> $p->subcategory_id,
-                'price'         => floatval($p->sale_price ?? $p->price),
-                'loan_amount'   => floatval($p->loan_amount ?? 0),
-                'rmv'           => floatval($p->rmv ?? 10160),
-                'interest_rate' => floatval($p->interest_rate ?? 1.5),
+                'id'             => (int) $p->id,
+                'name'           => $p->name,
+                'category_id'    => (int) $p->category_id,
+                'subcategory_id' => (int) $p->subcategory_id,
+                'price'          => floatval($p->sale_price ?? $p->price),
+                'loan_amount'    => floatval($p->loan_amount ?? 0),
+                'rmv'            => floatval($p->rmv ?? 10160),
+                'interest_rate'  => floatval($p->interest_rate ?? 1.5),
             ];
         })->values()->toArray();
 

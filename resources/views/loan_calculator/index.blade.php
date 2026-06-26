@@ -370,7 +370,7 @@ function onFuelTypeChange() {
 
     if (!ftId) { recalculate(); return; }
 
-    const ft = ALL_FUEL_TYPES.find(f => f.id === ftId);
+    const ft = ALL_FUEL_TYPES.find(f => parseInt(f.id) === ftId);
     if (!ft) return;
 
     ft.brands.forEach(b => {
@@ -392,7 +392,7 @@ function onBrandChange() {
 
     if (!brandId) { recalculate(); return; }
 
-    const bikes = ALL_PRODUCTS.filter(p => p.subcategory_id === brandId);
+    const bikes = ALL_PRODUCTS.filter(p => parseInt(p.subcategory_id) === brandId);
     if (bikes.length === 0) {
         bikeEl.innerHTML = '<option value="">No bikes found for this brand</option>';
         bikeEl.disabled  = true;
@@ -414,7 +414,7 @@ function onBikeSelect() {
     if (!bikeId) return;
     currentBikeId = bikeId;
 
-    const bike = ALL_PRODUCTS.find(p => p.id === bikeId);
+    const bike = ALL_PRODUCTS.find(p => parseInt(p.id) === bikeId);
     if (!bike) return;
 
     set('bikePrice',    bike.price         || '');
