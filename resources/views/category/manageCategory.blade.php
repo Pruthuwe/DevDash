@@ -141,9 +141,8 @@
                                 data-search="{{ strtolower($bikeType->name . ' ' . $brand->name) }}">
                                 <td class="ps-3 text-secondary-light">{{ $rowNum++ }}</td>
 
-                                {{-- Fuel Type (only show on first brand row of each type) --}}
+                                {{-- Fuel Type (icon + name shown on every row) --}}
                                 <td>
-                                    @if($loop->first)
                                     <div class="d-flex align-items-center gap-2">
                                         @if($bikeType->icon_image)
                                             <img src="{{ asset($bikeType->icon_image) }}"
@@ -157,9 +156,6 @@
                                         @endif
                                         <span class="fw-semibold text-primary">{{ $bikeType->name }}</span>
                                     </div>
-                                    @else
-                                        <span class="text-secondary-light ps-1" style="font-size:0.8rem;">↳</span>
-                                    @endif
                                 </td>
 
                                 {{-- Brand Name --}}
