@@ -299,7 +299,17 @@ $validated['slug'] = $slug;
         // Always keep unit as piece for bike store
         $validated['unit'] = 'piece';
 
-        // Handle main image upload
+        // Handle main image upload / removal.
+        // IMPORTANT: this must be if/elseif, not two separate ifs.
+        // The "Remove current image" button in the Edit form leaves a stale
+        // remove_image=1 hidden field in the DOM even after the user then
+        // picks a new file. If both blocks ran independently (as before),
+        // the upload block would save the new image and the remove block
+        // would immediately null it back out — the "doesn't save the first
+        // time, works the second time" bug (main_image becomes null, so the
+        // Remove button no longer renders next time, so remove_image is
+        // never sent again on the next attempt). A new upload must always
+        // take priority over a remove flag.
         if ($request->hasFile('main_image')) {
             $productsDir = public_path('uploads/products');
             if (!file_exists($productsDir)) {
@@ -315,37 +325,27 @@ $validated['slug'] = $slug;
             $mainImageName = time() . '_' . Str::random(10) . '.' . $mainImage->getClientOriginalExtension();
             $mainImage->move($productsDir, $mainImageName);
             $validated['main_image'] = 'uploads/products/' . $mainImageName;
-        }
 
-        // Handle remove main image
-        if ($request->has('remove_image') && $request->remove_image == '1') {
+        } elseif ($request->has('remove_image') && $request->remove_image == '1') {
             if ($product->main_image && file_exists(public_path($product->main_image))) {
                 unlink(public_path($product->main_image));
             }
             $validated['main_image'] = null;
         }
 
-        // Handle gallery images upload
-        if ($request->hasFile('gallery_images')) {
-            $galleryDir = public_path('uploads/products/gallery');
-            if (!file_exists($galleryDir)) {
-                mkdir($galleryDir, 0755, true);
-            }
+        // Handle gallery images upload + removal together.
+        // These two used to run as independent blocks: the upload block
+        // built its array starting from $product->gallery_images (the OLD,
+        // pre-removal list), and the removal block then rebuilt
+        // $validated['gallery_images'] again from $product->gallery_images,
+        // discarding whatever the upload block had just added. Newly
+        // uploaded gallery images would silently vanish if a removal was
+        // submitted in the same request. Fixed by computing one combined
+        // list: start from current, apply removals, then add new uploads.
+        $currentGallery = $product->gallery_images ?? [];
 
-            $galleryImages = $product->gallery_images ?? [];
-
-            foreach ($request->file('gallery_images') as $image) {
-                $galleryImageName = time() . '_' . Str::random(10) . '.' . $image->getClientOriginalExtension();
-                $image->move($galleryDir, $galleryImageName);
-                $galleryImages[] = 'uploads/products/gallery/' . $galleryImageName;
-            }
-            $validated['gallery_images'] = $galleryImages;
-        }
-
-        // Handle removal of individual gallery images
         if ($request->has('removedGalleryImages') && !empty($request->removedGalleryImages)) {
             $removedImages = explode(',', $request->removedGalleryImages);
-            $currentGallery = $product->gallery_images ?? [];
 
             foreach ($removedImages as $removedImage) {
                 $removedImage = trim($removedImage);
@@ -357,7 +357,24 @@ $validated['slug'] = $slug;
                 }
             }
 
-            $validated['gallery_images'] = array_values($currentGallery);
+            $currentGallery = array_values($currentGallery);
+        }
+
+        if ($request->hasFile('gallery_images')) {
+            $galleryDir = public_path('uploads/products/gallery');
+            if (!file_exists($galleryDir)) {
+                mkdir($galleryDir, 0755, true);
+            }
+
+            foreach ($request->file('gallery_images') as $image) {
+                $galleryImageName = time() . '_' . Str::random(10) . '.' . $image->getClientOriginalExtension();
+                $image->move($galleryDir, $galleryImageName);
+                $currentGallery[] = 'uploads/products/gallery/' . $galleryImageName;
+            }
+        }
+
+        if ($request->has('removedGalleryImages') || $request->hasFile('gallery_images')) {
+            $validated['gallery_images'] = $currentGallery;
         }
 
         // Auto-generate SKU if name changed and SKU is empty

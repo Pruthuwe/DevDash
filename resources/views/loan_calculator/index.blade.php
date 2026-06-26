@@ -21,26 +21,23 @@
 
     {{-- 1. Finance Company --}}
     <div class="col-12">
-        <div class="card h-100 border-0 shadow-sm" style="border-top: 4px solid #0ea5e9 !important;">
-            <div class="card-header border-0" style="background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);">
-                <h6 class="mb-0 fw-semibold" style="color: #0369a1;">
-                    <iconify-icon icon="solar:buildings-outline" class="me-2"></iconify-icon>
-                    Finance Company
-                </h6>
+        <div class="card lc-card">
+            <div class="card-header lc-card-header">
+                <iconify-icon icon="solar:buildings-outline" class="lc-header-icon"></iconify-icon>
+                <span class="lc-header-title">Finance Company</span>
             </div>
             <div class="card-body">
-                <label class="form-label fw-medium">Company Name</label>
-                <select id="financeCompanySelect" class="form-select border-0 bg-light"
-                       style="box-shadow: 0 0 0 2px #bae6fd;"
+                <label class="lc-label">Company Name</label>
+                <select id="financeCompanySelect" class="form-select lc-select"
                        onchange="onCompanyChange()">
                     <option value="">— Select Finance Company —</option>
                     @foreach($financeCompanies as $fc)
                         <option value="{{ $fc->id }}">{{ $fc->name }}</option>
                     @endforeach
                 </select>
-                <small class="text-secondary-light">
+                <small class="lc-hint mt-6 d-block">
                     Pick the company providing this loan.
-                    <a href="{{ route('manage.finance-companies') }}" target="_blank">Manage companies</a>
+                    <a href="{{ route('manage.finance-companies') }}" target="_blank" class="lc-hint-link">Manage companies</a>
                 </small>
             </div>
         </div>
@@ -48,19 +45,16 @@
 
     {{-- 2. Bike Selection --}}
     <div class="col-12">
-        <div class="card h-100 border-0 shadow-sm" style="border-top: 4px solid #0ea5e9 !important;">
-            <div class="card-header border-0" style="background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);">
-                <h6 class="mb-0 fw-semibold" style="color: #0369a1;">
-                    <iconify-icon icon="material-symbols:two-wheeler" class="me-2"></iconify-icon>
-                    Bike Selection
-                </h6>
+        <div class="card lc-card">
+            <div class="card-header lc-card-header">
+                <iconify-icon icon="material-symbols:two-wheeler" class="lc-header-icon"></iconify-icon>
+                <span class="lc-header-title">Bike Selection</span>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-lg-4 col-md-6">
-                        <label class="form-label fw-medium">Fuel Type</label>
-                        <select id="fuelType" class="form-select border-0 bg-light"
-                                style="box-shadow: 0 0 0 2px #bae6fd;"
+                        <label class="lc-label">Fuel Type</label>
+                        <select id="fuelType" class="form-select lc-select"
                                 onchange="onFuelTypeChange()">
                             <option value="">— Select Fuel Type —</option>
                             @foreach($fuelTypes as $ft)
@@ -69,17 +63,15 @@
                         </select>
                     </div>
                     <div class="col-lg-4 col-md-6">
-                        <label class="form-label fw-medium">Brand</label>
-                        <select id="brand" class="form-select border-0 bg-light"
-                                style="box-shadow: 0 0 0 2px #bae6fd;"
+                        <label class="lc-label">Brand</label>
+                        <select id="brand" class="form-select lc-select"
                                 onchange="onBrandChange()" disabled>
                             <option value="">— Select Brand —</option>
                         </select>
                     </div>
                     <div class="col-lg-4 col-md-6">
-                        <label class="form-label fw-medium">Bike Model</label>
-                        <select id="bikeModel" class="form-select border-0 bg-light"
-                                style="box-shadow: 0 0 0 2px #bae6fd;"
+                        <label class="lc-label">Bike Model</label>
+                        <select id="bikeModel" class="form-select lc-select"
                                 onchange="onBikeSelect()" disabled>
                             <option value="">— Select Bike —</option>
                         </select>
@@ -91,68 +83,62 @@
 
     {{-- 3. Loan Details --}}
     <div class="col-12">
-        <div class="card h-100 border-0 shadow-sm" style="border-top: 4px solid #0ea5e9 !important;">
-            <div class="card-header border-0" style="background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);">
-                <h6 class="mb-0 fw-semibold" style="color: #0369a1;">
-                    <iconify-icon icon="solar:calculator-outline" class="me-2"></iconify-icon>
-                    Loan Details
-                </h6>
+        <div class="card lc-card">
+            <div class="card-header lc-card-header">
+                <iconify-icon icon="solar:calculator-outline" class="lc-header-icon"></iconify-icon>
+                <span class="lc-header-title">Loan Details</span>
             </div>
             <div class="card-body">
                 {{-- Row 1: Bike Price, Loan Amount, Interest Rate --}}
                 <div class="row g-3 mb-3">
                     <div class="col-lg-4 col-md-4">
-                        <label class="form-label fw-medium">Bike Price (Rs)</label>
-                        <div class="input-group">
-                            <span class="input-group-text text-white border-0" style="background:#0ea5e9;">Rs</span>
-                            <input type="number" id="bikePrice" class="form-control border-0 bg-light"
-                                   style="box-shadow: 0 0 0 2px #bae6fd;"
+                        <label class="lc-label">Bike Price (Rs)</label>
+                        <div class="input-group lc-input-group">
+                            <span class="input-group-text lc-input-prefix">Rs</span>
+                            <input type="number" id="bikePrice" class="form-control lc-input"
                                    placeholder="Auto-filled from bike" oninput="recalculate()">
                         </div>
-                        <small class="text-secondary-light">Auto-filled when bike selected, or type manually</small>
+                        <small class="lc-hint mt-6 d-block">Auto-filled when bike selected, or type manually</small>
                     </div>
                     <div class="col-lg-4 col-md-4">
-                        <label class="form-label fw-medium">Loan Amount</label>
-                        <div class="input-group">
-                            <span class="input-group-text text-white border-0" style="background:#0ea5e9;">Rs</span>
-                            <input type="number" id="loanAmount" class="form-control border-0 bg-light"
-                                   style="box-shadow: 0 0 0 2px #bae6fd;"
+                        <label class="lc-label">Loan Amount</label>
+                        <div class="input-group lc-input-group">
+                            <span class="input-group-text lc-input-prefix">Rs</span>
+                            <input type="number" id="loanAmount" class="form-control lc-input"
                                    placeholder="Auto-filled from bike" oninput="recalculate()">
                         </div>
-                        <small class="text-secondary-light">Amount financed via loan</small>
+                        <small class="lc-hint mt-6 d-block">Amount financed via loan</small>
                     </div>
                     <div class="col-lg-4 col-md-4">
-                        <label class="form-label fw-medium">Interest Rate</label>
-                        <div class="input-group">
-                            <input type="number" id="interestRate" class="form-control border-0 bg-light"
-                                   style="box-shadow: 0 0 0 2px #bae6fd;"
+                        <label class="lc-label">Interest Rate</label>
+                        <div class="input-group lc-input-group">
+                            <input type="number" id="interestRate" class="form-control lc-input"
                                    value="1.5" step="0.1" min="0" max="100" oninput="recalculate()">
-                            <span class="input-group-text text-white border-0" style="background:#0ea5e9;">%</span>
+                            <span class="input-group-text lc-input-prefix">%</span>
                         </div>
-                        <small class="text-secondary-light">Default 1.5% — auto-filled from bike.</small>
+                        <small class="lc-hint mt-6 d-block">Default 1.5% — auto-filled from bike.</small>
                     </div>
                 </div>
 
                 {{-- Row 2: RMV Fee + Save button --}}
                 <div class="row g-3 align-items-start">
                     <div class="col-lg-4 col-md-6">
-                        <label class="form-label fw-medium">RMV Fee</label>
-                        <div class="input-group">
-                            <span class="input-group-text text-white border-0" style="background:#0ea5e9;">Rs</span>
-                            <input type="number" id="rmv" class="form-control border-0 bg-light"
-                                   style="box-shadow: 0 0 0 2px #bae6fd;"
+                        <label class="lc-label">RMV Fee</label>
+                        <div class="input-group lc-input-group">
+                            <span class="input-group-text lc-input-prefix">Rs</span>
+                            <input type="number" id="rmv" class="form-control lc-input"
                                    placeholder="10160.00" value="10160" oninput="recalculate()">
                         </div>
-                        <small class="text-secondary-light">Revenue & Motor Vehicle Department fee</small>
+                        <small class="lc-hint mt-6 d-block">Revenue & Motor Vehicle Department fee</small>
                     </div>
                     <div class="col-lg-4 col-md-6 d-flex flex-column">
-                        <label class="form-label fw-medium d-none d-lg-block opacity-0">Save</label>
-                        <button type="button" id="saveLoanPlanBtn" class="btn w-100 mt-2 mt-md-0"
-                                style="background:#0ea5e9; color:#fff;" onclick="saveLoanPlan()" disabled>
+                        <label class="lc-label d-none d-lg-block opacity-0">Save</label>
+                        <button type="button" id="saveLoanPlanBtn" class="btn btn-primary w-100 mt-2 mt-md-0"
+                                onclick="saveLoanPlan()" disabled>
                             <iconify-icon icon="solar:diskette-bold" class="me-1"></iconify-icon>
                             Save Loan Plan
                         </button>
-                        <div id="saveStatus" class="small mt-2"></div>
+                        <div id="saveStatus" class="lc-hint mt-6"></div>
                     </div>
                 </div>
             </div>
@@ -164,58 +150,52 @@
 {{-- ═══════════════════════════════════════════
      ROW 2 — Down Payment Breakdown
 ═══════════════════════════════════════════ --}}
-<div class="card mb-4 border-0 shadow-sm" style="border-top: 4px solid #0ea5e9 !important;">
-    <div class="card-header border-0" style="background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);">
-        <h6 class="mb-0 fw-semibold" style="color: #0369a1;">
-            <iconify-icon icon="solar:wallet-money-outline" class="me-2"></iconify-icon>
-            Down Payment Breakdown
-        </h6>
+<div class="card lc-card mb-4">
+    <div class="card-header lc-card-header">
+        <iconify-icon icon="solar:wallet-money-outline" class="lc-header-icon"></iconify-icon>
+        <span class="lc-header-title">Down Payment Breakdown</span>
     </div>
-    <div class="card-body" style="background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);">
+    <div class="card-body lc-dp-body">
 
         {{-- Row 1: Bike DP + Service Charge --}}
         <div class="row g-3 mb-3">
             <div class="col-md-6">
-                <label class="form-label fw-medium" style="color: #0369a1;">Bike DP</label>
-                <div class="input-group">
-                    <span class="input-group-text text-white border-0" style="background: #0ea5e9;">Rs</span>
-                    <input type="text" id="dispBikeDP" class="form-control border-0" readonly placeholder="—"
-                           style="background: #e0f2fe; color: #0369a1; font-weight: 600;">
+                <label class="lc-label lc-label-blue">Bike DP</label>
+                <div class="input-group lc-input-group">
+                    <span class="input-group-text lc-input-prefix">Rs</span>
+                    <input type="text" id="dispBikeDP" class="form-control lc-input lc-readonly" readonly placeholder="—">
                 </div>
-                <small style="color: #38bdf8;">Price − Loan</small>
+                <small class="lc-hint-blue mt-6 d-block">Price − Loan</small>
             </div>
 
             <div class="col-md-6">
-                <label class="form-label fw-medium" style="color: #0369a1;">Service Charge</label>
-                <div class="input-group">
-                    <span class="input-group-text text-white border-0" style="background: #0ea5e9;">Rs</span>
-                    <input type="text" id="dispServiceCharge" class="form-control border-0" readonly placeholder="—"
-                           style="background: #e0f2fe; color: #0369a1; font-weight: 600;">
+                <label class="lc-label lc-label-blue">Service Charge</label>
+                <div class="input-group lc-input-group">
+                    <span class="input-group-text lc-input-prefix">Rs</span>
+                    <input type="text" id="dispServiceCharge" class="form-control lc-input lc-readonly" readonly placeholder="—">
                 </div>
-                <small id="serviceChargeHint" style="color: #38bdf8;">5% of loan (max Rs 25,000)</small>
+                <small id="serviceChargeHint" class="lc-hint-blue mt-6 d-block">5% of loan (max Rs 25,000)</small>
             </div>
         </div>
 
         {{-- Row 2: RMV + Minimum DP --}}
         <div class="row g-3">
             <div class="col-md-6">
-                <label class="form-label fw-medium" style="color: #0369a1;">RMV</label>
-                <div class="input-group">
-                    <span class="input-group-text text-white border-0" style="background: #0ea5e9;">Rs</span>
-                    <input type="text" id="dispRMV" class="form-control border-0" readonly placeholder="—"
-                           style="background: #e0f2fe; color: #0369a1; font-weight: 600;">
+                <label class="lc-label lc-label-blue">RMV</label>
+                <div class="input-group lc-input-group">
+                    <span class="input-group-text lc-input-prefix">Rs</span>
+                    <input type="text" id="dispRMV" class="form-control lc-input lc-readonly" readonly placeholder="—">
                 </div>
-                <small style="color: #38bdf8;">Auto-filled</small>
+                <small class="lc-hint-blue mt-6 d-block">Auto-filled</small>
             </div>
 
             <div class="col-md-6 d-flex align-items-center">
-                <div class="w-100 p-3 rounded-3 d-flex justify-content-between align-items-center"
-                     style="background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%); box-shadow: 0 4px 15px rgba(14,165,233,0.3);">
+                <div class="w-100 p-3 rounded-3 d-flex justify-content-between align-items-center lc-dp-total">
                     <div>
-                        <small class="d-block text-white opacity-75 mb-1">Minimum Down Payment</small>
-                        <small class="text-white opacity-75" style="font-size:10px;">Bike DP + Service Charge + RMV</small>
+                        <small class="d-block text-white opacity-75 mb-1" style="font-size:var(--font-xs); font-weight:600;">Minimum Down Payment</small>
+                        <small class="text-white opacity-75" style="font-size:var(--font-xxs);">Bike DP + Service Charge + RMV</small>
                     </div>
-                    <span id="dispMinimumDP" class="fw-bold text-white fs-5 ms-3">—</span>
+                    <span id="dispMinimumDP" class="fw-bold text-white ms-3" style="font-size:var(--font-xl);">—</span>
                 </div>
             </div>
         </div>
@@ -226,15 +206,13 @@
 {{-- ═══════════════════════════════════════════
      ROW 3 — Calculation Results
 ═══════════════════════════════════════════ --}}
-<div class="card border-0 shadow-sm" style="border-top: 4px solid #0ea5e9 !important;">
-    <div class="card-header border-0 d-flex align-items-center justify-content-between"
-         style="background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);">
-        <h6 class="mb-0 fw-semibold" style="color: #0369a1;">
-            <iconify-icon icon="solar:chart-outline" class="me-2"></iconify-icon>
-            Calculation Results
-        </h6>
-        <span id="companyBadge" class="badge d-none"
-              style="background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc;"></span>
+<div class="card lc-card">
+    <div class="card-header lc-card-header d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+            <iconify-icon icon="solar:chart-outline" class="lc-header-icon"></iconify-icon>
+            <span class="lc-header-title">Calculation Results</span>
+        </div>
+        <span id="companyBadge" class="badge d-none lc-company-badge"></span>
     </div>
     <div class="card-body">
 
@@ -243,7 +221,7 @@
             <div class="mb-3" style="font-size: 3rem; color: #7dd3fc;">
                 <iconify-icon icon="solar:calculator-outline"></iconify-icon>
             </div>
-            <p class="mb-0 text-secondary-light">Fill in the details above to see the loan breakdown here.</p>
+            <p class="mb-0 text-secondary-light" style="font-size:var(--font-sm);">Fill in the details above to see the loan breakdown here.</p>
         </div>
 
         {{-- Results --}}
@@ -252,31 +230,27 @@
             {{-- 4 summary metric cards --}}
             <div class="row g-3 mb-4">
                 <div class="col-6 col-md-3">
-                    <div class="p-3 rounded-3 text-center text-white"
-                         style="background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%); box-shadow: 0 4px 15px rgba(14,165,233,0.3);">
-                        <p class="text-xs mb-1 opacity-75">Monthly Payment</p>
-                        <h6 id="resMonthly" class="fw-bold text-white mb-0">—</h6>
+                    <div class="p-3 rounded-3 text-center text-white lc-metric lc-metric-1">
+                        <p class="lc-metric-label">Monthly Payment</p>
+                        <h6 id="resMonthly" class="fw-bold text-white mb-0" style="font-size:var(--font-sm);">—</h6>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
-                    <div class="p-3 rounded-3 text-center text-white"
-                         style="background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%); box-shadow: 0 4px 15px rgba(14,165,233,0.3);">
-                        <p class="text-xs mb-1 opacity-75">Minimum DP</p>
-                        <h6 id="resMinDP" class="fw-bold text-white mb-0">—</h6>
+                    <div class="p-3 rounded-3 text-center text-white lc-metric lc-metric-2">
+                        <p class="lc-metric-label">Minimum DP</p>
+                        <h6 id="resMinDP" class="fw-bold text-white mb-0" style="font-size:var(--font-sm);">—</h6>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
-                    <div class="p-3 rounded-3 text-center text-white"
-                         style="background: linear-gradient(135deg, #0ea5e9 0%, #7dd3fc 100%); box-shadow: 0 4px 15px rgba(14,165,233,0.3);">
-                        <p class="text-xs mb-1 opacity-75">Total Interest</p>
-                        <h6 id="resTotalInterest" class="fw-bold text-white mb-0">—</h6>
+                    <div class="p-3 rounded-3 text-center text-white lc-metric lc-metric-3">
+                        <p class="lc-metric-label">Total Interest</p>
+                        <h6 id="resTotalInterest" class="fw-bold text-white mb-0" style="font-size:var(--font-sm);">—</h6>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
-                    <div class="p-3 rounded-3 text-center text-white"
-                         style="background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 100%); box-shadow: 0 4px 15px rgba(14,165,233,0.3);">
-                        <p class="text-xs mb-1 opacity-75">Total Payable</p>
-                        <h6 id="resTotalPayable" class="fw-bold text-white mb-0">—</h6>
+                    <div class="p-3 rounded-3 text-center text-white lc-metric lc-metric-4">
+                        <p class="lc-metric-label">Total Payable</p>
+                        <h6 id="resTotalPayable" class="fw-bold text-white mb-0" style="font-size:var(--font-sm);">—</h6>
                     </div>
                 </div>
             </div>
@@ -286,11 +260,11 @@
             {{-- Detail tables --}}
             <div class="row g-4">
                 <div class="col-md-6">
-                    <h6 class="fw-semibold text-uppercase mb-3" style="font-size: 11px; color: #0ea5e9; letter-spacing: 1px;">
+                    <h6 class="lc-table-heading">
                         <iconify-icon icon="solar:home-smile-outline" class="me-1"></iconify-icon>
-                        Bike & Down Payment
+                        Bike &amp; Down Payment
                     </h6>
-                    <table class="table table-sm text-sm mb-0">
+                    <table class="table table-sm lc-detail-table mb-0">
                         <tbody>
                             <tr>
                                 <td class="text-secondary-light">Bike Price</td>
@@ -312,19 +286,19 @@
                                 <td class="text-secondary-light">RMV Fee</td>
                                 <td id="resRMV" class="fw-medium text-end">—</td>
                             </tr>
-                            <tr style="background: #e0f2fe;">
-                                <td class="fw-semibold" style="color: #0369a1;">Minimum Down Payment</td>
-                                <td id="resMinimumDP" class="fw-bold text-end" style="color: #0369a1;">—</td>
+                            <tr class="lc-highlight-row">
+                                <td class="fw-semibold">Minimum Down Payment</td>
+                                <td id="resMinimumDP" class="fw-bold text-end">—</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="col-md-6">
-                    <h6 class="fw-semibold text-uppercase mb-3" style="font-size: 11px; color: #0ea5e9; letter-spacing: 1px;">
+                    <h6 class="lc-table-heading">
                         <iconify-icon icon="solar:chart-2-outline" class="me-1"></iconify-icon>
                         Loan Repayment
                     </h6>
-                    <table class="table table-sm text-sm mb-0">
+                    <table class="table table-sm lc-detail-table mb-0">
                         <tbody>
                             <tr>
                                 <td class="text-secondary-light">Interest Rate</td>
@@ -333,7 +307,7 @@
                             <tr>
                                 <td class="text-secondary-light">Loan Term</td>
                                 <td class="text-end">
-                                    <select id="loanTerm" class="form-select form-select-sm"
+                                    <select id="loanTerm" class="form-select form-select-sm lc-term-select"
                                             onchange="recalculate()">
                                         <option value="3">3 Months</option>
                                         <option value="6">6 Months</option>
@@ -351,19 +325,18 @@
                                 <td class="text-secondary-light">Total Interest</td>
                                 <td id="resTotalInterestRow" class="fw-medium text-end">—</td>
                             </tr>
-                            <tr style="background: #e0f2fe;">
-                                <td class="fw-semibold" style="color: #0369a1;">Total Payable</td>
-                                <td id="resTotalPayableRow" class="fw-bold text-end" style="color: #0369a1;">—</td>
+                            <tr class="lc-highlight-row">
+                                <td class="fw-semibold">Total Payable</td>
+                                <td id="resTotalPayableRow" class="fw-bold text-end">—</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="resCompanyAlert" class="mt-3 mb-0 p-3 rounded-3 d-none d-flex align-items-center gap-2"
-                 style="background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%); border-left: 4px solid #0ea5e9;">
-                <iconify-icon icon="solar:buildings-outline" style="color: #0369a1; font-size: 18px;"></iconify-icon>
-                <span class="text-sm" style="color: #0369a1;">Finance company: <strong id="resCompanyName"></strong></span>
+            <div id="resCompanyAlert" class="mt-3 mb-0 p-3 rounded-3 d-none d-flex align-items-center gap-2 lc-company-alert">
+                <iconify-icon icon="solar:buildings-outline" style="font-size: 18px;"></iconify-icon>
+                <span style="font-size:var(--font-sm);">Finance company: <strong id="resCompanyName"></strong></span>
             </div>
 
         </div>{{-- end resultsArea --}}
@@ -574,6 +547,139 @@ function recalculate() {
     }
 }
 </script>
+@endpush
+
+@push('styles')
+<style>
+/* ── Card shell ─────────────────────────────── */
+.lc-card {
+    border: none !important;
+    border-radius: 12px;
+    border-top: 4px solid var(--brand) !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,.06);
+}
+.lc-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--neutral-50);
+    border-bottom: 1px solid var(--neutral-200);
+    padding: 14px 20px;
+    border-radius: 12px 12px 0 0;
+}
+.lc-header-icon  { font-size: 1.1rem; color: var(--brand); flex-shrink: 0; }
+.lc-header-title { font-size: var(--font-sm); font-weight: 700; color: var(--neutral-800); }
+
+/* ── Labels ─────────────────────────────────── */
+.lc-label {
+    display: block;
+    font-size: var(--font-xs);
+    font-weight: 700;
+    color: var(--neutral-700);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 6px;
+}
+.lc-label-blue { color: var(--brand) !important; }
+
+/* ── Hints ──────────────────────────────────── */
+.lc-hint      { font-size: var(--font-xs); color: var(--neutral-400); }
+.lc-hint-blue { font-size: var(--font-xs); color: #38bdf8; }
+.lc-hint-link { color: var(--brand); text-decoration: none; }
+.lc-hint-link:hover { text-decoration: underline; }
+
+/* ── Select ─────────────────────────────────── */
+.lc-select {
+    font-size: var(--font-sm) !important;
+    color: var(--neutral-800) !important;
+    border-color: var(--neutral-200) !important;
+    background-color: var(--neutral-50) !important;
+    border-radius: 8px !important;
+}
+.lc-select:focus {
+    border-color: var(--brand) !important;
+    box-shadow: 0 0 0 3px var(--primary-light) !important;
+}
+
+/* ── Input group ────────────────────────────── */
+.lc-input-group { border-radius: 8px; overflow: hidden; }
+.lc-input-group:focus-within {
+    box-shadow: 0 0 0 3px var(--primary-light);
+    border-radius: 8px;
+}
+.lc-input-prefix {
+    background: var(--brand) !important;
+    color: #fff !important;
+    border: none !important;
+    font-size: var(--font-xs) !important;
+    font-weight: 700;
+}
+.lc-input {
+    font-size: var(--font-sm) !important;
+    color: var(--neutral-900) !important;
+    border: none !important;
+    background: var(--neutral-50) !important;
+}
+.lc-input:focus { box-shadow: none !important; }
+.lc-readonly {
+    background: #e0f2fe !important;
+    color: var(--brand) !important;
+    font-weight: 600 !important;
+}
+
+/* ── Down Payment section body ──────────────── */
+.lc-dp-body { background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%); }
+.lc-dp-total {
+    background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+    box-shadow: 0 4px 15px rgba(14,165,233,0.3);
+}
+
+/* ── Metric summary cards ───────────────────── */
+.lc-metric { box-shadow: 0 4px 15px rgba(14,165,233,0.3); }
+.lc-metric-label { font-size: var(--font-xxs); margin-bottom: 4px; opacity: .85; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+.lc-metric-1 { background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%); }
+.lc-metric-2 { background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%); }
+.lc-metric-3 { background: linear-gradient(135deg, #0ea5e9 0%, #7dd3fc 100%); }
+.lc-metric-4 { background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 100%); }
+
+/* ── Detail tables ──────────────────────────── */
+.lc-table-heading {
+    font-size: var(--font-xxs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #0ea5e9;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+}
+.lc-detail-table { font-size: var(--font-sm); }
+.lc-detail-table td { padding: 9px 12px; border-color: var(--neutral-100); }
+.lc-detail-table td.text-secondary-light { font-size: var(--font-xs); }
+.lc-highlight-row td {
+    background: #e0f2fe !important;
+    color: #0369a1 !important;
+    font-weight: 700;
+}
+.lc-term-select {
+    font-size: var(--font-xs) !important;
+    border-color: var(--neutral-200) !important;
+}
+
+/* ── Company badge & alert ──────────────────── */
+.lc-company-badge {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #7dd3fc;
+    font-size: var(--font-xs);
+}
+.lc-company-alert {
+    background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+    border-left: 4px solid #0ea5e9;
+    color: #0369a1;
+}
+.lc-company-alert iconify-icon { color: #0369a1; }
+</style>
 @endpush
 
 @endsection

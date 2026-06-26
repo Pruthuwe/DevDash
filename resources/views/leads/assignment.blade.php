@@ -117,8 +117,7 @@
             <table class="table table-hover mb-0">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="selectAll"></th>
-                        <th>Lead ID</th>
+                        <th></th>
                         <th>Customer Name</th>
                         <th>Customer Type</th>
                         <th>Brand / Model</th>
@@ -132,8 +131,7 @@
                 <tbody>
                     @forelse($leads as $lead)
                     <tr>
-                        <td><input type="checkbox" class="lead-checkbox" value="{{ $lead->id }}"></td>
-                        <td><span class="fw-semibold">{{ $lead->id }}</span></td>
+                        <td><input type="checkbox" class="lead-checkbox form-check-input" value="{{ $lead->id }}" style="width:18px;height:18px;cursor:pointer;border:1px solid #888;"></td>
                         <td>
                             <div class="fw-medium">{{ $lead->name }}</div>
                             @if($lead->lead_source === 'Web Enquiry')
@@ -163,7 +161,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="10" class="text-center py-4 text-secondary-light">No leads found.</td>
+                        <td colspan="9" class="text-center py-4 text-secondary-light">No leads found.</td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -184,7 +182,7 @@
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Lead Details &amp; Follow-Up History</h5>
+                <h5 class="modal-title">Lead Details &amp; Assignment History</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="assignmentModalBody">
@@ -246,9 +244,12 @@ loadFilterModels('{{ request('vehicle_brand_id') }}', PRESELECTED_MODEL);
 @endif
 
 // Select all checkboxes
-document.getElementById('selectAll').addEventListener('change', function () {
-    document.querySelectorAll('.lead-checkbox').forEach(c => c.checked = this.checked);
-});
+const selectAllEl = document.getElementById('selectAll');
+if (selectAllEl) {
+    selectAllEl.addEventListener('change', function () {
+        document.querySelectorAll('.lead-checkbox').forEach(c => c.checked = this.checked);
+    });
+}
 
 // Assign leads
 document.getElementById('btnAssign').addEventListener('click', function () {

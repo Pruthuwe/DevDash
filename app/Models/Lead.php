@@ -72,9 +72,9 @@ class Lead extends Model
             'Sales Done'      => 'bg-neutral-200 text-neutral-600',
             'Not Interested'  => 'bg-danger-100 text-danger-600',
             'Follow Up Later' => 'bg-warning-100 text-warning-600',
-            'Need More Info'  => 'bg-purple-100 text-purple-600',
+            'Need More Info'  => 'bg-lilac-100 text-lilac-600',
             'Interested'      => 'bg-info-100 text-info-600',
-            default           => 'bg-secondary-100 text-secondary-600',
+            default           => 'bg-neutral-100 text-neutral-600',
         };
     }
 

@@ -48,20 +48,32 @@
 
                     <!-- Permissions -->
                     <div class="mb-24">
-                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">
-                            Permissions
-                        </label>
+                        <div class="d-flex align-items-center justify-content-between mb-8">
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-0">
+                                Permissions
+                            </label>
+                            <div class="form-check d-flex align-items-center gap-2 mb-0">
+                                <input class="form-check-input" type="checkbox" id="selectAllPermissions">
+                                <label class="form-check-label fw-medium" for="selectAllPermissions">
+                                    Select All (full access)
+                                </label>
+                            </div>
+                        </div>
                         <div class="row">
                             @foreach($permissions as $module => $perms)
                                 <div class="col-md-6 mb-16">
                                     <div class="card border">
-                                        <div class="card-header">
+                                        <div class="card-header d-flex align-items-center justify-content-between">
                                             <h6 class="mb-0 text-capitalize">{{ $module }}</h6>
+                                            <div class="form-check mb-0">
+                                                <input class="form-check-input module-select-all" type="checkbox" data-module="{{ $module }}" id="selectAll-{{ $module }}">
+                                                <label class="form-check-label text-sm" for="selectAll-{{ $module }}">All</label>
+                                            </div>
                                         </div>
                                         <div class="card-body">
                                             @foreach($perms as $permission)
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ $permission->id }}" id="perm-{{ $permission->id }}">
+                                                    <input class="form-check-input permission-checkbox" data-module="{{ $module }}" type="checkbox" name="permissions[]" value="{{ $permission->id }}" id="perm-{{ $permission->id }}">
                                                     <label class="form-check-label text-capitalize" for="perm-{{ $permission->id }}">
                                                         {{ explode('-', $permission->name)[0] }}
                                                     </label>
@@ -82,10 +94,60 @@
                         <a href="{{ route('roles.index') }}" class="btn btn-outline-secondary">Cancel</a>
                         <button type="submit" class="btn btn-primary">Create Role</button>
                     </div>
-                </form>
+             </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const allCheckboxes = Array.from(document.querySelectorAll('.permission-checkbox'));
+    const moduleSelectAlls = document.querySelectorAll('.module-select-all');
+    const masterSelectAll = document.getElementById('selectAllPermissions');
+
+    function checkboxesForModule(module) {
+        return allCheckboxes.filter(cb => cb.dataset.module === module);
+    }
+
+    function syncModuleCheckbox(module) {
+        const boxes = checkboxesForModule(module);
+        const moduleAll = document.querySelector(`.module-select-all[data-module="${module}"]`);
+        if (moduleAll) {
+            moduleAll.checked = boxes.length > 0 && boxes.every(cb => cb.checked);
+        }
+    }
+
+    function syncMasterCheckbox() {
+        if (masterSelectAll) {
+            masterSelectAll.checked = allCheckboxes.length > 0 && allCheckboxes.every(cb => cb.checked);
+        }
+    }
+
+    allCheckboxes.forEach(cb => {
+        cb.addEventListener('change', function () {
+            syncModuleCheckbox(this.dataset.module);
+            syncMasterCheckbox();
+        });
+    });
+
+    moduleSelectAlls.forEach(moduleAll => {
+        moduleAll.addEventListener('change', function () {
+            checkboxesForModule(this.dataset.module).forEach(cb => cb.checked = this.checked);
+            syncMasterCheckbox();
+        });
+    });
+
+    if (masterSelectAll) {
+        masterSelectAll.addEventListener('change', function () {
+            allCheckboxes.forEach(cb => cb.checked = this.checked);
+            moduleSelectAlls.forEach(moduleAll => moduleAll.checked = this.checked);
+        });
+    }
+
+    Array.from(new Set(allCheckboxes.map(cb => cb.dataset.module))).forEach(syncModuleCheckbox);
+    syncMasterCheckbox();
+});
+</script>
 
 @endsection

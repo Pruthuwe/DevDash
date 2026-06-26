@@ -52,18 +52,13 @@ class User extends Authenticatable
     }
 
     /**
-     * Active users whose role carries the given leads permission — used to
-     * populate "assign to" / "sales officer" dropdowns. There's no
-     * hardcoded "Officer" or "Lead" role name in this system; any role the
-     * business has granted leads permissions to qualifies, so the dropdown
-     * keeps working if they rename or restructure roles later.
+     * Active users — used to populate "assign to" / "sales officer"
+     * dropdowns. Every active user is eligible regardless of role, so any
+     * new role added later is automatically included with no extra setup.
      */
     public function scopeWithLeadsPermission($query, string $action = 'edit')
     {
-        return $query->where('status', 'active')
-            ->whereHas('role.permissions', function ($q) use ($action) {
-                $q->where('name', "{$action}-leads");
-            });
+        return $query->where('status', 'active');
     }
 
     /**

@@ -231,10 +231,6 @@
                 <a href="javascript:void(0)">
                     <iconify-icon icon="solar:users-group-rounded-outline" class="menu-icon"></iconify-icon>
                     <span>Lead Management</span>
-                    @php $unassignedLeads = \App\Models\Lead::where('status','Unassigned')->count(); @endphp
-                    @if($unassignedLeads > 0)
-                        <span class="badge bg-danger ms-auto">{{ $unassignedLeads }}</span>
-                    @endif
                 </a>
                 <ul class="sidebar-submenu">
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-leads')))
@@ -345,16 +341,18 @@
                     <span>Settings</span>
                 </a>
                 <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-roles')))
-                    <li>
-                        <a href="{{ route('roles.index') }}"><iconify-icon icon="solar:shield-bold" class="submenu-icon"></iconify-icon>Roles</a>
-                    </li>
-                    @endif
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-roles')))
                     <li>
                         <a href="{{ route('roles.create') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Role</a>
                     </li>
                     @endif
+                
+                @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-roles')))
+                    <li>
+                        <a href="{{ route('roles.index') }}"><iconify-icon icon="solar:shield-bold" class="submenu-icon"></iconify-icon> View Roles</a>
+                    </li>
+                    @endif
+                    
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-users')))
                     <li>
                         <a href="{{ route('users.index') }}"><iconify-icon icon="solar:users-group-two-rounded-bold" class="submenu-icon"></iconify-icon>Users</a>
@@ -453,6 +451,12 @@
     .sidebar-menu > li.dropdown > a,
     .sidebar-menu > li > a {
         border-radius: 8px;
+    }
+
+    /* Give the arrow (::after at inset-inline-end: 0.75rem, ~1.125rem wide)
+       enough clearance so it never sits on top of the label text */
+    .sidebar-menu li.dropdown > a {
+        padding-inline-end: 2.25rem;
     }
 
     .sidebar-menu .sidebar-submenu > li {

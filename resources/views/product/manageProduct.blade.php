@@ -50,48 +50,49 @@
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-secondary-light mb-1">Total Products</h6>
-                    <h4 class="mb-0">{{ $totalProducts }}</h4>
+                    <p class="text-secondary-light mb-1" style="font-size:var(--font-xs); font-weight:600; text-transform:uppercase; letter-spacing:.5px;">Total Products</p>
+                    <h4 class="mb-0 fw-bold" style="font-size:var(--font-2xl);">{{ $totalProducts }}</h4>
                 </div>
                 <div class="stat-icon bg-primary-light">
                     <iconify-icon icon="solar:box-outline" class="text-primary"></iconify-icon>
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-secondary-light">All active products</small>
+                <small class="text-secondary-light" style="font-size:var(--font-xs);">All active products</small>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-4 col-sm-6">
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-secondary-light mb-1">Low Stock</h6>
-                    <h4 class="mb-0">{{ count($lowStock) }}</h4>
+                    <p class="text-secondary-light mb-1" style="font-size:var(--font-xs); font-weight:600; text-transform:uppercase; letter-spacing:.5px;">Low Stock</p>
+                    <h4 class="mb-0 fw-bold" style="font-size:var(--font-2xl);">{{ count($lowStock) }}</h4>
                 </div>
                 <div class="stat-icon bg-warning-light">
                     <iconify-icon icon="solar:info-circle-outline" class="text-warning"></iconify-icon>
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-secondary-light">Needs restocking</small>
+                <small class="text-secondary-light" style="font-size:var(--font-xs);">Needs restocking</small>
             </div>
         </div>
     </div>
+
     <div class="col-md-4 col-sm-6">
         <div class="card stat-card">
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-secondary-light mb-1">Out of Stock</h6>
-                    <h4 class="mb-0">{{ count($outOfStock) }}</h4>
+                    <p class="text-secondary-light mb-1" style="font-size:var(--font-xs); font-weight:600; text-transform:uppercase; letter-spacing:.5px;">Out of Stock</p>
+                    <h4 class="mb-0 fw-bold" style="font-size:var(--font-2xl);">{{ count($outOfStock) }}</h4>
                 </div>
                 <div class="stat-icon bg-danger-light">
                     <iconify-icon icon="solar:danger-triangle-outline" class="text-danger"></iconify-icon>
                 </div>
             </div>
             <div class="card-footer bg-transparent border-top-0 pt-0">
-                <small class="text-secondary-light">Require attention</small>
+                <small class="text-secondary-light" style="font-size:var(--font-xs);">Require attention</small>
             </div>
         </div>
     </div>
@@ -100,10 +101,10 @@
 <!-- Products Table -->
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h6 class="mb-0">All Products</h6>
+        <h6 class="mb-0" style="font-size:var(--font-md); font-weight:600;">All Products</h6>
         <div class="d-flex gap-2">
-            <input type="text" class="form-control" placeholder="Search products..." style="width: 250px;" id="searchInput">
-            <select class="form-select" style="width: 150px;" id="statusFilter">
+            <input type="text" class="form-control" placeholder="Search products..." style="width: 250px; font-size:var(--font-sm);" id="searchInput">
+            <select class="form-select" style="width: 150px; font-size:var(--font-sm);" id="statusFilter">
                 <option value="">All Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -118,7 +119,7 @@
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
-                    <tr>
+                    <tr style="font-size:var(--font-xs); text-transform:uppercase; letter-spacing:.6px;">
                         <th>Product</th>
                         <th>SKU</th>
                         <th>Image</th>
@@ -132,14 +133,14 @@
                 </thead>
                 <tbody>
                     @forelse($products as $product)
-                        <tr>
+                        <tr style="font-size:var(--font-sm);">
                             <td>
-                                <h6 class="mb-0">{{ $product->name }}</h6>
+                                <span class="fw-semibold" style="font-size:var(--font-sm);">{{ $product->name }}</span>
                                 @if($product->brand)
-                                <small class="text-secondary-light">{{ $product->brand }}</small>
+                                <br><small class="text-secondary-light" style="font-size:var(--font-xs);">{{ $product->brand }}</small>
                                 @endif
                             </td>
-                            <td>{{ $product->sku }}</td>
+                            <td style="font-size:var(--font-xs);">{{ $product->sku }}</td>
                             <td>
                                 @if($product->main_image)
                                     <img src="{{ asset($product->main_image) }}" alt="{{ $product->name }}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
@@ -151,14 +152,14 @@
                             </td>
                             <td>
                                 @if($product->category)
-                                <span class="badge bg-primary-light text-primary">{{ $product->category->name }}</span>
+                                <span class="badge bg-primary-light text-primary" style="font-size:var(--font-xs);">{{ $product->category->name }}</span>
                                 @else
                                 <span class="text-secondary-light">—</span>
                                 @endif
                             </td>
                             <td>
                                 @if($product->subcategory)
-                                <span class="badge bg-info-light text-info">{{ $product->subcategory->name }}</span>
+                                <span class="badge bg-info-light text-info" style="font-size:var(--font-xs);">{{ $product->subcategory->name }}</span>
                                 @else
                                 <span class="text-secondary-light">—</span>
                                 @endif
@@ -166,27 +167,27 @@
                             <td>
                                 @if($product->sale_price && $product->sale_price > 0)
                                     <div>
-                                        <span class="text-decoration-line-through text-secondary-light small">${{ number_format($product->price, 2) }}</span>
-                                        <strong class="text-success d-block">${{ number_format($product->sale_price, 2) }}</strong>
+                                        <span class="text-decoration-line-through text-secondary-light" style="font-size:var(--font-xs);">Rs {{ number_format($product->price, 2) }}</span>
+                                        <strong class="text-success d-block" style="font-size:var(--font-sm);">Rs {{ number_format($product->sale_price, 2) }}</strong>
                                     </div>
                                 @else
-                                    <strong>${{ number_format($product->price, 2) }}</strong>
+                                    <strong style="font-size:var(--font-sm);">Rs {{ number_format($product->price, 2) }}</strong>
                                 @endif
                             </td>
                             <td>
                                 @if($product->quantity > 0)
-                                    <span class="badge bg-success-light text-success">{{ $product->quantity }} in stock</span>
+                                    <span class="badge bg-success-light text-success" style="font-size:var(--font-xs);">{{ $product->quantity }} in stock</span>
                                 @else
-                                    <span class="badge bg-danger-light text-danger">Out of stock</span>
+                                    <span class="badge bg-danger-light text-danger" style="font-size:var(--font-xs);">Out of stock</span>
                                 @endif
                             </td>
                             <td>
                                 @if($product->status === 'active')
-                                    <span class="badge bg-success-light text-success">Active</span>
+                                    <span class="badge bg-success-light text-success" style="font-size:var(--font-xs);">Active</span>
                                 @elseif($product->status === 'draft')
-                                    <span class="badge bg-warning-light text-warning">Draft</span>
+                                    <span class="badge bg-warning-light text-warning" style="font-size:var(--font-xs);">Draft</span>
                                 @else
-                                    <span class="badge bg-danger-light text-danger">Inactive</span>
+                                    <span class="badge bg-danger-light text-danger" style="font-size:var(--font-xs);">Inactive</span>
                                 @endif
                             </td>
                             <td>
@@ -217,8 +218,8 @@
                         <tr>
                             <td colspan="9" class="text-center py-5">
                                 <iconify-icon icon="solar:box-outline" style="font-size: 4rem;" class="text-secondary-light mb-3"></iconify-icon>
-                                <h5 class="text-secondary-light">No Products Found</h5>
-                                <p class="text-secondary-light mb-4">Start by adding your first product</p>
+                                <h5 class="text-secondary-light" style="font-size:var(--font-md);">No Products Found</h5>
+                                <p class="text-secondary-light mb-4" style="font-size:var(--font-sm);">Start by adding your first product</p>
                                 @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-products')))
                                 <a href="{{ route('add.product') }}" class="btn btn-primary">
                                     <iconify-icon icon="solar:add-circle-outline"></iconify-icon>
@@ -231,7 +232,7 @@
                 </tbody>
             </table>
         </div>
-        
+
         @if($products->hasPages())
             <div class="d-flex justify-content-center mt-4">
                 {{ $products->links() }}
@@ -245,7 +246,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="productViewModalLabel">Product Details</h5>
+                <h5 class="modal-title" id="productViewModalLabel" style="font-size:var(--font-md);">Product Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -256,38 +257,38 @@
                             <img id="modalProductImage" src="" alt="Product Image" class="img-fluid rounded" style="max-height: 200px; object-fit: cover;">
                         </div>
                     </div>
-                    
+
                     <!-- Product Details -->
                     <div class="col-md-8">
                         <div class="row g-3">
                             <div class="col-12">
-                                <h4 id="modalProductName" class="mb-1"></h4>
-                                <p class="text-secondary-light mb-0" id="modalProductBrand"></p>
+                                <h4 id="modalProductName" class="mb-1" style="font-size:var(--font-lg);"></h4>
+                                <p class="text-secondary-light mb-0" id="modalProductBrand" style="font-size:var(--font-sm);"></p>
                             </div>
-                            
-                            <div class="col-md-6">
+
+                            <div class="col-md-6" style="font-size:var(--font-sm);">
                                 <strong>SKU:</strong> <span id="modalProductSKU"></span>
                             </div>
-                            
-                            <div class="col-md-6">
+
+                            <div class="col-md-6" style="font-size:var(--font-sm);">
                                 <strong>Category:</strong> <span id="modalProductCategory"></span>
                             </div>
-                            
-                            <div class="col-md-6">
+
+                            <div class="col-md-6" style="font-size:var(--font-sm);">
                                 <strong>Price:</strong> <span id="modalProductPrice" class="text-success fw-bold"></span>
                             </div>
-                            
-                            <div class="col-md-6">
+
+                            <div class="col-md-6" style="font-size:var(--font-sm);">
                                 <strong>Stock:</strong> <span id="modalProductStock"></span>
                             </div>
-                            
-                            <div class="col-12">
+
+                            <div class="col-12" style="font-size:var(--font-sm);">
                                 <strong>Status:</strong> <span id="modalProductStatus"></span>
                             </div>
-                            
-                            <div class="col-12">
+
+                            <div class="col-12" style="font-size:var(--font-sm);">
                                 <strong>Description:</strong>
-                                <p id="modalProductDescription" class="mt-2"></p>
+                                <p id="modalProductDescription" class="mt-2" style="font-size:var(--font-sm);"></p>
                             </div>
                         </div>
                     </div>
@@ -307,26 +308,26 @@
 <script>
 function loadProductDetailsFromData(button) {
     const productData = JSON.parse(button.getAttribute('data-product'));
-    
+
     // Set modal title
     document.getElementById('productViewModalLabel').textContent = productData.name;
-    
+
     // Set product details
     document.getElementById('modalProductName').textContent = productData.name;
     document.getElementById('modalProductSKU').textContent = productData.sku;
     document.getElementById('modalProductBrand').textContent = productData.brand || 'N/A';
     document.getElementById('modalProductCategory').textContent = productData.category ? 'Category ' + productData.category : 'N/A';
-    
+
     // Set price (show sale price if available)
-    const displayPrice = (productData.sale_price && productData.sale_price !== null && productData.sale_price !== '' && parseFloat(productData.sale_price) > 0) ? 
+    const displayPrice = (productData.sale_price && productData.sale_price !== null && productData.sale_price !== '' && parseFloat(productData.sale_price) > 0) ?
        function formatLKR(val) {
     return 'LKR ' + parseFloat(val).toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
     document.getElementById('modalProductPrice').innerHTML = displayPrice;
-    
+
     // Set stock
     document.getElementById('modalProductStock').textContent = productData.quantity + ' in stock';
-    
+
     // Set status with badge
     let statusBadge = '';
     if (productData.status === 'active') {
@@ -337,12 +338,12 @@ function loadProductDetailsFromData(button) {
         statusBadge = '<span class="badge bg-warning">Draft</span>';
     }
     document.getElementById('modalProductStatus').innerHTML = statusBadge;
-    
+
     // Set description
-    const description = (productData.full_description && productData.full_description !== null && productData.full_description !== '') ? 
+    const description = (productData.full_description && productData.full_description !== null && productData.full_description !== '') ?
         productData.full_description : (productData.short_description || 'No description available');
     document.getElementById('modalProductDescription').textContent = description;
-    
+
     // Set image
     const imageElement = document.getElementById('modalProductImage');
     if (productData.image && productData.image !== null && productData.image !== '') {
@@ -353,7 +354,7 @@ function loadProductDetailsFromData(button) {
         imageElement.style.display = 'block';
         imageElement.alt = 'No image available';
     }
-    
+
     // Set edit button link
     document.getElementById('editProductBtn').href = '{{ route("products.edit", ":id") }}'.replace(':id', productData.id);
 }
@@ -363,11 +364,11 @@ $(document).ready(function() {
     $('#searchInput').on('keyup', function() {
         filterProducts();
     });
-    
+
     $('#statusFilter').on('change', function() {
         filterProducts();
     });
-    
+
     $('#filterBtn').on('click', function() {
         filterProducts();
     });
@@ -376,16 +377,16 @@ $(document).ready(function() {
 function filterProducts() {
     const searchTerm = $('#searchInput').val().toLowerCase();
     const statusFilter = $('#statusFilter').val();
-    
+
     $('tbody tr').each(function() {
         const row = $(this);
-        const productName = row.find('td:first h6').text().toLowerCase();
+        const productName = row.find('td:first .fw-semibold').text().toLowerCase();
         const productSKU = row.find('td:nth-child(2)').text().toLowerCase();
-        const productStatus = row.find('td:nth-child(7) .badge').text().toLowerCase();
-        
+        const productStatus = row.find('td:nth-child(8) .badge').text().toLowerCase();
+
         const matchesSearch = productName.includes(searchTerm) || productSKU.includes(searchTerm);
         const matchesStatus = !statusFilter || productStatus.includes(statusFilter.toLowerCase());
-        
+
         if (matchesSearch && matchesStatus) {
             row.show();
         } else {
@@ -433,6 +434,17 @@ function filterProducts() {
 
 .bg-danger-light {
     background-color: var(--danger-surface) !important;
+}
+
+.table thead th {
+    font-size: var(--font-xs);
+    font-weight: 700;
+    color: var(--neutral-500);
+}
+
+.table tbody td {
+    font-size: var(--font-sm);
+    vertical-align: middle;
 }
 </style>
 @endpush

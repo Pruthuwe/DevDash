@@ -90,4 +90,54 @@
     </div>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const allCheckboxes = Array.from(document.querySelectorAll('.permission-checkbox'));
+    const moduleSelectAlls = document.querySelectorAll('.module-select-all');
+    const masterSelectAll = document.getElementById('selectAllPermissions');
+
+    function checkboxesForModule(module) {
+        return allCheckboxes.filter(cb => cb.dataset.module === module);
+    }
+
+    function syncModuleCheckbox(module) {
+        const boxes = checkboxesForModule(module);
+        const moduleAll = document.querySelector(`.module-select-all[data-module="${module}"]`);
+        if (moduleAll) {
+            moduleAll.checked = boxes.length > 0 && boxes.every(cb => cb.checked);
+        }
+    }
+
+    function syncMasterCheckbox() {
+        if (masterSelectAll) {
+            masterSelectAll.checked = allCheckboxes.length > 0 && allCheckboxes.every(cb => cb.checked);
+        }
+    }
+
+    allCheckboxes.forEach(cb => {
+        cb.addEventListener('change', function () {
+            syncModuleCheckbox(this.dataset.module);
+            syncMasterCheckbox();
+        });
+    });
+
+    moduleSelectAlls.forEach(moduleAll => {
+        moduleAll.addEventListener('change', function () {
+            checkboxesForModule(this.dataset.module).forEach(cb => cb.checked = this.checked);
+            syncMasterCheckbox();
+        });
+    });
+
+    if (masterSelectAll) {
+        masterSelectAll.addEventListener('change', function () {
+            allCheckboxes.forEach(cb => cb.checked = this.checked);
+            moduleSelectAlls.forEach(moduleAll => moduleAll.checked = this.checked);
+        });
+    }
+
+    Array.from(new Set(allCheckboxes.map(cb => cb.dataset.module))).forEach(syncModuleCheckbox);
+    syncMasterCheckbox();
+});
+</script>
+
 @endsection

@@ -99,34 +99,33 @@
 <div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead>
+            <table class="table table-sm table-hover align-middle mb-0">
+                <thead class="table-light">
                     <tr>
-                        <th>ID</th>
                         <th>Customer</th>
                         <th>Mobile</th>
-                        <th>Location</th>
-                        <th>Brand / Model</th>
-                        <th>Source</th>
-                        <th>Created</th>
+                        <th class="lead-col-location">Location</th>
+                        <th class="d-none d-md-table-cell">Brand / Model</th>
+                        <th class="lead-col-source">Source</th>
+                        <th class="d-none d-sm-table-cell">Created</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($leads as $lead)
                     <tr>
-                        <td><span class="fw-semibold">{{ $lead->id }}</span></td>
                         <td>
-                            <div class="fw-medium">{{ $lead->name }}</div>
+                            <div class="fw-medium text-sm">{{ $lead->name }}</div>
                             @if($lead->company_name)
                                 <small class="text-secondary-light">{{ $lead->company_name }}</small>
                             @endif
+                            <div class="text-secondary-light d-sm-none" style="font-size:0.75rem">{{ $lead->created_at->format('Y-m-d') }}</div>
                         </td>
-                        <td>{{ $lead->phone }}</td>
-                        <td>{{ $lead->city ?? '—' }}</td>
-                        <td>
+                        <td class="text-sm">{{ $lead->phone }}</td>
+                        <td class="text-sm lead-col-location">{{ $lead->city ?? '—' }}</td>
+                        <td class="d-none d-md-table-cell">
                             @if($lead->brand)
-                                <div>{{ $lead->brand->name }}</div>
+                                <div class="text-sm">{{ $lead->brand->name }}</div>
                                 @if($lead->vehicle_model_display)
                                     <small class="text-secondary-light">{{ $lead->vehicle_model_display }}</small>
                                 @endif
@@ -134,12 +133,12 @@
                                 <span class="text-secondary-light">—</span>
                             @endif
                         </td>
-                        <td>
-                            <span class="badge {{ $lead->lead_source === 'Web Enquiry' ? 'bg-primary-100 text-primary-600' : 'bg-secondary-100 text-secondary-600' }}">
+                        <td class="lead-col-source">
+                            <span class="badge {{ $lead->lead_source === 'Web Enquiry' ? 'bg-primary-100 text-primary-600' : 'bg-neutral-100 text-neutral-600' }}">
                                 {{ $lead->lead_source }}
                             </span>
                         </td>
-                        <td class="text-sm text-secondary-light">{{ $lead->created_at->format('Y-m-d') }}</td>
+                        <td class="text-sm text-secondary-light d-none d-sm-table-cell">{{ $lead->created_at->format('Y-m-d') }}</td>
                         <td>
                             <div class="d-flex gap-1">
                                 <button class="btn btn-sm btn-outline-info btn-view-lead"
@@ -163,7 +162,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center py-4 text-secondary-light">No leads found.</td>
+                        <td colspan="7" class="text-center py-4 text-secondary-light">No leads found.</td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -236,6 +235,46 @@
         font-size: 18px !important;
     }
 }
+
+/* ── Follow-Up History tab: compact table rows ──────────── */
+#ldFollowupRows td {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    vertical-align: middle;
+    font-size: 0.8125rem;
+}
+
+/* ── "entries" badge: tight, inline ────────────────────── */
+#ldFollowupCount {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    padding: 0.3rem 0.65rem;
+    font-size: 0.75rem;
+    height: auto;
+}
+
+/* ── Modal history table: horizontal scroll on small screens */
+#ldHistory .table-responsive {
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+/* ── Lead list main table: tighter rows ─────────────────── */
+.card .table td,
+.card .table th {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    vertical-align: middle;
+}
+
+/* ── Mobile: hide less important columns in main table ───── */
+@media (max-width: 767px) {
+    .lead-col-source,
+    .lead-col-location {
+        display: none;
+    }
+}
 </style>
 @endpush
 
@@ -259,6 +298,9 @@ document.querySelectorAll('.btn-view-lead').forEach(btn => {
                 const d = res.data;
                 document.getElementById('leadDetailTitle').textContent = `Details & Follow-Ups For ${d.name}`;
                 document.getElementById('leadDetailBody').innerHTML = buildLeadDetailHTML(d);
+
+                // Populate follow-up history table from already-loaded data
+                renderFollowupRows(d.followups || []);
 
                 // Wire the brand -> model cascade now that the form exists in the DOM
                 const brandSel = document.getElementById('editBrandSelect');
@@ -290,6 +332,41 @@ function loadEditModels(brandId, selectedModelId, modelSel) {
             });
             modelSel.innerHTML = opts;
         });
+}
+
+const STATUS_BADGE = {
+    'Converted':       'bg-success-100 text-success-600',
+    'Interested':      'bg-info-100 text-info-600',
+    'Sales Done':      'bg-neutral-200 text-neutral-600',
+    'Not Interested':  'bg-danger-100 text-danger-600',
+    'Follow Up Later': 'bg-warning-100 text-warning-600',
+    'Need More Info':  'bg-lilac-100 text-lilac-600',
+};
+
+function renderFollowupRows(followups) {
+    const tbody = document.getElementById('ldFollowupRows');
+    const badge = document.getElementById('ldFollowupCount');
+    if (!tbody) return;
+
+    if (!followups.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-3 text-secondary-light">No follow-ups recorded yet.</td></tr>';
+        if (badge) badge.textContent = '0 entries';
+        return;
+    }
+
+    if (badge) badge.textContent = followups.length + (followups.length === 1 ? ' entry' : ' entries');
+
+    tbody.innerHTML = followups.map((f, i) => `
+        <tr>
+            <td class="text-sm text-secondary-light">${followups.length - i}</td>
+            <td class="text-sm">${f.followup_at ? new Date(f.followup_at).toLocaleString() : '—'}</td>
+            <td class="text-sm">${f.method ?? '—'}</td>
+            <td class="text-sm">${f.feedback ? `<span title="${f.feedback}">${f.feedback.length > 60 ? f.feedback.slice(0,60) + '…' : f.feedback}</span>` : '<span class="text-secondary-light">—</span>'}</td>
+            <td><span class="badge ${STATUS_BADGE[f.status] ?? 'bg-neutral-100 text-neutral-600'}">${f.status ?? '—'}</span></td>
+            <td class="text-sm">${f.next_followup_at ? new Date(f.next_followup_at).toLocaleString() : '<span class="text-secondary-light">—</span>'}</td>
+            <td class="text-sm">${f.done_by?.name ?? '<span class="text-secondary-light">—</span>'}</td>
+        </tr>
+    `).join('');
 }
 
 function buildLeadDetailHTML(d) {
@@ -352,7 +429,28 @@ function buildLeadDetailHTML(d) {
             <div id="leadEditMsg" class="mt-2"></div>
         </div>
         <div class="tab-pane fade" id="ldHistory">
-            <p class="text-secondary-light text-sm">Follow-up history is managed from the <strong>Lead Follow-Up</strong> section.</p>
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h6 class="fw-semibold mb-0">Follow-Up History</h6>
+                <span id="ldFollowupCount" class="badge bg-primary-100 text-primary-600 fs-12 fw-semibold px-10 py-5 radius-8"></span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-sm">#</th>
+                            <th class="text-sm">Date &amp; Time</th>
+                            <th class="text-sm">Method</th>
+                            <th class="text-sm">Feedback</th>
+                            <th class="text-sm">Status</th>
+                            <th class="text-sm">Next Follow-Up</th>
+                            <th class="text-sm">Done By</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ldFollowupRows">
+                        <tr><td colspan="7" class="text-center py-3 text-secondary-light">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>`;
 }
