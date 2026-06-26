@@ -294,16 +294,17 @@
                     <span>Happy Customers Blogs</span>
                 </a>
                 <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-blogs')))
-                    <li>
-                        <a href="{{ route('manage.blogs') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Manage Blogs</a>
-                    </li>
-                    @endif
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-blogs')))
                     <li>
                         <a href="{{ route('add.blog') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Blog</a>
                     </li>
                     @endif
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-blogs')))
+                    <li>
+                        <a href="{{ route('manage.blogs') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Manage Blogs</a>
+                    </li>
+                    @endif
+                    
                 </ul>
             </li>
             @endif
@@ -374,16 +375,17 @@
                     <span>Customer Management</span>
                 </a>
                 <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-customers')))
-                    <li>
-                        <a href="{{ route('manage.customers') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Manage Customers</a>
-                    </li>
-                    @endif
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-customers')))
                     <li>
                         <a href="{{ route('add.customer') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Customer</a>
                     </li>
                     @endif
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-customers')))
+                    <li>
+                        <a href="{{ route('manage.customers') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Manage Customers</a>
+                    </li>
+                    @endif
+                    
                 </ul>
             </li>
             @endif            
@@ -395,16 +397,17 @@
                     <span>Supplier Management</span>
                 </a>
                 <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-suppliers')))
-                    <li>
-                        <a href="{{ route('manage.suppliers') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Supplier Management</a>
-                    </li>
-                    @endif
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-suppliers')))
                     <li>
                         <a href="{{ route('add.supplier') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Supplier</a>
                     </li>
                     @endif
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-suppliers')))
+                    <li>
+                        <a href="{{ route('manage.suppliers') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Supplier Management</a>
+                    </li>
+                    @endif
+                    
                 </ul>
             </li>
             @endif
