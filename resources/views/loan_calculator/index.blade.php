@@ -133,10 +133,10 @@
                     </div>
                     <div class="col-lg-4 col-md-6 d-flex flex-column">
                         <label class="lc-label d-none d-lg-block opacity-0">Save</label>
-                        <button type="button" id="saveLoanPlanBtn" class="btn btn-primary w-100 mt-2 mt-md-0"
+                        <button type="button" id="saveLoanPlanBtn" class="lc-save-btn mt-2 mt-md-0"
                                 onclick="saveLoanPlan()" disabled>
-                            <iconify-icon icon="solar:diskette-bold" class="me-1"></iconify-icon>
-                            Save Loan Plan
+                            <iconify-icon icon="solar:diskette-bold" class="lc-save-btn-icon"></iconify-icon>
+                            <span>Save Loan Plan</span>
                         </button>
                         <div id="saveStatus" class="lc-hint mt-6"></div>
                     </div>
@@ -625,6 +625,55 @@ function recalculate() {
     background: #e0f2fe !important;
     color: var(--brand) !important;
     font-weight: 600 !important;
+}
+
+/* ── Save Loan Plan button (3D style) ───────── */
+.lc-save-btn {
+    width: 100%;
+    height: 100%;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    border-radius: 10px;
+    padding: 13px 20px 16px;
+    font-size: var(--font-sm);
+    font-weight: 700;
+    letter-spacing: .2px;
+    color: #fff;
+    background: #0369a1;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.25),
+        inset 0 -3px 0 rgba(2,46,71,.45),
+        0 4px 0 #023e5c,
+        0 8px 16px rgba(2,46,71,.4);
+    transition: transform .1s ease, box-shadow .1s ease, filter .1s ease;
+    cursor: pointer;
+    position: relative;
+}
+.lc-save-btn-icon { font-size: 18px; filter: drop-shadow(0 1px 0 rgba(0,0,0,.15)); }
+.lc-save-btn:hover:not(:disabled) {
+    filter: brightness(1.04);
+}
+.lc-save-btn:active:not(:disabled) {
+    transform: translateY(3px);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.25),
+        inset 0 -2px 0 rgba(2,82,122,.3),
+        0 1px 0 #0369a1,
+        0 2px 6px rgba(2,82,122,.3);
+}
+.lc-save-btn:disabled {
+    background: #93c5fd;
+    color: #eff6ff;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.35),
+        inset 0 -3px 0 rgba(29,78,138,.35),
+        0 4px 0 #60a5fa,
+        0 6px 12px rgba(29,78,138,.25);
+    cursor: not-allowed;
 }
 
 /* ── Down Payment section body ──────────────── */

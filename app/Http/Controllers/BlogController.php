@@ -38,7 +38,8 @@ class BlogController extends Controller
         if (request()->is('api/*')) {
             return response()->json(['message' => 'Create form not available via API'], 404);
         }
-        return view('blog.addBlog');
+        $products = \App\Models\Product::where('status', 'active')->orderBy('name')->get(['id', 'name']);
+        return view('blog.addBlog', compact('products'));
     }
 
     /**
@@ -104,7 +105,8 @@ class BlogController extends Controller
         if (request()->is('api/*')) {
             return response()->json(['blog' => $blog], 200);
         }
-        return view('blog.editBlog', compact('blog'));
+        $products = \App\Models\Product::where('status', 'active')->orderBy('name')->get(['id', 'name']);
+        return view('blog.editBlog', compact('blog', 'products'));
     }
 
     /**

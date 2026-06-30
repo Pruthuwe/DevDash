@@ -16,9 +16,22 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="title" class="form-label">Title</label>
-                                    <input type="text" class="form-control" id="title" name="title"
-                                           value="{{ $blog->title }}" required>
+                                    <label for="title" class="form-label">Bike Name</label>
+                                    @php
+                                        $titleMatchesProduct = $products->pluck('name')->contains($blog->title);
+                                    @endphp
+                                    <select class="form-select" id="title" name="title" required>
+                                        <option value="">— Select Bike —</option>
+                                        @foreach($products as $product)
+                                            <option value="{{ $product->name }}" {{ old('title', $blog->title) == $product->name ? 'selected' : '' }}>
+                                                {{ $product->name }}
+                                            </option>
+                                        @endforeach
+                                        @if(!$titleMatchesProduct)
+                                            <option value="{{ $blog->title }}" selected>{{ $blog->title }}</option>
+                                        @endif
+                                    </select>
+                                    <small class="text-secondary-light">Bikes shown here come from Product Management.</small>
                                 </div>
                             </div>
                             <div class="col-md-6">
