@@ -119,7 +119,7 @@
 
                                         <!-- State -->
                                         <div class="col-md-6">
-                                            <label class="form-label">State</label>
+                                            <label class="form-label">Province</label>
                                             <input type="text" class="form-control" name="state" value="{{ old('state', $supplier->state) }}" placeholder="Enter state">
                                         </div>
 
