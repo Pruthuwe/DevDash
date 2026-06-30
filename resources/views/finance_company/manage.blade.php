@@ -47,9 +47,9 @@
                                     <td>{{ $company->name }}</td>
                                     <td>
                                         @if($company->status === 'active')
-                                            <span class="badge bg-success">Active</span>
+                                            <span class="badge bg-success text-nowrap">Active</span>
                                         @else
-                                            <span class="badge bg-secondary">Inactive</span>
+                                            <span class="badge bg-secondary text-nowrap">Inactive</span>
                                         @endif
                                     </td>
                                     <td>

@@ -52,16 +52,15 @@
                                     @foreach($images as $index => $image)
                                         <div class="position-relative">
                                             <img src="{{ asset($image) }}" alt="Blog Image"
-                                                 width="100" class="rounded">
-                                            <div class="form-check position-absolute top-0 end-0">
-                                                <input class="form-check-input" type="checkbox"
-                                                       name="delete_images[]" value="{{ $index }}"
-                                                       id="delete_{{ $index }}">
-                                                <label class="form-check-label text-white bg-dark px-1 rounded"
-                                                       for="delete_{{ $index }}">
-                                                    Delete
-                                                </label>
-                                            </div>
+                                                 width="100" class="rounded" id="img_{{ $index }}">
+                                            <input type="checkbox" name="delete_images[]" value="{{ $index }}"
+                                                   id="delete_{{ $index }}" class="d-none"
+                                                   onchange="document.getElementById('img_{{ $index }}').style.opacity = this.checked ? '0.35' : '1'; document.getElementById('label_{{ $index }}').textContent = this.checked ? 'Marked' : 'Delete';">
+                                            <label for="delete_{{ $index }}" id="label_{{ $index }}"
+                                                   class="position-absolute top-0 end-0 m-1 px-2 py-1 text-white bg-dark rounded"
+                                                   style="font-size: 11px; cursor: pointer; line-height: 1;">
+                                                Delete
+                                            </label>
                                         </div>
                                     @endforeach
                                 </div>

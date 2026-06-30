@@ -334,39 +334,7 @@
 </li>
 @endif --}}
 
-            {{-- Settings --}}
-            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && (Auth::user()->role->permissions->contains('name', 'view-roles') || Auth::user()->role->permissions->contains('name', 'view-users'))))
-            <li class="dropdown">
-                <a href="javascript:void(4)">
-                    <iconify-icon icon="solar:settings-outline" class="menu-icon"></iconify-icon>
-                    <span>Settings</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-roles')))
-                    <li>
-                        <a href="{{ route('roles.create') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Role</a>
-                    </li>
-                    @endif
-                
-                @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-roles')))
-                    <li>
-                        <a href="{{ route('roles.index') }}"><iconify-icon icon="solar:shield-bold" class="submenu-icon"></iconify-icon> View Roles</a>
-                    </li>
-                    @endif
-                    
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-users')))
-                    <li>
-                        <a href="{{ route('users.index') }}"><iconify-icon icon="solar:users-group-two-rounded-bold" class="submenu-icon"></iconify-icon>Users</a>
-                    </li>
-                    @endif
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-users')))
-                    <li>
-                        <a href="{{ route('users.assign-roles') }}"><iconify-icon icon="solar:user-plus-bold" class="submenu-icon"></iconify-icon>User Assign Role</a>
-                    </li>
-                    @endif
-                </ul>
-            </li>
-            @endif
+          
              {{-- Customer Management --}}
             @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-customers')))
             <li class="dropdown">
@@ -408,6 +376,40 @@
                     </li>
                     @endif
                     
+                </ul>
+            </li>
+            @endif
+
+              {{-- Settings --}}
+            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && (Auth::user()->role->permissions->contains('name', 'view-roles') || Auth::user()->role->permissions->contains('name', 'view-users'))))
+            <li class="dropdown">
+                <a href="javascript:void(4)">
+                    <iconify-icon icon="solar:settings-outline" class="menu-icon"></iconify-icon>
+                    <span>Settings</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-roles')))
+                    <li>
+                        <a href="{{ route('roles.create') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Role</a>
+                    </li>
+                    @endif
+                
+                @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-roles')))
+                    <li>
+                        <a href="{{ route('roles.index') }}"><iconify-icon icon="solar:shield-bold" class="submenu-icon"></iconify-icon> View Roles</a>
+                    </li>
+                    @endif
+                    
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-users')))
+                    <li>
+                        <a href="{{ route('users.index') }}"><iconify-icon icon="solar:users-group-two-rounded-bold" class="submenu-icon"></iconify-icon>Users</a>
+                    </li>
+                    @endif
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-users')))
+                    <li>
+                        <a href="{{ route('users.assign-roles') }}"><iconify-icon icon="solar:user-plus-bold" class="submenu-icon"></iconify-icon>User Assign Role</a>
+                    </li>
+                    @endif
                 </ul>
             </li>
             @endif
