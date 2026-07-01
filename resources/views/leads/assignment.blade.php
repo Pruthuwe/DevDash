@@ -107,8 +107,9 @@
                         <option value="{{ $o->id }}">{{ $o->name }}</option>
                     @endforeach
                 </select>
-                <button type="button" class="btn btn-primary-600 btn-sm" id="btnAssign">
-                    <iconify-icon icon="solar:user-plus-bold" class="me-1"></iconify-icon> Assign Leads
+                <button type="button" class="btn-save-3d btn-save-3d-sm" id="btnAssign">
+                    <iconify-icon icon="solar:user-plus-bold" class="btn-save-3d-icon"></iconify-icon>
+                    <span>Assign Leads</span>
                 </button>
             </div>
         </div>
@@ -200,10 +201,14 @@
     min-width: 180px;
 }
 
+#btnAssign {
+    flex-shrink: 0;
+}
+
 @media (max-width: 575px) {
     .assign-officer-select {
         min-width: 0;
-        flex: 1 1 auto;
+        flex: 1 1 140px;
     }
 }
 </style>
@@ -269,7 +274,7 @@ document.getElementById('btnAssign').addEventListener('click', function () {
     .then(r => r.json())
     .then(res => {
         this.disabled = false;
-        this.innerHTML = '<iconify-icon icon="solar:user-plus-bold" class="me-1"></iconify-icon> Assign Leads';
+        this.innerHTML = '<iconify-icon icon="solar:user-plus-bold" class="btn-save-3d-icon"></iconify-icon><span>Assign Leads</span>';
         if (res.success) { alert(res.message); location.reload(); }
         else alert('Assignment failed.');
     });

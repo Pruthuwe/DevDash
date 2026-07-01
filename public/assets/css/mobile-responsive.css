@@ -543,10 +543,14 @@
     }
 }
 
-/* Prevent long text from blowing up table cells */
-.table td {
-    word-break: break-word;
-    max-width: 200px;
+/* Prevent long text from blowing up table cells (mobile only —
+   on desktop this was forcing words like "Product" to split
+   mid-word inside narrow columns) */
+@media (max-width: 767.98px) {
+    .table td {
+        word-break: break-word;
+        max-width: 200px;
+    }
 }
 
 /* Image upload preview — mobile-friendly size */
@@ -565,10 +569,12 @@
     }
 }
 
-/* Badge — keep visible on tiny cards */
-.badge {
-    white-space: normal;
-    text-align: center;
+/* Badge — keep visible on tiny cards (mobile only) */
+@media (max-width: 767.98px) {
+    .badge {
+        white-space: normal;
+        text-align: center;
+    }
 }
 
 /* ────────────────────────────────────────────────────────────

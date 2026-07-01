@@ -177,10 +177,11 @@
     </div>
 </div>
 
-<div class="d-flex flex-wrap justify-content-end gap-2">
+<div class="d-flex flex-wrap align-items-center justify-content-end gap-2">
     <a href="{{ route('leads.list') }}" class="btn btn-outline-secondary">Cancel</a>
-    <button type="submit" class="btn btn-primary-600">
-        <iconify-icon icon="solar:add-circle-bold" class="me-1"></iconify-icon> Save Lead
+    <button type="submit" class="btn-save-3d">
+        <iconify-icon icon="solar:diskette-bold" class="btn-save-3d-icon"></iconify-icon>
+        <span>Save Lead</span>
     </button>
 </div>
 

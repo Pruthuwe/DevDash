@@ -128,7 +128,7 @@
                     @foreach($loanInquiries as $inquiry)
                         <tr data-type="loan" data-status="{{ $inquiry->status }}">
                             <td>
-                                <span class="badge bg-primary-100 text-primary-600 fw-medium px-2 py-1">
+                                <span class="badge bg-primary-100 text-primary-600 fw-medium px-2 py-1 inquiry-type-badge">
                                     <iconify-icon icon="solar:wallet-money-outline" class="me-1"></iconify-icon> Loan
                                 </span>
                             </td>
@@ -180,7 +180,7 @@
                     @foreach($productEnquiries as $enquiry)
                         <tr data-type="product" data-status="{{ $enquiry->status }}">
                             <td>
-                                <span class="badge bg-info-100 text-info-600 fw-medium px-2 py-1">
+                                <span class="badge bg-info-100 text-info-600 fw-medium px-2 py-1 inquiry-type-badge">
                                     <iconify-icon icon="solar:chat-square-like-outline" class="me-1"></iconify-icon> Product
                                 </span>
                             </td>
@@ -351,4 +351,25 @@ $(document).ready(function () {
 
 });
 </script>
+@endpush
+
+@push('styles')
+<style>
+/* Type badge (Loan / Product) — must never wrap, on any screen size */
+#allInquiriesTable .inquiry-type-badge {
+    white-space: nowrap !important;
+    display: inline-flex;
+    align-items: center;
+    text-align: left;
+}
+#allInquiriesTable .inquiry-type-badge iconify-icon {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    line-height: 1;
+}
+#allInquiriesTable td:first-child {
+    white-space: nowrap;
+}
+</style>
 @endpush
