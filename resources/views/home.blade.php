@@ -37,7 +37,7 @@
             @endif
 
             @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div class="alert alert-danger alert-dismissible fade show radius-12 mb-24" role="alert">
                     <i class="ri-error-warning-line me-2"></i>
                     {{ session('error') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -88,8 +88,8 @@
                     @enderror
                 </div>
 
-                {{-- Remember Me & Forgot Password --}}
-                <div class="d-flex justify-content-between gap-2">
+                {{-- Remember Me --}}
+                <div class="d-flex align-items-center">
                     <div class="form-check style-check d-flex align-items-center">
                         <input class="form-check-input border border-neutral-300" 
                                type="checkbox" 
@@ -100,9 +100,6 @@
                             Remember me
                         </label>
                     </div>
-                    <a href="{{ route('password.request') }}" class="text-primary-600 fw-medium">
-                        Forgot Password?
-                    </a>
                 </div>
 
                 {{-- Submit Button --}}

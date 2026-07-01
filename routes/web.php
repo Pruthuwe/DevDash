@@ -175,13 +175,13 @@ Route::get('/leads/list',                   [LeadController::class, 'list'])->mi
 Route::get('/leads/export',                 [LeadController::class, 'exportList'])->middleware('permission:export-leads')->name('leads.export');
 Route::get('/leads/assignment',             [LeadController::class, 'assignment'])->middleware('permission:view-leads')->name('leads.assignment');
 Route::post('/leads/assign',                [LeadController::class, 'assignLeads'])->middleware('permission:assign-leads')->name('leads.assign');
-Route::get('/leads/follow-up',              [LeadController::class, 'followUp'])->middleware('permission:view-leads')->name('leads.follow-up');
+Route::get('/leads/follow-up',              [LeadController::class, 'followUp'])->middleware('permission:view-leads|view-leads-followup')->name('leads.follow-up');
 Route::get('/leads/{lead}',                 [LeadController::class, 'show'])->middleware('permission:view-leads')->name('leads.show');
 Route::put('/leads/{lead}',                 [LeadController::class, 'update'])->middleware('permission:edit-leads')->name('leads.update');
 Route::delete('/leads/{lead}',              [LeadController::class, 'destroy'])->middleware('permission:delete-leads')->name('leads.destroy');
 Route::get('/leads/{lead}/assignment-history', [LeadController::class, 'assignmentHistory'])->middleware('permission:view-leads')->name('leads.assignment-history');
-Route::get('/leads/{lead}/follow-up-detail',   [LeadController::class, 'followUpDetail'])->middleware('permission:view-leads')->name('leads.follow-up-detail');
-Route::post('/leads/{lead}/follow-up',         [LeadController::class, 'storeFollowUp'])->middleware('permission:edit-leads')->name('leads.store-followup');
+Route::get('/leads/{lead}/follow-up-detail',   [LeadController::class, 'followUpDetail'])->middleware('permission:view-leads|view-leads-followup')->name('leads.follow-up-detail');
+Route::post('/leads/{lead}/follow-up',         [LeadController::class, 'storeFollowUp'])->middleware('permission:edit-leads|edit-leads-followup')->name('leads.store-followup');
 Route::get('/categories/{brand}/models', [LeadController::class, 'getModelsForBrand'])->middleware('permission:view-leads|create-leads')->name('leads.models-for-brand');
     // ── Settings: Roles & Users ─────────────────────────────────────
     // Admin-only. This is intentionally NOT delegable through the
@@ -200,7 +200,20 @@ Route::get('/categories/{brand}/models', [LeadController::class, 'getModelsForBr
     });
 });
 
-// Password Reset Routes (placeholder)
+// Password Reset Routes
+// GET — the "enter your email" form. This is what the "Forgot Password?"
+// link on the login page (route('password.request')) points to.
 Route::get('/password/request', function () {
     return view('auth.forgot-password');
 })->name('password.request');
+
+// POST — where that form submits to. This was the missing route causing
+// "Route [password.email] not defined".
+Route::post('/password/email', [\App\Http\Controllers\PasswordResetController::class, 'sendResetLinkEmail'])
+    ->name('password.email');
+
+Route::get('/password/reset/{token}', [\App\Http\Controllers\PasswordResetController::class, 'showResetForm'])
+    ->name('password.reset');
+
+Route::post('/password/reset', [\App\Http\Controllers\PasswordResetController::class, 'reset'])
+    ->name('password.update');

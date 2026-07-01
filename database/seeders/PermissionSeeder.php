@@ -32,6 +32,7 @@ class PermissionSeeder extends Seeder
             'loan-inquiries'     => ['view', 'edit', 'delete'],
             'product-enquiries'  => ['view', 'edit', 'delete'],
             'leads'              => ['view', 'create', 'edit', 'delete', 'assign', 'export', 'import'],
+            'leads-followup'     => ['view', 'edit'],
             'finance-companies'  => ['view', 'create', 'edit', 'delete'],
             'loan-plans'         => ['view', 'create', 'delete'],
             'users'              => ['view', 'create', 'edit', 'delete', 'assign'],

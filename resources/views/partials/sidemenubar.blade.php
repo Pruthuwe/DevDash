@@ -232,14 +232,26 @@
             {{-- LEAD MANAGEMENT                                     --}}
             {{-- ═══════════════════════════════════════════════════ --}}
          
-            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-leads')))
+            {{-- ═══════════════════════════════════════════════════ --}}
+            {{-- LEAD MANAGEMENT                                     --}}
+            {{-- ═══════════════════════════════════════════════════ --}}
+
+            @php
+                $userPermNames = Auth::user()->role ? Auth::user()->role->permissions->pluck('name') : collect();
+                $isAdmin = Auth::user()->user_type === 'admin';
+
+                $canManageLeads = $isAdmin || $userPermNames->contains('view-leads');
+                $canFollowUp = $isAdmin || $userPermNames->intersect(['view-leads', 'view-leads-followup'])->isNotEmpty();
+                $canSeeLeadManagement = $canManageLeads || $canFollowUp;
+            @endphp
+            @if($canSeeLeadManagement)
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="solar:users-group-rounded-outline" class="menu-icon"></iconify-icon>
                     <span>Lead Management</span>
                 </a>
                 <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-leads')))
+                    @if($isAdmin || $userPermNames->contains('create-leads'))
                     <li>
                         <a href="{{ route('leads.capture') }}">
                             <iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>
@@ -247,6 +259,7 @@
                         </a>
                     </li>
                     @endif
+                    @if($canManageLeads)
                     <li>
                         <a href="{{ route('leads.list') }}">
                             <iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>
@@ -259,12 +272,15 @@
                             Lead Assignment
                         </a>
                     </li>
+                    @endif
+                    @if($canFollowUp)
                     <li>
                         <a href="{{ route('leads.follow-up') }}">
                             <iconify-icon icon="solar:chat-line-outline" class="submenu-icon"></iconify-icon>
                             Lead Follow-Up
                         </a>
                     </li>
+                    @endif
                 </ul>
             </li>
             @endif

@@ -12208,6 +12208,17 @@ html[data-theme="dark"] .table-light thead th {
 }
 
 /* icon field css end */
+
+.icon-field .form-control.is-invalid {
+  background-position: right 1rem center;
+  padding-inline-end: 2.75rem;
+}
+
+.position-relative:has(.icon-field .form-control.is-invalid) .toggle-password {
+  margin-inline-end: 2.5rem;
+}
+
+
 /* input Radio Css Start */
 .form-check-input {
   cursor: pointer;
