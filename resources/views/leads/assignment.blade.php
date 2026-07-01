@@ -70,9 +70,8 @@
             <div class="col-6 col-md-4 col-lg-2">
                 <select name="status" class="form-select">
                     <option value="">All Status</option>
-                    @foreach(['Unassigned','Interested','Need More Info','Follow Up Later','Not Interested','Converted','Sales Done'] as $s)
-                        <option value="{{ $s }}" @selected(request('status')===$s)>{{ $s }}</option>
-                    @endforeach
+                    <option value="Assigned" @selected(request('status')==='Assigned')>Assigned</option>
+                    <option value="Unassigned" @selected(request('status')==='Unassigned')>Unassigned</option>
                 </select>
             </div>
             <div class="col-6 col-md-4 col-lg-2">
@@ -87,8 +86,11 @@
                 <input type="text" name="search" class="form-control" placeholder="ID / Name / Phone"
                     value="{{ request('search') }}">
             </div>
-            <div class="col-12 d-flex flex-wrap gap-2">
-                <button type="submit" class="btn btn-primary-600">Filter</button>
+            <div class="col-12 d-flex flex-wrap align-items-center gap-2">
+                <button type="submit" class="btn-save-3d btn-save-3d-sm">
+                    <iconify-icon icon="solar:filter-bold" class="btn-save-3d-icon"></iconify-icon>
+                    <span>Filter</span>
+                </button>
                 <a href="{{ route('leads.assignment') }}" class="btn btn-outline-secondary">Clear</a>
             </div>
         </form>
@@ -151,7 +153,11 @@
                         <td>{{ $lead->created_at->format('Y-m-d') }}</td>
                         <td>{{ $lead->officer?->name ?? 'Unassigned' }}</td>
                         <td>
-                            <span class="badge {{ $lead->statusBadgeClass() }}">{{ $lead->status }}</span>
+                            @if($lead->assigned_to)
+                                <span class="badge bg-success-100 text-success-600">Assigned</span>
+                            @else
+                                <span class="badge bg-warning-100 text-warning-600">Unassigned</span>
+                            @endif
                         </td>
                         <td>
                             <button class="btn btn-sm btn-outline-info btn-view-assignment"

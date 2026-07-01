@@ -331,7 +331,13 @@ class LeadController extends Controller
         if ($request->filled('customer_type'))     $query->where('customer_type',      $request->customer_type);
         if ($request->filled('vehicle_brand_id'))   $query->where('vehicle_brand_id',   $request->vehicle_brand_id);
         if ($request->filled('vehicle_model_product_id')) $query->where('vehicle_model_product_id', $request->vehicle_model_product_id);
-        if ($request->filled('status'))             $query->where('status',             $request->status);
+        if ($request->filled('status')) {
+            if ($request->status === 'Assigned') {
+                $query->whereNotNull('assigned_to');
+            } elseif ($request->status === 'Unassigned') {
+                $query->whereNull('assigned_to');
+            }
+        }
         if ($request->filled('sales_officer'))      $query->where('assigned_to',        $request->sales_officer);
         if ($request->filled('search'))  {
             $s = $request->search;
