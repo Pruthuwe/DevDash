@@ -28,7 +28,7 @@
                         <div class="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
                             <div>
                                 <h6 class="text-lg text-primary-light fw-semibold mb-2">{{ Auth::user()->name ?? 'User' }}</h6>
-                                <span class="text-secondary-light fw-medium text-sm">Admin</span>
+                                <span class="text-secondary-light fw-medium text-sm text-capitalize">{{ Auth::user()->user_type ?? 'User' }}</span>
                             </div>
                             <button type="button" class="hover-text-danger">
                                 <iconify-icon icon="radix-icons:cross-1" class="icon text-xl"></iconify-icon>
@@ -37,11 +37,20 @@
                         <ul class="to-top-list">
                             <li>
                                 <a class="dropdown-item text-primary-light px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
+                                    href="{{ route('profile.edit') }}">
+                                    <iconify-icon icon="solar:user-circle-outline" class="icon text-xl"></iconify-icon> 
+                                    My Profile
+                                </a>
+                            </li>
+                            @if(Auth::user()->user_type === 'admin')
+                            <li>
+                                <a class="dropdown-item text-primary-light px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
                                     href="{{ route('roles.index') }}">
                                     <iconify-icon icon="icon-park-outline:setting-two" class="icon text-xl"></iconify-icon> 
                                     Setting
                                 </a>
                             </li>
+                            @endif
                             <li>
                                 <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                     @csrf

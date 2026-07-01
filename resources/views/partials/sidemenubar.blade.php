@@ -153,23 +153,29 @@
             <li class="sidebar-menu-group-title">Features</li>
 
             {{-- Loan Management --}}
+@if(Auth::user()->user_type === 'admin' || (Auth::user()->role && (Auth::user()->role->permissions->contains('name', 'view-finance-companies') || Auth::user()->role->permissions->contains('name', 'view-loan-plans'))))
 <li class="dropdown">
     <a href="javascript:void(0)">
         <iconify-icon icon="solar:wallet-money-outline" class="menu-icon"></iconify-icon>
         <span>Loan Management</span>
     </a>
     <ul class="sidebar-submenu">
+        @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-finance-companies')))
         <li>
             <a href="{{ route('manage.finance-companies') }}"><iconify-icon icon="solar:buildings-2-bold" class="submenu-icon"></iconify-icon> Add Finance Company</a>
         </li>
+        @endif
         <li>
             <a href="{{ route('loan.calculator') }}"><iconify-icon icon="solar:calculator-outline" class="submenu-icon"></iconify-icon> Loan Calculator</a>
         </li>
+        @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-loan-plans')))
         <li>
             <a href="{{ route('manage.loan-plans') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon> View All Loan Plans</a>
         </li>
+        @endif
     </ul>
 </li>
+@endif
 
             
             <!-- {{-- Purchase Section --}}
@@ -380,36 +386,26 @@
             </li>
             @endif
 
-              {{-- Settings --}}
-            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && (Auth::user()->role->permissions->contains('name', 'view-roles') || Auth::user()->role->permissions->contains('name', 'view-users'))))
+              {{-- Settings — Admin accounts only. Not delegable via role permissions. --}}
+            @if(Auth::user()->user_type === 'admin')
             <li class="dropdown">
                 <a href="javascript:void(4)">
                     <iconify-icon icon="solar:settings-outline" class="menu-icon"></iconify-icon>
                     <span>Settings</span>
                 </a>
                 <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-roles')))
                     <li>
                         <a href="{{ route('roles.create') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Role</a>
                     </li>
-                    @endif
-                
-                @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-roles')))
                     <li>
                         <a href="{{ route('roles.index') }}"><iconify-icon icon="solar:shield-bold" class="submenu-icon"></iconify-icon> View Roles</a>
                     </li>
-                    @endif
-                    
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-users')))
                     <li>
                         <a href="{{ route('users.index') }}"><iconify-icon icon="solar:users-group-two-rounded-bold" class="submenu-icon"></iconify-icon>Users</a>
                     </li>
-                    @endif
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-users')))
                     <li>
                         <a href="{{ route('users.assign-roles') }}"><iconify-icon icon="solar:user-plus-bold" class="submenu-icon"></iconify-icon>User Assign Role</a>
                     </li>
-                    @endif
                 </ul>
             </li>
             @endif

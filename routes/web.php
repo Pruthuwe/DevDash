@@ -58,6 +58,13 @@ Route::middleware('auth')->group(function () {
         'dueFollowupsCount'
     ));
 })->name('dashboard');
+
+        // My Profile — every authenticated user (admin or staff) can view
+        // their own account info and change their own password. NOT gated
+        // by 'admin' or 'permission' middleware on purpose: this is about
+        // managing your own account, not managing other users/roles.
+        Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.update-password');
         
         // Product Routes
         Route::resource('products', \App\Http\Controllers\ProductController::class)->except(['index'])->middleware([
@@ -130,12 +137,12 @@ Route::middleware('auth')->group(function () {
     ])->except(['create', 'store']);
     Route::get('/manage-appointments', [\App\Http\Controllers\AppointmentController::class, 'manage'])->middleware('permission:view-appointments')->name('manage.appointments');
     Route::post('/appointments/{appointment}/update-status', [\App\Http\Controllers\AppointmentController::class, 'updateStatus'])->middleware('permission:edit-appointments')->name('appointments.update-status');
-    Route::post('/appointments/import-json', [\App\Http\Controllers\AppointmentController::class, 'importFromJson'])->middleware('permission:create-appointments')->name('appointments.import-json');
+    Route::post('/appointments/import-json', [\App\Http\Controllers\AppointmentController::class, 'importFromJson'])->middleware('permission:import-appointments')->name('appointments.import-json');
     
     // Contact Messages Routes
-Route::get('/manage-contacts', [\App\Http\Controllers\ContactController::class, 'manage'])->name('manage.contacts');
-Route::post('/contacts/{contact}/mark-read', [\App\Http\Controllers\ContactController::class, 'markRead'])->name('contacts.mark-read');
-Route::delete('/contacts/{contact}', [\App\Http\Controllers\ContactController::class, 'destroy'])->name('contacts.destroy');
+Route::get('/manage-contacts', [\App\Http\Controllers\ContactController::class, 'manage'])->middleware('permission:view-contacts')->name('manage.contacts');
+Route::post('/contacts/{contact}/mark-read', [\App\Http\Controllers\ContactController::class, 'markRead'])->middleware('permission:edit-contacts')->name('contacts.mark-read');
+Route::delete('/contacts/{contact}', [\App\Http\Controllers\ContactController::class, 'destroy'])->middleware('permission:delete-contacts')->name('contacts.destroy');
 
 // Loan Inquiry Routes
 Route::get('/manage-loan-inquiries', [\App\Http\Controllers\LoanInquiryController::class, 'manage'])->middleware('permission:view-loan-inquiries')->name('manage.loan-inquiries');
@@ -144,15 +151,15 @@ Route::delete('/loan-inquiries/{loanInquiry}', [\App\Http\Controllers\LoanInquir
 // Loan Calculator
 Route::get('/loan-calculator', [\App\Http\Controllers\LoanCalculatorController::class, 'index'])->name('loan.calculator');
 // Finance Company Routes (admin-managed list shown in the public loan calculator dropdown)
-Route::get('/manage-finance-companies', [\App\Http\Controllers\FinanceCompanyController::class, 'index'])->name('manage.finance-companies');
-Route::post('/finance-companies', [\App\Http\Controllers\FinanceCompanyController::class, 'store'])->name('finance-companies.store');
-Route::put('/finance-companies/{financeCompany}', [\App\Http\Controllers\FinanceCompanyController::class, 'update'])->name('finance-companies.update');
-Route::delete('/finance-companies/{financeCompany}', [\App\Http\Controllers\FinanceCompanyController::class, 'destroy'])->name('finance-companies.destroy');
+Route::get('/manage-finance-companies', [\App\Http\Controllers\FinanceCompanyController::class, 'index'])->middleware('permission:view-finance-companies')->name('manage.finance-companies');
+Route::post('/finance-companies', [\App\Http\Controllers\FinanceCompanyController::class, 'store'])->middleware('permission:create-finance-companies')->name('finance-companies.store');
+Route::put('/finance-companies/{financeCompany}', [\App\Http\Controllers\FinanceCompanyController::class, 'update'])->middleware('permission:edit-finance-companies')->name('finance-companies.update');
+Route::delete('/finance-companies/{financeCompany}', [\App\Http\Controllers\FinanceCompanyController::class, 'destroy'])->middleware('permission:delete-finance-companies')->name('finance-companies.destroy');
 // Bike Loan Plans (per-bike, per-finance-company saved rate/RMV)
-Route::get('/products/{product}/loan-plans', [\App\Http\Controllers\BikeLoanPlanController::class, 'index'])->name('bike-loan-plans.index');
-Route::post('/bike-loan-plans', [\App\Http\Controllers\BikeLoanPlanController::class, 'store'])->name('bike-loan-plans.store');
-Route::delete('/bike-loan-plans/{bikeLoanPlan}', [\App\Http\Controllers\BikeLoanPlanController::class, 'destroy'])->name('bike-loan-plans.destroy');
-Route::get('/loan-plans', [\App\Http\Controllers\BikeLoanPlanController::class, 'loanPlans'])->name('manage.loan-plans');
+Route::get('/products/{product}/loan-plans', [\App\Http\Controllers\BikeLoanPlanController::class, 'index'])->middleware('permission:view-loan-plans')->name('bike-loan-plans.index');
+Route::post('/bike-loan-plans', [\App\Http\Controllers\BikeLoanPlanController::class, 'store'])->middleware('permission:create-loan-plans')->name('bike-loan-plans.store');
+Route::delete('/bike-loan-plans/{bikeLoanPlan}', [\App\Http\Controllers\BikeLoanPlanController::class, 'destroy'])->middleware('permission:delete-loan-plans')->name('bike-loan-plans.destroy');
+Route::get('/loan-plans', [\App\Http\Controllers\BikeLoanPlanController::class, 'loanPlans'])->middleware('permission:view-loan-plans')->name('manage.loan-plans');
 // Product Enquiry Routes
 Route::get('/manage-product-enquiries', [\App\Http\Controllers\ProductEnquiryController::class, 'manage'])->middleware('permission:view-product-enquiries')->name('manage.product-enquiries');
 Route::post('/product-enquiries/{productEnquiry}/update-status', [\App\Http\Controllers\ProductEnquiryController::class, 'updateStatus'])->middleware('permission:edit-product-enquiries')->name('product-enquiries.update-status');
@@ -163,11 +170,11 @@ Route::get('/manage-all-inquiries', [\App\Http\Controllers\AllInquiriesControlle
 // ── Lead Management ─────────────────────────────────────────────
 Route::get('/leads/capture',                [LeadController::class, 'create'])->middleware('permission:create-leads')->name('leads.capture');
 Route::post('/leads',                       [LeadController::class, 'store'])->middleware('permission:create-leads')->name('leads.store');
-Route::post('/leads/import-excel',          [LeadController::class, 'importExcel'])->middleware('permission:create-leads')->name('leads.import-excel');
+Route::post('/leads/import-excel',          [LeadController::class, 'importExcel'])->middleware('permission:import-leads')->name('leads.import-excel');
 Route::get('/leads/list',                   [LeadController::class, 'list'])->middleware('permission:view-leads')->name('leads.list');
-Route::get('/leads/export',                 [LeadController::class, 'exportList'])->middleware('permission:view-leads')->name('leads.export');
+Route::get('/leads/export',                 [LeadController::class, 'exportList'])->middleware('permission:export-leads')->name('leads.export');
 Route::get('/leads/assignment',             [LeadController::class, 'assignment'])->middleware('permission:view-leads')->name('leads.assignment');
-Route::post('/leads/assign',                [LeadController::class, 'assignLeads'])->middleware('permission:edit-leads')->name('leads.assign');
+Route::post('/leads/assign',                [LeadController::class, 'assignLeads'])->middleware('permission:assign-leads')->name('leads.assign');
 Route::get('/leads/follow-up',              [LeadController::class, 'followUp'])->middleware('permission:view-leads')->name('leads.follow-up');
 Route::get('/leads/{lead}',                 [LeadController::class, 'show'])->middleware('permission:view-leads')->name('leads.show');
 Route::put('/leads/{lead}',                 [LeadController::class, 'update'])->middleware('permission:edit-leads')->name('leads.update');
@@ -176,19 +183,21 @@ Route::get('/leads/{lead}/assignment-history', [LeadController::class, 'assignme
 Route::get('/leads/{lead}/follow-up-detail',   [LeadController::class, 'followUpDetail'])->middleware('permission:view-leads')->name('leads.follow-up-detail');
 Route::post('/leads/{lead}/follow-up',         [LeadController::class, 'storeFollowUp'])->middleware('permission:edit-leads')->name('leads.store-followup');
 Route::get('/categories/{brand}/models', [LeadController::class, 'getModelsForBrand'])->middleware('permission:view-leads|create-leads')->name('leads.models-for-brand');
-    // Role Routes
-    Route::resource('roles', \App\Http\Controllers\RoleController::class)->middleware([
-        'permission:view-roles'
-    ]);
-    Route::get('/role-list', [\App\Http\Controllers\RoleController::class, 'index'])->middleware('permission:view-roles')->name('role.list');
+    // ── Settings: Roles & Users ─────────────────────────────────────
+    // Admin-only. This is intentionally NOT delegable through the
+    // permissions system — a role that could grant/edit roles could
+    // otherwise be used to escalate its own access.
+    Route::middleware('admin')->group(function () {
+        // Role Routes
+        Route::resource('roles', \App\Http\Controllers\RoleController::class);
+        Route::get('/role-list', [\App\Http\Controllers\RoleController::class, 'index'])->name('role.list');
 
-    // User Routes
-    Route::resource('users', \App\Http\Controllers\UserController::class)->middleware([
-        'permission:view-users'
-    ]);
-    Route::get('/user-list', [\App\Http\Controllers\UserController::class, 'index'])->middleware('permission:view-users')->name('user.list');
-    Route::get('/user-assign-roles', [\App\Http\Controllers\UserController::class, 'assignRoles'])->middleware('permission:edit-users')->name('users.assign-roles');
-    Route::post('/update-user-role', [\App\Http\Controllers\UserController::class, 'updateUserRole'])->middleware('permission:edit-users')->name('users.update-role');
+        // User Routes
+        Route::resource('users', \App\Http\Controllers\UserController::class);
+        Route::get('/user-list', [\App\Http\Controllers\UserController::class, 'index'])->name('user.list');
+        Route::get('/user-assign-roles', [\App\Http\Controllers\UserController::class, 'assignRoles'])->name('users.assign-roles');
+        Route::post('/update-user-role', [\App\Http\Controllers\UserController::class, 'updateUserRole'])->name('users.update-role');
+    });
 });
 
 // Password Reset Routes (placeholder)

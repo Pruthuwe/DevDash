@@ -59,12 +59,18 @@
                                 </label>
                             </div>
                         </div>
+                        <div class="alert alert-info d-flex align-items-start gap-2 mb-16" role="alert">
+                            <iconify-icon icon="solar:info-circle-bold" class="text-lg mt-1"></iconify-icon>
+                            <div>
+                                Note: "Roles" and "Users" access is restricted to Admin accounts regardless of the permissions checked here — the Settings menu itself is only visible to Admins.
+                            </div>
+                        </div>
                         <div class="row">
                             @foreach($permissions as $module => $perms)
                                 <div class="col-md-6 mb-16">
                                     <div class="card border">
                                         <div class="card-header d-flex align-items-center justify-content-between">
-                                            <h6 class="mb-0 text-capitalize">{{ $module }}</h6>
+                                            <h6 class="mb-0">{{ ucwords(str_replace('-', ' ', $module)) }}</h6>
                                             <div class="form-check mb-0">
                                                 <input class="form-check-input module-select-all" type="checkbox" data-module="{{ $module }}" id="selectAll-{{ $module }}">
                                                 <label class="form-check-label text-sm" for="selectAll-{{ $module }}">All</label>
