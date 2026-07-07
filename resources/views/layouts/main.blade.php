@@ -52,5 +52,8 @@
         }
     })();
     </script>
+
+    {{-- Table scroll hint --}}
+    <script src="{{ asset('assets/js/table-scroll-hint.js') }}"></script>
 </body>
 </html>

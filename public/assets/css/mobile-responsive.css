@@ -199,6 +199,16 @@
 }
 
 @media (max-width: 767.98px) {
+    /* Give every dashboard table a real min-width so the
+       table-responsive wrapper scrolls horizontally instead of
+       Bootstrap/flex columns squeezing down and forcing text to
+       wrap letter-by-letter ("B O C", "AC TI VE"). This is the
+       same fix already proven on #financeCompanyTable in Section 10,
+       now generalized to every table on the site. */
+    .table-responsive .table {
+        min-width: 640px;
+    }
+
     /* Smaller font & tighter cells in all tables */
     .table th,
     .table td {
@@ -243,6 +253,43 @@
 }
 
 /* ────────────────────────────────────────────────────────────
+   6b. TABLE SCROLL HINT — right-edge fade shows there's more
+   to scroll. Fades out automatically once fully scrolled.
+   Requires the small JS snippet at the bottom of this file's
+   companion <script> (see notes below).
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767.98px) {
+    .table-responsive {
+        position: relative;
+    }
+
+    .table-responsive::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 24px;
+        pointer-events: none;
+        background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.06));
+        transition: opacity 0.2s ease;
+    }
+
+    /* Hide the fade once fully scrolled to the end */
+    .table-responsive.scrolled-end::after {
+        opacity: 0;
+    }
+
+    /* Dark mode variant — adjust the selector below to match
+       whatever your theme toggle actually sets
+       (e.g. [data-theme="dark"], html.dark, body.dark-mode) */
+    [data-theme="dark"] .table-responsive::after,
+    .dark-mode .table-responsive::after {
+        background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.08));
+    }
+}
+
+/* ────────────────────────────────────────────────────────────
    7. LOAN CALCULATOR PAGE
    ──────────────────────────────────────────────────────────── */
 @media (max-width: 767.98px) {
@@ -253,9 +300,6 @@
         margin-bottom: 0.75rem;
     }
 
-    /* Loan Details row 1: stacks */
-    /* row already uses col-lg-4 col-md-4, Bootstrap handles md→full */
-
     /* Save button: full width, remove phantom label */
     #saveLoanPlanBtn {
         margin-top: 0.5rem;
@@ -264,11 +308,6 @@
 
     .loan-term-cell {
         display: block;
-    }
-
-    /* Down Payment Breakdown — RMV + Minimum DP */
-    .card-body .row.g-3 .col-md-6 {
-        /* Already col-md-6 so it stacks below 768 — no change needed */
     }
 
     /* Calculation Results — 4 summary cards: 2×2 on mobile */
@@ -362,21 +401,69 @@
    9. ADD CATEGORY / ADD SUBCATEGORY FORMS
    ──────────────────────────────────────────────────────────── */
 @media (max-width: 767.98px) {
-    /* col-md-5, col-md-4 etc. → full width */
-    .card-body .row.g-4 > [class*="col-md-"] {
-        /* Bootstrap already stacks these; no override needed.
-           Extra: remove min-width constraints on inputs */
-    }
+    /* col-md-5, col-md-4 etc. → full width handled by Bootstrap already */
 }
 
 /* ────────────────────────────────────────────────────────────
    10. FINANCE COMPANY PAGE
    ──────────────────────────────────────────────────────────── */
 @media (max-width: 767.98px) {
-    /* Finance company table action column */
-    .table .d-flex.gap-1 {
-        flex-direction: row !important;
-        flex-wrap: nowrap;
+
+    /* Give the table a real minimum width so its 4 columns have
+       room to breathe. table-responsive (in the Blade view) then
+       handles horizontal scrolling instead of text being forced
+       to wrap into narrow columns. */
+    #financeCompanyTable {
+        min-width: 560px;
+    }
+
+    /* IMPORTANT: nowrap here, not "normal". The previous version set
+       white-space: normal on a table with no min-width, which starved
+       cells of horizontal room and made the browser break words
+       letter-by-letter ("B O C", "AC TI VE"). Keeping text on one
+       line + allowing the table to scroll horizontally fixes it. */
+    #financeCompanyTable th,
+    #financeCompanyTable td {
+        white-space: nowrap;
+        padding: 0.5rem 0.6rem;
+        max-width: none;
+    }
+
+    /* This ID selector beats the global ".table td" rule in Section 20
+       (word-break: break-word), so mid-word breaking can't sneak back in. */
+    #financeCompanyTable td {
+        word-break: normal;
+        overflow-wrap: normal;
+    }
+
+    #financeCompanyTable .fc-avatar {
+        width: 26px;
+        height: 26px;
+        font-size: 0.72rem;
+    }
+
+    #financeCompanyTable .fc-status-badge,
+    #financeCompanyTable .fc-charge-badge {
+        white-space: nowrap;
+        font-size: 0.72rem;
+        padding: 4px 10px;
+        line-height: 1.3;
+        text-align: center;
+    }
+
+    /* Drop the leading icon on the charge badge on mobile only —
+       saves horizontal space so "Fixed · Rs 50,000.00" fits cleanly */
+    #financeCompanyTable .fc-charge-badge iconify-icon {
+        display: none;
+    }
+}
+
+@media (max-width: 479.98px) {
+    /* On very small phones, let action buttons wrap instead of
+       squeezing the Service Charge column */
+    #financeCompanyTable .d-flex.gap-1.justify-content-end {
+        flex-wrap: wrap;
+        justify-content: flex-end !important;
     }
 }
 
@@ -414,7 +501,6 @@
    13. ALL INQUIRIES — card header filter row
    ──────────────────────────────────────────────────────────── */
 @media (max-width: 767.98px) {
-    /* The 3-filter row (search + type + status) */
     #allInquiriesTable th:nth-child(4),   /* City */
     #allInquiriesTable td:nth-child(4),
     #allInquiriesTable th:nth-child(6),   /* Details */
@@ -461,11 +547,7 @@
    16. MANAGE CATEGORY TABLE
    ──────────────────────────────────────────────────────────── */
 @media (max-width: 767.98px) {
-    /* Hide min down payment % column if present */
-    .table th:last-child,
-    .table td:last-child {
-        /* Keep actions always visible */
-    }
+    /* Keep actions always visible — reserved for future column hiding */
 }
 
 /* ────────────────────────────────────────────────────────────
@@ -543,13 +625,21 @@
     }
 }
 
-/* Prevent long text from blowing up table cells (mobile only —
-   on desktop this was forcing words like "Product" to split
-   mid-word inside narrow columns) */
+/* Long free-text cells (e.g. inquiry messages, descriptions) are
+   allowed to wrap onto multiple lines. Add class="text-wrap" to
+   the specific <td> in Blade for cells like this — names, statuses,
+   and badges should NOT get this class, they stay nowrap and rely
+   on horizontal scroll (Section 6) instead, so they don't break
+   mid-word ("B O C", "AC TI VE").
+   NOTE: #financeCompanyTable td above overrides this with
+   word-break: normal, since that table needs nowrap + horizontal
+   scroll instead of word-breaking. */
 @media (max-width: 767.98px) {
-    .table td {
+    .table td.text-wrap,
+    .table td.description-cell {
+        white-space: normal;
         word-break: break-word;
-        max-width: 200px;
+        max-width: 220px;
     }
 }
 
