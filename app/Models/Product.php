@@ -95,7 +95,11 @@ class Product extends Model
         $interestRate   = floatval($this->interest_rate ?? 1.5);
 
         $bikeDP         = $sellingPrice - $loanAmount;
-        $serviceCharge  = min($loanAmount * 0.05, 25000);
+        // Service charge is no longer recalculated here with a hardcoded
+        // 5% / Rs 25,000 cap. It uses whatever is stored on the product
+        // (set in ProductController when the product was created/updated),
+        // so this always matches what the admin actually configured.
+        $serviceCharge  = floatval($this->service_charge ?? 0);
         $minimumDP      = $bikeDP + $serviceCharge + $rmv;
 
         // Minimum down payment % — the brand (sub-category) overrides its

@@ -15,6 +15,8 @@ class BikeLoanPlan extends Model
         'loan_amount',
         'interest_rate',
         'rmv',
+        'service_charge',
+        'service_charge_percent',
     ];
 
     public function product()
@@ -28,13 +30,10 @@ class BikeLoanPlan extends Model
     }
 
     /**
-     * Service charge is NOT manually editable — always 5% of the loan
-     * amount, capped at Rs 25,000. Computed on the fly so it always
-     * matches the current loan_amount.
+     * Service charge is now a real, stored column — set at save time by the
+     * Loan Calculator (either the finance company's fixed amount, or
+     * service_charge_percent x loan_amount). No more hardcoded 5% / Rs
+     * 25,000 cap here; that logic has been removed in favour of whatever
+     * was actually configured per finance company / entered on save.
      */
-    public function getServiceChargeAttribute(): float
-    {
-        $raw = (float) $this->loan_amount * 0.05;
-        return min($raw, 25000);
-    }
 }

@@ -12,5 +12,12 @@ class FinanceCompany extends Model
     protected $fillable = [
         'name',
         'status',
+        'fixed_service_charge',
+        'fixed_service_charge_amount',
+    ];
+
+    protected $casts = [
+        'fixed_service_charge' => 'boolean',
+        'fixed_service_charge_amount' => 'float',
     ];
 }
