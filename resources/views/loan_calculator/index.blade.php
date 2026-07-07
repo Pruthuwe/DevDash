@@ -120,7 +120,28 @@
                     </div>
                 </div>
 
-                {{-- Row 2: RMV Fee + Save button --}}
+                {{-- Row 2: Service Charge % + Service Charge (Rs) --}}
+                <div class="row g-3 mb-3">
+                    <div class="col-lg-6 col-md-6">
+                        <label class="lc-label">Service Charge %</label>
+                        <div class="input-group lc-input-group">
+                            <input type="number" id="serviceChargePercent" class="form-control lc-input"
+                                   value="5" step="0.1" min="0" max="100" oninput="recalculate()">
+                            <span class="input-group-text lc-input-prefix">%</span>
+                        </div>
+                        <small id="serviceChargePercentHint" class="lc-hint mt-6 d-block">Used when the finance company doesn't have a fixed service charge</small>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <label class="lc-label">Service Charge (Rs)</label>
+                        <div class="input-group lc-input-group">
+                            <span class="input-group-text lc-input-prefix">Rs</span>
+                            <input type="text" id="dispServiceCharge" class="form-control lc-input lc-readonly" readonly placeholder="—">
+                        </div>
+                        <small id="serviceChargeHint" class="lc-hint mt-6 d-block">% of loan (no cap)</small>
+                    </div>
+                </div>
+
+                {{-- Row 3: RMV Fee + Save button --}}
                 <div class="row g-3 align-items-start">
                     <div class="col-lg-4 col-md-6">
                         <label class="lc-label">RMV Fee</label>
@@ -157,7 +178,7 @@
     </div>
     <div class="card-body lc-dp-body">
 
-        {{-- Row 1: Bike DP + Service Charge --}}
+        {{-- Row 1: Bike DP + RMV --}}
         <div class="row g-3 mb-3">
             <div class="col-md-6">
                 <label class="lc-label lc-label-blue">Bike DP</label>
@@ -169,18 +190,6 @@
             </div>
 
             <div class="col-md-6">
-                <label class="lc-label lc-label-blue">Service Charge</label>
-                <div class="input-group lc-input-group">
-                    <span class="input-group-text lc-input-prefix">Rs</span>
-                    <input type="text" id="dispServiceCharge" class="form-control lc-input lc-readonly" readonly placeholder="—">
-                </div>
-                <small id="serviceChargeHint" class="lc-hint-blue mt-6 d-block">5% of loan (max Rs 25,000)</small>
-            </div>
-        </div>
-
-        {{-- Row 2: RMV + Minimum DP --}}
-        <div class="row g-3">
-            <div class="col-md-6">
                 <label class="lc-label lc-label-blue">RMV</label>
                 <div class="input-group lc-input-group">
                     <span class="input-group-text lc-input-prefix">Rs</span>
@@ -188,8 +197,11 @@
                 </div>
                 <small class="lc-hint-blue mt-6 d-block">Auto-filled</small>
             </div>
+        </div>
 
-            <div class="col-md-6 d-flex align-items-center">
+        {{-- Row 2: Minimum DP --}}
+        <div class="row g-3">
+            <div class="col-12">
                 <div class="w-100 p-3 rounded-3 d-flex justify-content-between align-items-center lc-dp-total">
                     <div>
                         <small class="d-block text-white opacity-75 mb-1" style="font-size:var(--font-xs); font-weight:600;">Minimum Down Payment</small>
@@ -345,8 +357,9 @@
 </div>
 
 <script>
-const ALL_PRODUCTS   = @json($products);
-const ALL_FUEL_TYPES = @json($fuelTypes);
+const ALL_PRODUCTS         = @json($products);
+const ALL_FUEL_TYPES       = @json($fuelTypes);
+const ALL_FINANCE_COMPANIES = @json($financeCompanies);
 </script>
 
 @push('scripts')
@@ -357,6 +370,8 @@ const set  = (id, v) => { const el = document.getElementById(id); if (el) el.val
 const csrfToken = () => document.querySelector('meta[name="csrf-token"]')?.content;
 
 let currentBikeId = null;
+let currentServiceCharge = 0;
+let currentServiceChargePercent = null;
 
 function onFuelTypeChange() {
     const ftId    = parseInt(document.getElementById('fuelType').value);
@@ -451,6 +466,8 @@ function saveLoanPlan() {
             loan_amount:        val('loanAmount'),
             interest_rate:      val('interestRate'),
             rmv:                val('rmv'),
+            service_charge:         currentServiceCharge,
+            service_charge_percent: currentServiceChargePercent,
         }),
     })
         .then(r => r.json())
@@ -466,6 +483,13 @@ function saveLoanPlan() {
         });
 }
 
+function getSelectedFinanceCompany() {
+    const companySel = document.getElementById('financeCompanySelect');
+    const companyId  = parseInt(companySel.value);
+    if (!companyId) return null;
+    return ALL_FINANCE_COMPANIES.find(c => parseInt(c.id) === companyId) || null;
+}
+
 function recalculate() {
     const bikePrice    = val('bikePrice');
     const loanAmount   = val('loanAmount');
@@ -476,9 +500,24 @@ function recalculate() {
     let company        = companySel.options[companySel.selectedIndex]?.text?.trim() || '';
     if (company === '— Select Finance Company —') company = '';
 
+    const selectedCompany = getSelectedFinanceCompany();
+    const isFixed          = !!(selectedCompany && selectedCompany.fixed_service_charge);
+    const percentInput     = document.getElementById('serviceChargePercent');
+    const percent          = val('serviceChargePercent');
+
+    let serviceCharge = 0;
+    if (isFixed) {
+        serviceCharge = parseFloat(selectedCompany.fixed_service_charge_amount) || 0;
+        percentInput.disabled = true;
+    } else {
+        serviceCharge = loanAmount > 0 ? (percent / 100) * loanAmount : 0;
+        percentInput.disabled = false;
+    }
+
+    currentServiceCharge        = serviceCharge;
+    currentServiceChargePercent = isFixed ? null : percent;
+
     const bikeDP        = (bikePrice > 0 && loanAmount > 0) ? bikePrice - loanAmount : 0;
-    const rawSC         = loanAmount * 0.05;
-    const serviceCharge = rawSC > 25000 ? 25000 : rawSC;
     const minimumDP     = bikeDP + serviceCharge + rmv;
 
     document.getElementById('dispBikeDP').value          = bikeDP > 0        ? bikeDP.toFixed(2)        : '';
@@ -487,12 +526,16 @@ function recalculate() {
     document.getElementById('dispMinimumDP').textContent = minimumDP > 0     ? fmt(minimumDP)           : '—';
 
     const scHint = document.getElementById('serviceChargeHint');
-    if (loanAmount > 0) {
-        scHint.innerHTML = rawSC > 25000
-            ? `5% × ${fmt(loanAmount)} = ${fmt(rawSC)} → capped at <strong>Rs 25,000</strong>`
-            : `5% × ${fmt(loanAmount)} = <strong>${fmt(serviceCharge)}</strong>`;
+    const scPercentHint = document.getElementById('serviceChargePercentHint');
+    if (isFixed) {
+        scHint.innerHTML = `Fixed service charge set by <strong>${company}</strong>: <strong>${fmt(serviceCharge)}</strong>`;
+        scPercentHint.innerHTML = `<strong>${company}</strong> uses a fixed service charge — percentage is ignored`;
+    } else if (loanAmount > 0) {
+        scHint.innerHTML = `${percent}% × ${fmt(loanAmount)} = <strong>${fmt(serviceCharge)}</strong>`;
+        scPercentHint.textContent = "Used when the finance company doesn't have a fixed service charge";
     } else {
-        scHint.textContent = '5% of loan (max Rs 25,000)';
+        scHint.textContent = `${percent}% of loan (no cap)`;
+        scPercentHint.textContent = "Used when the finance company doesn't have a fixed service charge";
     }
 
     let monthlyPayment = 0;

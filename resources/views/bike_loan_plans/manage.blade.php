@@ -70,6 +70,7 @@
                                     <th>Bike</th>
                                     <th>Finance Company</th>
                                     <th>Loan Amount</th>
+                                    <th>Service Charge</th>
                                     <th>Interest Rate</th>
                                     <th>RMV</th>
                                     <th>Actions</th>
@@ -81,6 +82,13 @@
                                     <td>{{ $plan->product->name ?? 'Deleted bike' }}</td>
                                     <td>{{ $plan->financeCompany->name ?? 'Deleted company' }}</td>
                                     <td>Rs {{ number_format($plan->loan_amount, 2) }}</td>
+                                    <td>
+                                        Rs {{ number_format($plan->service_charge, 2) }}
+                                        <br>
+                                        <small class="text-muted">
+                                            {{ $plan->service_charge_percent !== null ? $plan->service_charge_percent . '% of loan' : 'Fixed amount' }}
+                                        </small>
+                                    </td>
                                     <td>{{ $plan->interest_rate }}% / month</td>
                                     <td>Rs {{ number_format($plan->rmv, 2) }}</td>
                                     <td>
@@ -98,7 +106,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="text-center">No loan plans saved yet. Go to the Loan Calculator page to attach a finance company to a bike.</td>
+                                    <td colspan="7" class="text-center">No loan plans saved yet. Go to the Loan Calculator page to attach a finance company to a bike.</td>
                                 </tr>
                                 @endforelse
                             </tbody>
