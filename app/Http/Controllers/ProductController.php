@@ -190,10 +190,11 @@ $validated['slug'] = $slug;
             }
             if (!isset($validated['service_charge']) || $validated['service_charge'] === null) {
                 $loanAmt = $validated['loan_amount'] ?? 0;
-                // Bug fix: this used to be uncapped (loanAmt * 0.05 with no
-                // ceiling), so a large loan amount produced a service charge
-                // far above the intended Rs 25,000 cap.
-                $validated['service_charge'] = $loanAmt > 0 ? round(min($loanAmt * 0.05, 25000), 2) : 25000;
+                // Old logic (5% capped at Rs 25,000) removed — service charge
+                // is now a plain 5% of the loan amount, uncapped. This default
+                // is only used when the form doesn't supply a service_charge
+                // value directly.
+                $validated['service_charge'] = $loanAmt > 0 ? round($loanAmt * 0.05, 2) : 0;
             }
             if (!isset($validated['interest_rate']) || $validated['interest_rate'] === null) {
                 $validated['interest_rate'] = 1.5;
@@ -396,8 +397,8 @@ if (!isset($validated['low_stock_alert']) || is_null($validated['low_stock_alert
 }
 if (!isset($validated['service_charge']) || is_null($validated['service_charge'])) {
     $loanAmt = $validated['loan_amount'] ?? 0;
-    // Same uncapped-formula bug fixed here as in store().
-    $validated['service_charge'] = $loanAmt > 0 ? round(min($loanAmt * 0.05, 25000), 2) : 25000;
+    // Old 5%-capped-at-Rs-25,000 logic removed — plain uncapped 5% default.
+    $validated['service_charge'] = $loanAmt > 0 ? round($loanAmt * 0.05, 2) : 0;
 }
 if (!isset($validated['interest_rate']) || is_null($validated['interest_rate'])) {
     $validated['interest_rate'] = 1.5;

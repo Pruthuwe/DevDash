@@ -27,7 +27,8 @@ class BikeLoanPlanController extends Controller
                     'loan_amount'         => (float) $plan->loan_amount,
                     'interest_rate'       => (float) $plan->interest_rate,
                     'rmv'                 => (float) $plan->rmv,
-                    'service_charge'      => $plan->service_charge,
+                    'service_charge'      => (float) $plan->service_charge,
+                    'service_charge_percent' => $plan->service_charge_percent !== null ? (float) $plan->service_charge_percent : null,
                 ];
             });
 
@@ -74,6 +75,8 @@ class BikeLoanPlanController extends Controller
             'loan_amount'        => 'required|numeric|min:0',
             'interest_rate'      => 'nullable|numeric|min:0|max:100',
             'rmv'                => 'nullable|numeric|min:0',
+            'service_charge'         => 'required|numeric|min:0',
+            'service_charge_percent' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $plan = BikeLoanPlan::updateOrCreate(
@@ -85,6 +88,8 @@ class BikeLoanPlanController extends Controller
                 'loan_amount'   => $request->loan_amount,
                 'interest_rate' => $request->interest_rate ?? 1.5,
                 'rmv'           => $request->rmv ?? 10160,
+                'service_charge'         => $request->service_charge,
+                'service_charge_percent' => $request->service_charge_percent,
             ]
         );
 

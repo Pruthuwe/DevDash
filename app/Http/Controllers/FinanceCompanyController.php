@@ -16,7 +16,7 @@ class FinanceCompanyController extends Controller
         if ($request->is('api/*')) {
             $companies = FinanceCompany::where('status', 'active')
                 ->orderBy('name')
-                ->get(['id', 'name']);
+                ->get(['id', 'name', 'fixed_service_charge', 'fixed_service_charge_amount']);
 
             return response()->json(['finance_companies' => $companies], 200);
         }
@@ -39,11 +39,16 @@ return view('finance_company.manage', compact('financeCompanies', 'allLoanPlans'
         $request->validate([
             'name'   => 'required|string|max:255',
             'status' => 'nullable|in:active,inactive',
+            'fixed_service_charge_amount' => 'nullable|numeric|min:0',
         ]);
+
+        $isFixed = $request->boolean('fixed_service_charge');
 
         FinanceCompany::create([
             'name'   => $request->name,
             'status' => $request->status ?? 'active',
+            'fixed_service_charge' => $isFixed,
+            'fixed_service_charge_amount' => $isFixed ? $request->fixed_service_charge_amount : null,
         ]);
 
         if ($request->is('api/*')) {
@@ -61,11 +66,16 @@ return view('finance_company.manage', compact('financeCompanies', 'allLoanPlans'
         $request->validate([
             'name'   => 'required|string|max:255',
             'status' => 'nullable|in:active,inactive',
+            'fixed_service_charge_amount' => 'nullable|numeric|min:0',
         ]);
+
+        $isFixed = $request->boolean('fixed_service_charge');
 
         $financeCompany->update([
             'name'   => $request->name,
             'status' => $request->status ?? $financeCompany->status,
+            'fixed_service_charge' => $isFixed,
+            'fixed_service_charge_amount' => $isFixed ? $request->fixed_service_charge_amount : null,
         ]);
 
         if ($request->is('api/*')) {
