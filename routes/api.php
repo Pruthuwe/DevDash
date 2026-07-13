@@ -29,6 +29,7 @@ Route::get('appointments', [\App\Http\Controllers\AppointmentController::class, 
 Route::get('appointments/{appointment}', [\App\Http\Controllers\AppointmentController::class, 'show']);
 Route::post('contacts', [\App\Http\Controllers\ContactController::class, 'store']);
 Route::post('loan-inquiries', [\App\Http\Controllers\LoanInquiryController::class, 'store']);
+Route::put('loan-inquiries/{loanInquiry}', [\App\Http\Controllers\LoanInquiryController::class, 'publicUpdate']);
 Route::get('finance-companies', [\App\Http\Controllers\FinanceCompanyController::class, 'index']);
 Route::get('loan-calculator-data', [\App\Http\Controllers\LoanCalculatorController::class, 'apiIndex']);
 Route::get('products/{product}/loan-plans', [\App\Http\Controllers\BikeLoanPlanController::class, 'index']);

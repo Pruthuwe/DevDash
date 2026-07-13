@@ -8,6 +8,7 @@ class LoanInquiry extends Model
 {
     protected $fillable = [
         'product_id',
+        'finance_company',
         'name',
         'phone',
         'city',

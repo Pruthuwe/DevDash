@@ -110,6 +110,7 @@
                         <th>Phone</th>
                         <th>City</th>
                         <th>Bike</th>
+                        <th>Finance Company</th>
                         <th>Bike Price</th>
                         <th>Monthly Payment</th>
                         <th>Submitted</th>
@@ -124,6 +125,7 @@
                             <td>{{ $inquiry->phone }}</td>
                             <td>{{ $inquiry->city ?? 'N/A' }}</td>
                             <td>{{ $inquiry->product->name ?? 'N/A' }}</td>
+                            <td>{{ $inquiry->finance_company ?? 'N/A' }}</td>
                             <td>{{ $inquiry->bike_price ? 'LKR ' . number_format($inquiry->bike_price, 2) : 'N/A' }}</td>
                             <td>{{ $inquiry->monthly_payment ? 'LKR ' . number_format($inquiry->monthly_payment, 2) : 'N/A' }}</td>
                             <td>{{ $inquiry->created_at->format('F j, Y, g:i a') }}</td>
@@ -146,7 +148,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center">No loan inquiries found.</td>
+                            <td colspan="10" class="text-center">No loan inquiries found.</td>
                         </tr>
                     @endforelse
                 </tbody>

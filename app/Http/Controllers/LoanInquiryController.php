@@ -17,6 +17,7 @@ class LoanInquiryController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'product_id'       => 'nullable|exists:products,id',
+            'finance_company'  => 'nullable|string|max:255',
             'name'             => 'required|string|max:255',
             'phone'            => 'required|string|max:30',
             'city'             => 'nullable|string|max:120',
@@ -48,6 +49,55 @@ class LoanInquiryController extends Controller
         ], 201);
     }
 
+    /**
+     * Update the loan details on an existing inquiry — used when a customer
+     * recalculates (changes finance company / term) in the same Loan
+     * Calculator session, so we don't create a duplicate lead per click.
+     * Public/guest endpoint, same as store(). Only touches the loan-calc
+     * fields; never changes name/phone/city or status.
+     */
+    public function publicUpdate(Request $request, LoanInquiry $loanInquiry)
+    {
+        // Safety net: if staff already actioned this lead (contacted/closed),
+        // don't let a stale customer session silently overwrite it — treat
+        // it as a fresh submission instead.
+        if ($loanInquiry->status !== 'new') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This inquiry has already been actioned and can no longer be updated.',
+            ], 409);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'finance_company'  => 'nullable|string|max:255',
+            'bike_price'       => 'nullable|numeric|min:0',
+            'loan_amount'      => 'nullable|numeric|min:0',
+            'bike_dp'          => 'nullable|numeric|min:0',
+            'service_charge'   => 'nullable|numeric|min:0',
+            'rmv'              => 'nullable|numeric|min:0',
+            'minimum_dp'       => 'nullable|numeric|min:0',
+            'interest_rate'    => 'nullable|numeric|min:0|max:100',
+            'loan_term_months' => 'nullable|integer|min:1|max:120',
+            'monthly_payment'  => 'nullable|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please check the details you entered.',
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        $loanInquiry->update($validator->validated());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Updated successfully.',
+            'data'    => $loanInquiry,
+        ]);
+    }
+
     public function manage(Request $request)
     {
         if (Auth::user()->user_type !== 'admin' && (!Auth::user()->role || !Auth::user()->role->permissions->contains('name', 'view-loan-inquiries'))) {
@@ -65,7 +115,8 @@ class LoanInquiryController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('phone', 'like', "%{$search}%")
-                  ->orWhere('city', 'like', "%{$search}%");
+                  ->orWhere('city', 'like', "%{$search}%")
+                  ->orWhere('finance_company', 'like', "%{$search}%");
             });
         }
 
