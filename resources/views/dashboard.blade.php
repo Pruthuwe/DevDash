@@ -251,7 +251,7 @@
                             <tr>
                                 <td>{{ $product->name }}</td>
                                 <td>{{ $product->category->name ?? '-' }}</td>
-                                <td>${{ $product->sale_price ?? $product->price }}</td>
+                                <td>Rs {{ number_format($product->sale_price ?? $product->price, 2) }}</td>
                                 <td>{{ $product->quantity }}</td>
                                 <td>
                                     <span class="bg-{{ $product->status == 'active' ? 'success' : 'danger' }}-focus text-{{ $product->status == 'active' ? 'success' : 'danger' }}-main px-12 py-4 rounded-pill fw-medium text-sm">

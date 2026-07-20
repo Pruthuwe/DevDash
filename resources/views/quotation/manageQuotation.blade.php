@@ -51,7 +51,7 @@
                             <td>{{ $quotation->customer_name }}</td>
                             <td>{{ $quotation->quotation_date->format('M d, Y') }}</td>
                             <td>{{ $quotation->valid_until->format('M d, Y') }}</td>
-                            <td>${{ number_format($quotation->total, 2) }}</td>
+                            <td>Rs {{ number_format($quotation->total, 2) }}</td>
                             <td>
                                 <span class="badge
                                     @if($quotation->status == 'draft') bg-secondary
