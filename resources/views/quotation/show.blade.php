@@ -108,8 +108,8 @@
                                 <tr>
                                     <td>{{ $item->product_name }}</td>
                                     <td>{{ $item->quantity }}</td>
-                                    <td>${{ number_format($item->unit_price, 2) }}</td>
-                                    <td>${{ number_format($item->total, 2) }}</td>
+                                    <td>Rs {{ number_format($item->unit_price, 2) }}</td>
+                                    <td>Rs {{ number_format($item->total, 2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -128,19 +128,19 @@
                             <table class="table table-borderless w-auto ms-auto">
                                 <tr>
                                     <td class="fw-semibold">Subtotal:</td>
-                                    <td class="text-end">${{ number_format($quotation->subtotal, 2) }}</td>
+                                    <td class="text-end">Rs {{ number_format($quotation->subtotal, 2) }}</td>
                                 </tr>
                                 <tr>
                                     <td class="fw-semibold">Tax (10%):</td>
-                                    <td class="text-end">${{ number_format($quotation->tax, 2) }}</td>
+                                    <td class="text-end">Rs {{ number_format($quotation->tax, 2) }}</td>
                                 </tr>
                                 <tr>
                                     <td class="fw-semibold">Discount:</td>
-                                    <td class="text-end">${{ number_format($quotation->discount, 2) }}</td>
+                                    <td class="text-end">Rs {{ number_format($quotation->discount, 2) }}</td>
                                 </tr>
                                 <tr class="border-top">
                                     <td class="fw-bold">Total:</td>
-                                    <td class="text-end fw-bold">${{ number_format($quotation->total, 2) }}</td>
+                                    <td class="text-end fw-bold">Rs {{ number_format($quotation->total, 2) }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -167,4 +167,5 @@
         }
     }
 </style>
+
 @endsection

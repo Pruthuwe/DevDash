@@ -7,7 +7,7 @@
     {{-- Left Side Image Section --}}
     <div class="auth-left d-lg-block d-none">
         <div class="d-flex align-items-center flex-column h-100 justify-content-center">
-            <img src="{{ asset('assets/images/auth/auth-img.png') }}" alt="Authentication">
+            <img src="{{ asset('assets/images/auth/370x530 (1).png') }}" alt="Authentication">
         </div>
     </div>
 
@@ -16,9 +16,13 @@
         <div class="max-w-464-px mx-auto w-100">
             {{-- Header Section --}}
             <div>
-                <a href="{{ url('/') }}" class="mb-40 max-w-290-px">
-                    <img src="{{ asset('assets/images/logo.png') }}" alt="Logo">
-                </a>
+                <a href="{{ url('/') }}" class="mb-40 max-w-350-px d-flex justify-content-center">
+    <img
+        src="{{ asset('assets/images/logo-icon.png') }}"
+        alt="Logo"
+        style="width:100px; height:auto;"
+    >
+</a>
                 <h4 class="mb-12">Sign In to your Account</h4>
                 <p class="mb-32 text-secondary-light text-lg">Welcome back! please enter your detail</p>
             </div>
@@ -33,7 +37,7 @@
             @endif
 
             @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div class="alert alert-danger alert-dismissible fade show radius-12 mb-24" role="alert">
                     <i class="ri-error-warning-line me-2"></i>
                     {{ session('error') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -84,8 +88,8 @@
                     @enderror
                 </div>
 
-                {{-- Remember Me & Forgot Password --}}
-                <div class="d-flex justify-content-between gap-2">
+                {{-- Remember Me --}}
+                <div class="d-flex align-items-center">
                     <div class="form-check style-check d-flex align-items-center">
                         <input class="form-check-input border border-neutral-300" 
                                type="checkbox" 
@@ -96,9 +100,6 @@
                             Remember me
                         </label>
                     </div>
-                    <a href="{{ route('password.request') }}" class="text-primary-600 fw-medium">
-                        Forgot Password?
-                    </a>
                 </div>
 
                 {{-- Submit Button --}}

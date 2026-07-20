@@ -35,7 +35,7 @@
                             <thead>
                                 <tr>
                                     <th>Title</th>
-                                    <th>Description</th>
+                                    {{-- <th>Description</th> --}}
                                     <th>Images</th>
                                     <th>Actions</th>
                                 </tr>
@@ -44,7 +44,7 @@
                                 @forelse($blogs ?? [] as $blog)
                                 <tr>
                                     <td>{{ $blog->title }}</td>
-                                    <td>{{ Str::limit($blog->description, 50) }}</td>
+                                    {{-- <td>{{ Str::limit($blog->description, 50) }}</td> --}}
                                     <td>
                                         @if($blog->images)
                                             @php $images = json_decode($blog->images, true); @endphp
@@ -78,7 +78,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="4" class="text-center">No blogs found.</td>
+                                    <td colspan="3" class="text-center">No blogs found.</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -105,10 +105,12 @@
                         <label for="title" class="form-label">Title</label>
                         <input type="text" class="form-control" id="title" name="title" required>
                     </div>
+                    {{-- Description not needed — auto-generated from bike title on frontend
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
                         <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
                     </div>
+                    --}}
                     <div class="mb-3">
                         <label for="images" class="form-label">Images</label>
                         <input type="file" class="form-control" id="images" name="images[]" multiple>

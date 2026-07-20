@@ -12,11 +12,26 @@
                     <form action="{{ route('blogs.update', $blog) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="title" class="form-label">Title</label>
-                                    <input type="text" class="form-control" id="title" name="title" value="{{ $blog->title }}" required>
+                                    <label for="title" class="form-label">Bike Name</label>
+                                    @php
+                                        $titleMatchesProduct = $products->pluck('name')->contains($blog->title);
+                                    @endphp
+                                    <select class="form-select" id="title" name="title" required>
+                                        <option value="">— Select Bike —</option>
+                                        @foreach($products as $product)
+                                            <option value="{{ $product->name }}" {{ old('title', $blog->title) == $product->name ? 'selected' : '' }}>
+                                                {{ $product->name }}
+                                            </option>
+                                        @endforeach
+                                        @if(!$titleMatchesProduct)
+                                            <option value="{{ $blog->title }}" selected>{{ $blog->title }}</option>
+                                        @endif
+                                    </select>
+                                    <small class="text-secondary-light">Bikes shown here come from Product Management.</small>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -26,29 +41,33 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control" id="description" name="description" rows="5" required>{{ $blog->description }}</textarea>
-                        </div>
+
+                        {{-- Current images with delete option --}}
                         @if($blog->images)
+                            @php $images = json_decode($blog->images, true); @endphp
+                            @if(!empty($images))
                             <div class="mb-3">
                                 <label class="form-label">Current Images</label>
                                 <div class="d-flex gap-2 flex-wrap">
-                                    @php $images = json_decode($blog->images, true); @endphp
                                     @foreach($images as $index => $image)
                                         <div class="position-relative">
-                                            <img src="{{ asset($image) }}" alt="Blog Image" width="100" class="rounded">
-                                            <div class="form-check position-absolute top-0 end-0">
-                                                <input class="form-check-input" type="checkbox" name="delete_images[]" value="{{ $index }}" id="delete_{{ $index }}">
-                                                <label class="form-check-label text-white bg-dark px-1 rounded" for="delete_{{ $index }}">
-                                                    Delete
-                                                </label>
-                                            </div>
+                                            <img src="{{ asset($image) }}" alt="Blog Image"
+                                                 width="100" class="rounded" id="img_{{ $index }}">
+                                            <input type="checkbox" name="delete_images[]" value="{{ $index }}"
+                                                   id="delete_{{ $index }}" class="d-none"
+                                                   onchange="document.getElementById('img_{{ $index }}').style.opacity = this.checked ? '0.35' : '1'; document.getElementById('label_{{ $index }}').textContent = this.checked ? 'Marked' : 'Delete';">
+                                            <label for="delete_{{ $index }}" id="label_{{ $index }}"
+                                                   class="position-absolute top-0 end-0 m-1 px-2 py-1 text-white bg-dark rounded"
+                                                   style="font-size: 11px; cursor: pointer; line-height: 1;">
+                                                Delete
+                                            </label>
                                         </div>
                                     @endforeach
                                 </div>
                             </div>
+                            @endif
                         @endif
+
                         <button type="submit" class="btn btn-primary">Update Blog</button>
                         <a href="{{ route('manage.blogs') }}" class="btn btn-secondary">Cancel</a>
                     </form>

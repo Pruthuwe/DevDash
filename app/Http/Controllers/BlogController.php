@@ -38,7 +38,8 @@ class BlogController extends Controller
         if (request()->is('api/*')) {
             return response()->json(['message' => 'Create form not available via API'], 404);
         }
-        return view('blog.addBlog');
+        $products = \App\Models\Product::where('status', 'active')->orderBy('name')->get(['id', 'name']);
+        return view('blog.addBlog', compact('products'));
     }
 
     /**
@@ -47,9 +48,9 @@ class BlogController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'title'       => 'required|string|max:255',
+            'description' => 'nullable|string', // ← was required, now nullable (auto-generated on frontend)
+            'images.*'    => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $images = [];
@@ -62,17 +63,17 @@ class BlogController extends Controller
         }
 
         $blog = Blog::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'images' => json_encode($images),
+            'title'       => $request->title,
+            'description' => $request->description ?? null, // ← null if not submitted
+            'images'      => json_encode($images),
         ]);
 
         if (request()->is('api/*')) {
             if ($blog->images) {
-                $images = json_decode($blog->images, true);
+                $imgs = json_decode($blog->images, true);
                 $blog->image_urls = array_map(function ($image) {
                     return url($image);
-                }, $images);
+                }, $imgs);
                 unset($blog->images);
             }
             return response()->json(['message' => 'Blog created successfully.', 'blog' => $blog], 201);
@@ -93,7 +94,6 @@ class BlogController extends Controller
             }
             return response()->json(['blog' => $blog], 200);
         }
-        // If needed, add a show view
     }
 
     /**
@@ -105,7 +105,8 @@ class BlogController extends Controller
         if (request()->is('api/*')) {
             return response()->json(['blog' => $blog], 200);
         }
-        return view('blog.editBlog', compact('blog'));
+        $products = \App\Models\Product::where('status', 'active')->orderBy('name')->get(['id', 'name']);
+        return view('blog.editBlog', compact('blog', 'products'));
     }
 
     /**
@@ -116,11 +117,11 @@ class BlogController extends Controller
         $blog = Blog::findOrFail($id);
 
         $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'delete_images' => 'nullable|array',
-            'delete_images.*' => 'integer',
+            'title'          => 'required|string|max:255',
+            'description'    => 'nullable|string', // ← was required, now nullable
+            'images.*'       => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'delete_images'  => 'nullable|array',
+            'delete_images.*'=> 'integer',
         ]);
 
         $images = json_decode($blog->images, true) ?? [];
@@ -135,7 +136,7 @@ class BlogController extends Controller
                     unset($images[$index]);
                 }
             }
-            $images = array_values($images); // Reindex array
+            $images = array_values($images);
         }
 
         // Handle new images
@@ -148,9 +149,9 @@ class BlogController extends Controller
         }
 
         $blog->update([
-            'title' => $request->title,
-            'description' => $request->description,
-            'images' => json_encode($images),
+            'title'       => $request->title,
+            'description' => $request->description ?? null, // ← null if not submitted
+            'images'      => json_encode($images),
         ]);
 
         if (request()->is('api/*')) {
@@ -173,7 +174,6 @@ class BlogController extends Controller
     {
         $blog = Blog::findOrFail($id);
 
-        // Delete images
         if ($blog->images) {
             $images = json_decode($blog->images, true);
             foreach ($images as $image) {

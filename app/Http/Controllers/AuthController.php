@@ -37,9 +37,9 @@ class AuthController extends Controller
         }
 
         // Authentication failed
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+        return back()
+            ->with('error', 'The provided credentials do not match our records.')
+            ->onlyInput('email');
     }
 
     /**

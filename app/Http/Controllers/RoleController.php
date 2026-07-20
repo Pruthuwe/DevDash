@@ -23,7 +23,11 @@ class RoleController extends Controller
     public function create()
     {
         $permissions = Permission::all()->groupBy(function($permission) {
-            return explode('-', $permission->name)[1]; // group by module
+            // Permission names are "{action}-{module}". The action is always
+            // a single word (view/create/edit/delete/assign/export/import),
+            // but the module itself can contain hyphens (e.g. "loan-inquiries",
+            // "finance-companies"), so we must split on the FIRST hyphen only.
+            return \Illuminate\Support\Str::after($permission->name, '-');
         });
         return view('roles.create', compact('permissions'));
     }
@@ -62,7 +66,7 @@ class RoleController extends Controller
     {
         $role = Role::with('permissions')->findOrFail($id);
         $permissions = Permission::all()->groupBy(function($permission) {
-            return explode('-', $permission->name)[1]; // group by module
+            return \Illuminate\Support\Str::after($permission->name, '-');
         });
         return view('roles.edit', compact('role', 'permissions'));
     }

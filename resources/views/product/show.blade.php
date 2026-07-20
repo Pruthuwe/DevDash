@@ -3,25 +3,18 @@
 @section('content')
 <div class="container-fluid">
 
-    <!-- Header -->
-    <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+    {{-- Header --}}
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-24">
         <div>
-            <h5 class="fw-semibold mb-1">Product Details</h5>
+            <h6 class="fw-semibold mb-2">Product Details</h6>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="{{ route('dashboard') }}">Dashboard</a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <a href="{{ route('manage.products') }}">Products</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                        {{ $product->name }}
-                    </li>
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('manage.products') }}">Products</a></li>
+                    <li class="breadcrumb-item active">{{ $product->name }}</li>
                 </ol>
             </nav>
         </div>
-
         <div class="d-flex gap-2">
             <a href="{{ route('products.edit', $product) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-2">
                 <iconify-icon icon="solar:pen-outline"></iconify-icon> Edit
@@ -32,274 +25,237 @@
         </div>
     </div>
 
-    <!-- Content -->
     <div class="row g-3">
 
-        <!-- LEFT COLUMN -->
-        <div class="col-lg-8 col-md-12">
-            <div class="card h-100">
+        {{-- ── LEFT: main details ─────────────────────────────────── --}}
+        <div class="col-lg-8">
+            <div class="card">
                 <div class="card-header">
                     <h6 class="mb-0">Product Information</h6>
                 </div>
-
                 <div class="card-body">
-                    <div class="row g-3">
 
-                        {{-- Basic Info --}}
+                    {{-- Section 1: Basic Info --}}
+                    <h6 class="fw-semibold text-secondary-light text-xs text-uppercase letter-spacing-1 mb-3">Basic Information</h6>
+                    <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Product Name</label>
+                            <label class="form-label fw-semibold text-sm mb-1">Product Name</label>
                             <div>{{ $product->name }}</div>
                         </div>
-
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">SKU</label>
-                            <div>{{ $product->sku }}</div>
+                            <label class="form-label fw-semibold text-sm mb-1">Fuel Type</label>
+                            <div>{{ $product->category?->name ?? '—' }}</div>
                         </div>
-
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Slug</label>
-                            <div class="text-secondary-light">{{ $product->slug }}</div>
+                            <label class="form-label fw-semibold text-sm mb-1">Brand</label>
+                            <div>{{ $product->subcategory?->name ?? '—' }}</div>
                         </div>
-
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Brand</label>
-                            <div>{{ $product->brand ?? 'Not specified' }}</div>
-                        </div>
-
-                        {{-- Category --}}
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Category ID</label>
-                            <div>
-                                @if($product->category_id)
-                                    <span class="badge bg-primary-light text-primary">
-                                        {{ $product->category_id }}
-                                    </span>
-                                @else
-                                    <span class="text-secondary-light">Not assigned</span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Subcategory ID</label>
-                            <div>
-                                {{ $product->subcategory_id ?? 'Not assigned' }}
-                            </div>
-                        </div>
-
-                        {{-- Units --}}
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Unit</label>
-                            <div>{{ $product->unit }}</div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Barcode</label>
-                            <div>{{ $product->barcode ?? 'Not specified' }}</div>
-                        </div>
-
-                        {{-- Pricing --}}
-                        <div class="col-md-4">
-                            <label class="form-label fw-semibold">Price</label>
-                            <div class="fw-bold text-primary">
-                                ${{ number_format($product->price, 2) }}
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label fw-semibold">Sale Price</label>
-                            <div>
-                                {{ $product->sale_price ? '$'.number_format($product->sale_price,2) : '—' }}
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label fw-semibold">Cost Price</label>
-                            <div>
-                                {{ $product->cost_price ? '$'.number_format($product->cost_price,2) : '—' }}
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label fw-semibold">Quantity</label>
-                            <div>
-                                {{ $product->quantity ?? '—' }}
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label fw-semibold">Low Stock Alert</label>
-                            <div>
-                                {{ $product->low_stock_alert ?? '—' }}
-                            </div>
-                        </div>
-
-                        {{-- Tax --}}
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Tax</label>
-                            <div>
-                                {{ $product->tax ? $product->tax.'%' : 'No tax' }}
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Tax Type</label>
-                            <div>
-                                {{ ucfirst($product->tax_type ?? 'exclusive') }}
-                            </div>
-                        </div>
-
-                        {{-- Status --}}
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Status</label>
+                            <label class="form-label fw-semibold text-sm mb-1">Status</label>
                             <div>
                                 @if($product->status === 'active')
                                     <span class="badge bg-success-light text-success">Active</span>
                                 @elseif($product->status === 'draft')
                                     <span class="badge bg-warning-light text-warning">Draft</span>
-                                @elseif($product->status === 'inactive')
+                                @else
                                     <span class="badge bg-danger-light text-danger">Inactive</span>
-                                @else
-                                    <span class="badge bg-secondary-light text-secondary">Unknown</span>
                                 @endif
                             </div>
                         </div>
-                        
-                        {{-- Featured --}}
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Featured</label>
-                            <div>
-                                @if($product->is_featured)
-                                    <span class="badge bg-info-light text-info">Yes</span>
-                                @else
-                                    <span class="text-secondary-light">No</span>
-                                @endif
-                            </div>
-                        </div>
-
-                        {{-- Views --}}
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Views</label>
-                            <div>{{ $product->views ?? 0 }}</div>
-                        </div>
-
                     </div>
 
-                    <hr>
+                    <hr class="mb-4">
 
-                    {{-- Descriptions --}}
-                    @if($product->short_description)
-                        <div class="mb-2">
-                            <label class="form-label fw-semibold">Short Description</label>
+                    {{-- Section 2: Pricing & Stock --}}
+                    <h6 class="fw-semibold text-secondary-light text-xs text-uppercase letter-spacing-1 mb-3">Pricing & Stock</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-sm mb-1">Regular Price</label>
+                            <div class="fw-bold text-primary fs-6">Rs {{ number_format($product->price, 2) }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-sm mb-1">Sale Price</label>
+                            <div>{{ $product->sale_price ? 'Rs '.number_format($product->sale_price, 2) : '—' }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-sm mb-1">Purchase Cost</label>
+                            <div class="text-secondary-light">{{ $product->cost_price ? 'Rs '.number_format($product->cost_price, 2) : '—' }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-sm mb-1">Stock Quantity</label>
+                            <div>
+                                @if(($product->quantity ?? 0) > 0)
+                                    <span class="badge bg-success-light text-success">{{ $product->quantity }} available</span>
+                                @else
+                                    <span class="badge bg-danger-light text-danger">Out of stock</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-sm mb-1">Low Stock Alert</label>
+                            <div>{{ $product->low_stock_alert ?? '—' }}</div>
+                        </div>
+
+                        {{--
+                        ───────────────────────────────────────────────────────────
+                        COMMENTED OUT: Loan Amount, RMV Fee, Service Charge, Interest Rate
+                        Reason: These are not part of the Add Product / Edit Product bike
+                        form fields, so they shouldn't surface on the Show page either.
+                        Un-comment only if these fields are re-introduced to the
+                        Add/Edit forms.
+                        ───────────────────────────────────────────────────────────
+
+                        @if($product->loan_amount)
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-sm mb-1">Loan Amount</label>
+                            <div>Rs {{ number_format($product->loan_amount, 2) }}</div>
+                        </div>
+                        @endif
+
+                        @if($product->rmv)
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-sm mb-1">RMV Fee</label>
+                            <div>Rs {{ number_format($product->rmv, 2) }}</div>
+                        </div>
+                        @endif
+
+                        @if($product->service_charge)
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-sm mb-1">Service Charge</label>
+                            <div>Rs {{ number_format($product->service_charge, 2) }}</div>
+                        </div>
+                        @endif
+
+                        @if($product->interest_rate)
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-sm mb-1">Interest Rate</label>
+                            <div>{{ $product->interest_rate }}%</div>
+                        </div>
+                        @endif
+                        --}}
+                    </div>
+
+                    <hr class="mb-4">
+
+                    {{-- Section 3: Description & Tags --}}
+                    <h6 class="fw-semibold text-secondary-light text-xs text-uppercase letter-spacing-1 mb-3">Description & Tags</h6>
+                    <div class="row g-3">
+                        @if($product->short_description)
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-sm mb-1">Short Description</label>
                             <p class="mb-0">{{ $product->short_description }}</p>
                         </div>
-                    @endif
+                        @endif
 
-                    @if($product->full_description)
-                        <div class="mb-2">
-                            <label class="form-label fw-semibold">Full Description</label>
-                            <div>{!! $product->full_description !!}</div>
+                        @if($product->tags)
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-sm mb-1">Tags</label>
+                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                @foreach(array_map('trim', explode(',', $product->tags)) as $tag)
+                                    @if($tag)
+                                        <span class="badge bg-neutral-100 text-neutral-600 fw-medium">{{ $tag }}</span>
+                                    @endif
+                                @endforeach
+                            </div>
                         </div>
-                    @endif
+                        @endif
 
-                    {{-- Tags & Notes --}}
-                    @if($product->tags)
-                        <div class="mb-2">
-                            <label class="form-label fw-semibold">Tags</label>
-                            <p class="mb-0">{{ $product->tags }}</p>
+                        @if($product->engine_spec)
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-sm mb-1">Engine Specification</label>
+                            <div>{{ $product->engine_spec }}</div>
                         </div>
-                    @endif
+                        @endif
 
-                    @if($product->notes)
-                        <div>
-                            <label class="form-label fw-semibold">Notes</label>
-                            <p class="mb-0">{{ $product->notes }}</p>
+                        @if($product->highlights)
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-sm mb-1">Highlights</label>
+                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                @foreach((is_array($product->highlights) ? $product->highlights : array_map('trim', explode(',', $product->highlights))) as $h)
+                                    @if($h)
+                                        <span class="badge bg-info-100 text-info-600 fw-medium">{{ $h }}</span>
+                                    @endif
+                                @endforeach
+                            </div>
                         </div>
-                    @endif
+                        @endif
+
+                        @if($product->rating)
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-sm mb-1">Rating</label>
+                            <div class="d-flex align-items-center gap-1">
+                                <iconify-icon icon="solar:star-bold" class="text-warning-600"></iconify-icon>
+                                <span>{{ $product->rating }} / 5</span>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
 
                 </div>
             </div>
         </div>
 
-        <!-- RIGHT COLUMN -->
-        <div class="col-lg-4 col-md-12">
+        {{-- ── RIGHT: image + quick stats ────────────────────────── --}}
+        <div class="col-lg-4">
             <div class="row g-3">
 
-                <!-- Image -->
+                {{-- Image --}}
                 <div class="col-12">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h6 class="mb-0">Product Image</h6>
-                        </div>
+                    <div class="card">
+                        <div class="card-header"><h6 class="mb-0">Product Image</h6></div>
                         <div class="card-body text-center">
                             @if($product->main_image)
                                 <img src="{{ asset($product->main_image) }}"
-                                     class="img-fluid rounded"
-                                     style="max-height:180px;">
+                                     class="img-fluid rounded" style="max-height:220px; object-fit:contain;">
                             @else
-                                <div class="bg-neutral-200 rounded d-flex align-items-center justify-content-center"
-                                     style="height:180px;">
-                                    <iconify-icon icon="solar:box-outline"
-                                                  class="text-secondary-light"
-                                                  style="font-size:3rem;"></iconify-icon>
+                                <div class="bg-neutral-100 rounded d-flex align-items-center justify-content-center" style="height:180px;">
+                                    <iconify-icon icon="solar:box-outline" class="text-secondary-light" style="font-size:3rem;"></iconify-icon>
                                 </div>
                             @endif
                         </div>
                     </div>
                 </div>
 
-                <!-- Pricing -->
+                {{-- Quick Info --}}
                 <div class="col-12">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h6 class="mb-0">Pricing & Inventory</h6>
-                        </div>
+                    <div class="card">
+                        <div class="card-header"><h6 class="mb-0">Quick Info</h6></div>
                         <div class="card-body">
+                            <dl class="row g-2 mb-0" style="font-size:0.875rem;">
+                                <dt class="col-6 text-secondary-light fw-medium">Price</dt>
+                                <dd class="col-6 fw-bold text-primary mb-0">Rs {{ number_format($product->price, 2) }}</dd>
 
-                            <div class="mb-2">
-                                <label class="fw-semibold">Price</label>
-                                <div class="fs-5 fw-bold text-primary">
-                                    ${{ number_format($product->price, 2) }}
-                                </div>
-                            </div>
+                                @if($product->sale_price)
+                                <dt class="col-6 text-secondary-light fw-medium">Sale</dt>
+                                <dd class="col-6 text-success fw-semibold mb-0">Rs {{ number_format($product->sale_price, 2) }}</dd>
+                                @endif
 
-                            @if($product->sale_price)
-                                <div class="mb-2 text-success fw-bold">
-                                    Sale: ${{ number_format($product->sale_price, 2) }}
-                                </div>
-                            @endif
-
-                            <hr>
-
-                            <div class="mb-2">
-                                <label class="fw-semibold">Stock</label>
-                                <div>
-                                    @if($product->quantity > 0)
-                                        <span class="badge bg-success-light text-success">
-                                            {{ $product->quantity }} available
-                                        </span>
+                                <dt class="col-6 text-secondary-light fw-medium">Stock</dt>
+                                <dd class="col-6 mb-0">
+                                    @if(($product->quantity ?? 0) > 0)
+                                        <span class="badge bg-success-light text-success">{{ $product->quantity }} available</span>
                                     @else
-                                        <span class="badge bg-danger-light text-danger">
-                                            Out of stock
-                                        </span>
+                                        <span class="badge bg-danger-light text-danger">Out of stock</span>
                                     @endif
-                                </div>
-                            </div>
+                                </dd>
 
-                        </div>
-                    </div>
-                </div>
+                                <dt class="col-6 text-secondary-light fw-medium">Status</dt>
+                                <dd class="col-6 mb-0">
+                                    @if($product->status === 'active')
+                                        <span class="badge bg-success-light text-success">Active</span>
+                                    @elseif($product->status === 'draft')
+                                        <span class="badge bg-warning-light text-warning">Draft</span>
+                                    @else
+                                        <span class="badge bg-danger-light text-danger">Inactive</span>
+                                    @endif
+                                </dd>
 
-                <!-- Stats -->
-                <div class="col-12">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h6 class="mb-0">Statistics</h6>
-                        </div>
-                        <div class="card-body">
-                            <div><strong>Views:</strong> {{ $product->views ?? 0 }}</div>
-                            <div><strong>Created:</strong> {{ $product->created_at->format('M d, Y') }}</div>
-                            <div><strong>Updated:</strong> {{ $product->updated_at->format('M d, Y') }}</div>
+                                <dt class="col-6 text-secondary-light fw-medium">Created</dt>
+                                <dd class="col-6 mb-0">{{ $product->created_at->format('M d, Y') }}</dd>
+
+                                <dt class="col-6 text-secondary-light fw-medium">Updated</dt>
+                                <dd class="col-6 mb-0">{{ $product->updated_at->format('M d, Y') }}</dd>
+                            </dl>
                         </div>
                     </div>
                 </div>

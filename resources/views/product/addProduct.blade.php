@@ -25,7 +25,7 @@
 <div class="row justify-content-center">
     <div class="col-xl-10">
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <h6 class="mb-0 text-lg">Product Creation Wizard</h6>
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-primary-light text-primary">Draft</span>
@@ -61,11 +61,11 @@
                 <!-- Progress Steps -->
                 <div class="wizard-progress mb-40">
                     <div class="progress" style="height: 4px;">
-                        <div class="progress-bar" role="progressbar" id="progressBar" style="width: 0%"></div>
+                        <div class="progress-bar" role="progressbar" id="progressBar" aria-label="Form progress" style="width: 0%"></div>
                     </div>
                     <div class="d-flex justify-content-between position-relative mt-8">
                         @php 
-                        $steps = ['Basic Info', 'Pricing & Stock', 'Images', 'Description'];
+                        $steps = ['Basic Info', 'Pricing & Stock', 'Images', 'Description & Tags'];
                         @endphp
                         @foreach($steps as $index => $step)
                         @php $stepNumber = $index + 1; @endphp
@@ -83,6 +83,9 @@
                 <div class="form-wizard">
                     <form id="productForm" action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+
+                        <!-- Hidden unit field — always piece for bikes -->
+                        <input type="hidden" name="unit" value="piece">
                         
                         <!-- Step 1: Basic Product Info -->
                         <div class="wizard-step-content active" id="step-1">
@@ -94,79 +97,39 @@
                             <div class="row g-4">
                                 <!-- Product Name -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Product Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="name" placeholder="Enter product name" required>
+                                    <label class="form-label" for="productName">Product Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="productName" name="name" placeholder="Enter product name" value="{{ old('name') }}" required>
                                     <div class="invalid-feedback">Product name is required</div>
                                 </div>
 
-                                <!-- SKU -->
+                               <!-- Fuel Type (Category) -->
                                 <div class="col-md-6">
-                                    <label class="form-label">SKU <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="sku" id="skuInput" placeholder="Auto-generated or custom" required>
-                                        <button class="btn btn-outline-secondary d-flex align-items-center gap-2" type="button" id="generateSKU" style="height: 44px;">
-                                            <iconify-icon icon="solar:refresh-outline"></iconify-icon> Generate
-                                        </button>
-                                    </div>
-                                    <div class="invalid-feedback">SKU is required</div>
-                                </div>
-
-                                <!-- Category -->
-                                <div class="col-md-6">
-                                    <label class="form-label">Category <span class="text-danger">*</span></label>
+                                    <label class="form-label" for="categorySelect">Fuel Type <span class="text-danger">*</span></label>
                                     <select class="form-select" name="category_id" id="categorySelect" required>
-                                        <option value="">Select Category</option>
+                                        <option value="">Select Fuel Type</option>
                                         @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                         @endforeach
                                     </select>
-                                    <div class="invalid-feedback">Category is required</div>
+                                    <div class="invalid-feedback">Fuel Type is required</div>
                                 </div>
 
-                                <!-- Subcategory -->
+                                <!-- Brand (Subcategory) -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Subcategory</label>
+                                    <label class="form-label" for="subcategorySelect">Brand</label>
                                     <select class="form-select" name="subcategory_id" id="subcategorySelect">
-                                        <option value="">Select Subcategory</option>
+                                        <option value="">Select Fuel Type first</option>
                                     </select>
-                                </div>
-
-                                <!-- Brand -->
-                                <div class="col-md-6">
-                                    <label class="form-label">Brand</label>
-                                    <input type="text" class="form-control" name="brand" placeholder="Enter brand name">
-                                </div>
-
-                                <!-- Unit -->
-                                <div class="col-md-6">
-                                    <label class="form-label">Unit <span class="text-danger">*</span></label>
-                                    <select class="form-select" name="unit" required>
-                                        <option value="">Select Unit</option>
-                                        <option value="piece">Piece</option>
-                                        <option value="kg">Kilogram (kg)</option>
-                                        <option value="gram">Gram (g)</option>
-                                        <option value="liter">Liter (L)</option>
-                                        <option value="ml">Milliliter (ml)</option>
-                                        <option value="meter">Meter (m)</option>
-                                        <option value="box">Box</option>
-                                        <option value="pack">Pack</option>
-                                    </select>
-                                    <div class="invalid-feedback">Unit is required</div>
-                                </div>
-
-                                <!-- Barcode -->
-                                <div class="col-md-6">
-                                    <label class="form-label">Barcode</label>
-                                    <input type="text" class="form-control" name="barcode" placeholder="Enter barcode">
+                                    <small class="text-secondary-light">Select Fuel Type above to load brands</small>
                                 </div>
 
                                 <!-- Product Status -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Status <span class="text-danger">*</span></label>
-                                    <select class="form-select" name="status" required>
-                                        <option value="active" selected>Active</option>
-                                        <option value="inactive">Inactive</option>
-                                        <option value="draft">Draft</option>
+                                    <label class="form-label" for="statusSelect">Status <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="status" id="statusSelect" required>
+                                        <option value="active" {{ old('status', 'active') == 'active' ? 'selected' : '' }}>Active</option>
+                                        <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                        <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft</option>
                                     </select>
                                 </div>
                             </div>
@@ -197,20 +160,20 @@
                             <div class="row g-4">
                                 <!-- Regular Price -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Regular Price <span class="text-danger">*</span></label>
+                                    <label class="form-label" for="regularPrice">Regular Price <span class="text-danger">*</span></label>
                                     <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control" name="price" id="regularPrice" placeholder="0.00" step="0.01" min="0" required>
+                                        <span class="input-group-text">Rs</span>
+                                        <input type="number" class="form-control" name="price" id="regularPrice" placeholder="0.00" step="0.01" min="0" value="{{ old('price') }}" required>
                                     </div>
                                     <div class="invalid-feedback">Regular price is required</div>
                                 </div>
 
                                 <!-- Sale Price -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Sale Price</label>
+                                    <label class="form-label" for="salePrice">Sale Price</label>
                                     <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control" name="sale_price" id="salePrice" placeholder="0.00" step="0.01" min="0">
+                                        <span class="input-group-text">Rs</span>
+                                        <input type="number" class="form-control" name="sale_price" id="salePrice" placeholder="0.00" step="0.01" min="0" value="{{ old('sale_price') }}">
                                     </div>
                                     <small class="text-secondary-light d-flex align-items-center gap-1 mt-1">
                                         <iconify-icon icon="solar:info-circle-outline"></iconify-icon>
@@ -220,53 +183,35 @@
 
                                 <!-- Discount Percentage (Auto-calculated) -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Discount Percentage</label>
+                                    <label class="form-label" for="discountPercent">Discount Percentage (Auto-calculated)</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="discountPercent" readonly placeholder="0%">
+                                        <input type="text" class="form-control bg-light" id="discountPercent" readonly placeholder="0%">
                                         <span class="input-group-text">%</span>
                                     </div>
                                 </div>
 
                                 <!-- Cost Price -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Cost Price</label>
+                                    <label class="form-label" for="costPrice">Purchase Cost <span class="text-muted small">(Private)</span></label>
                                     <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control" name="cost_price" placeholder="0.00" step="0.01" min="0">
+                                        <span class="input-group-text">Rs</span>
+                                        <input type="text" inputmode="decimal" class="form-control decimal-input" name="cost_price" id="costPrice" placeholder="0.00" value="{{ old('cost_price') }}">
                                     </div>
-                                    <small class="text-secondary-light">For profit calculation</small>
+                                    <small class="text-secondary-light">What you paid the supplier — for profit tracking only</small>
                                 </div>
 
                                 <!-- Stock Quantity -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Stock Quantity <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control" name="quantity" placeholder="0" min="0" required>
+                                    <label class="form-label" for="quantityInput">Stock Quantity <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" name="quantity" id="quantityInput" placeholder="0" min="0" value="{{ old('quantity') }}" required>
                                     <div class="invalid-feedback">Stock quantity is required</div>
                                 </div>
 
                                 <!-- Low Stock Alert -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Low Stock Alert</label>
-                                    <input type="number" class="form-control" name="low_stock_alert" placeholder="10" min="0">
+                                    <label class="form-label" for="lowStockInput">Low Stock Alert</label>
+                                    <input type="number" class="form-control" name="low_stock_alert" id="lowStockInput" placeholder="2" min="0" value="{{ old('low_stock_alert', 2) }}">
                                     <small class="text-secondary-light">Alert when stock falls below this number</small>
-                                </div>
-
-                                <!-- Tax -->
-                                <div class="col-md-6">
-                                    <label class="form-label">Tax (%)</label>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" name="tax" placeholder="0" step="0.01" min="0" max="100">
-                                        <span class="input-group-text">%</span>
-                                    </div>
-                                </div>
-
-                                <!-- Tax Type -->
-                                <div class="col-md-6">
-                                    <label class="form-label">Tax Type</label>
-                                    <select class="form-select" name="tax_type">
-                                        <option value="exclusive">Exclusive</option>
-                                        <option value="inclusive">Inclusive</option>
-                                    </select>
                                 </div>
                             </div>
 
@@ -296,10 +241,10 @@
                             <div class="row g-4">
                                 <!-- Main Product Image -->
                                 <div class="col-12">
-                                    <label class="form-label">Main Product Image <span class="text-danger">*</span></label>
+                                    <label class="form-label" for="mainImageInput">Main Product Image <span class="text-danger">*</span></label>
                                     <div class="image-upload-container">
                                         <div class="image-upload-box" id="mainImageUpload">
-                                            <input type="file" class="image-upload-input" name="main_image" accept="image/*" id="mainImageInput" required>
+                                            <input type="file" class="image-upload-input" name="main_image" accept="image/*" id="mainImageInput" aria-label="Upload main product image">
                                             <div class="upload-placeholder">
                                                 <iconify-icon icon="solar:cloud-upload-outline" class="icon-4x text-primary mb-3"></iconify-icon>
                                                 <h6>Drop your image here, or <span class="text-primary">browse</span></h6>
@@ -308,27 +253,9 @@
                                         </div>
                                         <div class="upload-preview d-none mt-3" id="mainImagePreview">
                                             <img src="" alt="Preview" class="preview-image">
-                                            <button type="button" class="btn btn-danger btn-sm remove-image">
+                                            <button type="button" class="btn btn-danger btn-sm remove-image" aria-label="Remove main image">
                                                 <iconify-icon icon="solar:trash-bin-outline"></iconify-icon>
                                             </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Product Gallery -->
-                                <div class="col-12">
-                                    <label class="form-label">Product Gallery (Optional)</label>
-                                    <div class="gallery-upload-box">
-                                        <input type="file" class="gallery-upload-input" name="gallery_images[]" accept="image/*" multiple>
-                                        <div class="upload-placeholder">
-                                            <iconify-icon icon="solar:gallery-add-outline" class="icon-4x text-primary mb-3"></iconify-icon>
-                                            <h6>Drop multiple images here, or <span class="text-primary">browse</span></h6>
-                                            <p class="text-secondary-light mb-0">Upload up to 5 additional images</p>
-                                        </div>
-                                    </div>
-                                    <div class="gallery-upload-container mt-3">
-                                        <div class="gallery-grid" id="galleryGrid">
-                                            <!-- Gallery images will be displayed here -->
                                         </div>
                                     </div>
                                 </div>
@@ -350,61 +277,49 @@
                             </div>
                         </div>
 
-                        <!-- Step 4: Description -->
+                        <!-- Step 4: Description & Tags -->
                         <div class="wizard-step-content" id="step-4">
                             <div class="step-header mb-24">
-                                <h5 class="mb-2">Product Description</h5>
-                                <p class="text-secondary-light mb-0">Write compelling descriptions for your product</p>
+                                <h5 class="mb-2">Description & Tags</h5>
+                                <p class="text-secondary-light mb-0">Add a short description and searchable tags</p>
                             </div>
 
                             <div class="row g-4">
                                 <!-- Short Description -->
                                 <div class="col-12">
-                                    <label class="form-label">Short Description</label>
-                                    <textarea class="form-control" name="short_description" rows="3" placeholder="Brief product summary (max 200 characters)" maxlength="200"></textarea>
+                                    <label class="form-label" for="shortDescInput">Short Description</label>
+                                    <textarea class="form-control" name="short_description" id="shortDescInput" rows="4" placeholder="Brief product summary (max 500 characters)" maxlength="500">{{ old('short_description') }}</textarea>
                                     <div class="d-flex justify-content-between mt-1">
                                         <small class="text-secondary-light">This will appear in product listings</small>
-                                        <small class="text-secondary-light char-count">0/200</small>
+                                        <small class="text-secondary-light char-count">0/500</small>
                                     </div>
-                                </div>
-
-                                <!-- Full Description -->
-                                <div class="col-12">
-                                    <label class="form-label">Full Description</label>
-                                    <div class="rich-text-editor">
-                                        <div class="editor-toolbar">
-                                            <button type="button" class="btn btn-sm btn-light" data-command="bold" title="Bold">
-                                                <iconify-icon icon="solar:text-bold-outline"></iconify-icon>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-light" data-command="italic" title="Italic">
-                                                <iconify-icon icon="solar:text-italic-outline"></iconify-icon>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-light" data-command="underline" title="Underline">
-                                                <iconify-icon icon="solar:text-underline-outline"></iconify-icon>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-light" data-command="insertUnorderedList" title="Bullet List">
-                                                <iconify-icon icon="solar:list-outline"></iconify-icon>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-light" data-command="insertOrderedList" title="Numbered List">
-                                                <iconify-icon icon="solar:list-check-outline"></iconify-icon>
-                                            </button>
-                                        </div>
-                                        <div class="editor-content" contenteditable="true" placeholder="Write detailed product description..."></div>
-                                    </div>
-                                    <textarea name="full_description" id="fullDescriptionInput" style="display:none;"></textarea>
                                 </div>
 
                                 <!-- Product Tags -->
                                 <div class="col-12">
-                                    <label class="form-label">Product Tags</label>
-                                    <input type="text" class="form-control" name="tags" placeholder="e.g., organic, natural, eco-friendly (comma separated)">
-                                    <small class="text-secondary-light">Separate tags with commas</small>
+                                    <label class="form-label" for="tagsInput">Product Tags</label>
+                                    <input type="text" class="form-control" name="tags" id="tagsInput" placeholder="e.g., KTM, Adventure, Petrol, 390cc (comma separated)" value="{{ old('tags') }}">
+                                    <small class="text-secondary-light">Separate tags with commas — used for search</small>
                                 </div>
 
-                                <!-- Additional Notes -->
+                                <!-- Engine Spec -->
                                 <div class="col-12">
-                                    <label class="form-label">Additional Notes</label>
-                                    <textarea class="form-control" name="notes" rows="2" placeholder="Internal notes (not visible to customers)"></textarea>
+                                    <label class="form-label" for="engineSpecInput">Engine Specification</label>
+                                    <input type="text" class="form-control" name="engine_spec" id="engineSpecInput" placeholder="e.g., 248.8cc, Single Cylinder, Liquid Cooled" value="{{ old('engine_spec') }}">
+                                    <small class="text-secondary-light">Shown below the product name on the storefront</small>
+                                </div>
+
+                                <!-- Highlights -->
+                                <div class="col-12">
+                                    <label class="form-label" for="highlightsInput">Highlights</label>
+                                    <input type="text" class="form-control" name="highlights" id="highlightsInput" placeholder="e.g., ABS, LED Lights, Digital Console (comma separated)" value="{{ old('highlights') }}">
+                                    <small class="text-secondary-light">Feature badges shown on the product card</small>
+                                </div>
+
+                                <!-- Rating -->
+                                <div class="col-md-6">
+                                    <label class="form-label" for="ratingInput">Rating (1–5)</label>
+                                    <input type="number" class="form-control" name="rating" id="ratingInput" placeholder="5" min="1" max="5" step="0.1" value="{{ old('rating', 5) }}">
                                 </div>
                             </div>
 
@@ -528,17 +443,6 @@
     border-bottom: 1px solid var(--bs-border-color);
 }
 
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-}
-
 /* Image Upload */
 .image-upload-container {
     position: relative;
@@ -608,69 +512,6 @@
     border-radius: 50%;
 }
 
-/* Gallery Grid */
-.gallery-upload-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 1rem;
-}
-
-.gallery-grid {
-    display: contents;
-}
-
-.gallery-item {
-    position: relative;
-    aspect-ratio: 1;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    border: 1px solid var(--bs-border-color);
-}
-
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.gallery-item .remove-btn {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-
-.gallery-item:hover .remove-btn {
-    opacity: 1;
-}
-
-/* Rich Text Editor */
-.rich-text-editor {
-    border: 1px solid var(--bs-border-color);
-    border-radius: 0.5rem;
-    overflow: hidden;
-}
-
-.editor-toolbar {
-    background: var(--bs-light);
-    padding: 0.5rem;
-    border-bottom: 1px solid var(--bs-border-color);
-    display: flex;
-    gap: 0.25rem;
-}
-
-.editor-content {
-    min-height: 200px;
-    padding: 1rem;
-    outline: none;
-}
-
-.editor-content:empty:before {
-    content: attr(placeholder);
-    color: var(--bs-gray);
-}
-
 /* Success Icon */
 .success-icon {
     width: 80px;
@@ -690,22 +531,16 @@
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-    .wizard-progress .d-flex {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
+    /* Steps row stays horizontal — just shrink icons and hide labels */
+    .wizard-progress .d-flex.justify-content-between {
+        justify-content: space-between !important;
     }
-    
+
     .wizard-step {
-        flex-direction: row;
-        align-items: center;
-        gap: 1rem;
+        flex: 1;
+        text-align: center;
     }
-    
-    .gallery-upload-container {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    
+
     .step-actions {
         flex-direction: column;
         gap: 1rem;
@@ -725,18 +560,15 @@ $(document).ready(function() {
     let currentStep = 1;
     const totalSteps = 4;
     
-    // Initialize wizard
     function initWizard() {
         updateProgressBar();
         updateStepVisibility();
     }
     
-    // Update progress bar
     function updateProgressBar() {
         const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
         $('#progressBar').css('width', progress + '%');
         
-        // Update step indicators
         $('.wizard-step').each(function() {
             const step = parseInt($(this).data('step'));
             $(this).removeClass('active completed');
@@ -749,55 +581,34 @@ $(document).ready(function() {
         });
     }
     
-    // Update step visibility
     function updateStepVisibility() {
         $('.wizard-step-content').removeClass('active');
         $('#step-' + currentStep).addClass('active');
     }
     
-    // Navigate to next step
     $(document).on('click', '.next-step', function(e) {
         e.preventDefault();
-        
         const nextStep = parseInt($(this).data('next'));
-        const currentContent = $('#step-' + currentStep);
-        
-        // Validate current step
-        if (!validateStep(currentStep)) {
-            return;
-        }
-        
+        if (!validateStep(currentStep)) return;
         currentStep = nextStep;
         updateProgressBar();
         updateStepVisibility();
-        
-        // Scroll to top of step
-        $('html, body').animate({
-            scrollTop: $('.wizard-step-content.active').offset().top - 100
-        }, 300);
+        $('html, body').animate({ scrollTop: $('.wizard-step-content.active').offset().top - 100 }, 300);
     });
     
-    // Navigate to previous step
     $(document).on('click', '.prev-step', function(e) {
         e.preventDefault();
-        
         const prevStep = parseInt($(this).data('prev'));
         currentStep = prevStep;
         updateProgressBar();
         updateStepVisibility();
-        
-        // Scroll to top of step
-        $('html, body').animate({
-            scrollTop: $('.wizard-step-content.active').offset().top - 100
-        }, 300);
+        $('html, body').animate({ scrollTop: $('.wizard-step-content.active').offset().top - 100 }, 300);
     });
     
-    // Validate step
     function validateStep(step) {
         const stepContent = $('#step-' + step);
         let isValid = true;
-        
-        // Check required fields in current step
+
         stepContent.find('[required]').each(function() {
             if (!$(this).val().trim()) {
                 $(this).addClass('is-invalid');
@@ -806,34 +617,43 @@ $(document).ready(function() {
                 $(this).removeClass('is-invalid');
             }
         });
-        
+
+        if (step === 3) {
+            const mainImageInput = $('#mainImageInput')[0];
+            if (!mainImageInput || mainImageInput.files.length === 0) {
+                $('#mainImageUpload').css('border-color', 'red');
+                $('#mainImageError').remove();
+                $('#mainImageUpload').after('<div id="mainImageError" class="text-danger mt-1 small">Please upload a main product image</div>');
+                isValid = false;
+            } else {
+                $('#mainImageUpload').css('border-color', '');
+                $('#mainImageError').remove();
+            }
+        }
+
         return isValid;
     }
     
-    // Generate SKU
-    $('#generateSKU').click(function() {
-        const timestamp = Date.now().toString().slice(-6);
-        const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-        const sku = 'PRD-' + timestamp + '-' + random;
-        $('#skuInput').val(sku);
-    });
-    
-    // Calculate discount percentage
     function calculateDiscount() {
         const price = parseFloat($('#regularPrice').val()) || 0;
         const salePrice = parseFloat($('#salePrice').val()) || 0;
-        
         if (price > 0 && salePrice > 0 && salePrice < price) {
             const discount = ((price - salePrice) / price) * 100;
             $('#discountPercent').val(discount.toFixed(2) + '%');
         } else {
-            $('#discountPercent').val('');
+            $('#discountPercent').val('0%');
         }
     }
     
     $('#regularPrice, #salePrice').on('input', calculateDiscount);
+
+    $('.decimal-input').on('input', function() {
+        let val = $(this).val().replace(/[^0-9.]/g, '');
+        const parts = val.split('.');
+        if (parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
+        $(this).val(val);
+    });
     
-    // Main image upload
     $('#mainImageInput').change(function() {
         const file = this.files[0];
         if (file) {
@@ -847,47 +667,12 @@ $(document).ready(function() {
         }
     });
     
-    // Remove main image
     $(document).on('click', '.remove-image', function() {
         $('#mainImagePreview').addClass('d-none');
         $('#mainImageUpload').show();
         $('#mainImageInput').val('');
     });
     
-    // Gallery image upload
-    $('.gallery-upload-input').change(function(e) {
-        const files = e.target.files;
-        const galleryGrid = $('#galleryGrid');
-        
-        for (let i = 0; i < Math.min(files.length, 5); i++) {
-            const file = files[i];
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                const galleryItem = `
-                    <div class="gallery-item">
-                        <img src="${e.target.result}" alt="Gallery image">
-                        <button type="button" class="btn btn-danger btn-sm remove-btn">
-                            <iconify-icon icon="solar:trash-bin-outline"></iconify-icon>
-                        </button>
-                    </div>
-                `;
-                galleryGrid.append(galleryItem);
-            };
-            
-            reader.readAsDataURL(file);
-        }
-        
-        // Reset input
-        $(this).val('');
-    });
-    
-    // Remove gallery image
-    $(document).on('click', '.gallery-item .remove-btn', function() {
-        $(this).closest('.gallery-item').remove();
-    });
-    
-    // Drag and drop for images
     $('.image-upload-box, .gallery-upload-box').on('dragover', function(e) {
         e.preventDefault();
         $(this).addClass('drag-over');
@@ -901,57 +686,25 @@ $(document).ready(function() {
     $('.image-upload-box, .gallery-upload-box').on('drop', function(e) {
         e.preventDefault();
         $(this).removeClass('drag-over');
-        
         const files = e.originalEvent.dataTransfer.files;
         if (files.length > 0) {
-            if ($(this).hasClass('image-upload-box')) {
-                $(this).find('input')[0].files = files;
-                $(this).find('input').trigger('change');
-            } else {
-                $(this).find('input')[0].files = files;
-                $(this).find('input').trigger('change');
-            }
+            $(this).find('input')[0].files = files;
+            $(this).find('input').trigger('change');
         }
     });
     
-    // Rich text editor
-    $('.editor-toolbar button').click(function() {
-        const command = $(this).data('command');
-        const editor = $('.editor-content')[0];
-        
-        document.execCommand(command, false, null);
-        editor.focus();
-        
-        // Update hidden textarea
-        $('#fullDescriptionInput').val(editor.innerHTML);
-    });
-    
-    // Sync editor content with textarea
-    $('.editor-content').on('input', function() {
-        $('#fullDescriptionInput').val($(this).html());
-    });
-    
-    // Character counters
     $('[maxlength]').on('input', function() {
         const maxLength = parseInt($(this).attr('maxlength'));
         const currentLength = $(this).val().length;
         const charCount = $(this).closest('.col-12').find('.char-count');
-        
         if (charCount.length) {
             charCount.text(currentLength + '/' + maxLength);
-            
-            if (currentLength > maxLength) {
-                charCount.addClass('text-danger');
-            } else {
-                charCount.removeClass('text-danger');
-            }
+            if (currentLength >= maxLength) charCount.addClass('text-danger');
+            else charCount.removeClass('text-danger');
         }
     });
     
-    // Form submission
     $('#productForm').submit(function(e) {
-        // Only prevent default if validation fails
-        // Validate all steps
         let allValid = true;
         for (let i = 1; i <= totalSteps; i++) {
             if (!validateStep(i)) {
@@ -963,61 +716,45 @@ $(document).ready(function() {
                 break;
             }
         }
-        
         if (!allValid) {
-            // Scroll to first invalid field
-            $('html, body').animate({
-                scrollTop: $('.is-invalid').first().offset().top - 100
-            }, 300);
+            $('html, body').animate({ scrollTop: $('.is-invalid').first().offset().top - 100 }, 300);
             return false;
         }
-        
-        // If all valid, let the form submit naturally
-        console.log('Form validation passed, submitting...');
         return true;
     });
     
-    // Save as draft
     $('#saveAsDraftBtn, #saveDraft').click(function() {
         $('[name="save_draft"]').val('1');
         $('#productForm').submit();
     });
     
-    // Initialize wizard
     initWizard();
-    
-    // Category change - load subcategories
-    $('#categorySelect').change(function() {
-        const categoryId = $(this).val();
-        const subcategorySelect = $('#subcategorySelect');
-        
-        if (categoryId) {
-            // Load subcategories via AJAX
-            $.ajax({
-                url: '{{ route("categories.subcategories", ":categoryId") }}'.replace(':categoryId', categoryId),
-                type: 'GET',
-                success: function(data) {
-                    subcategorySelect.empty().append('<option value="">Select Subcategory</option>');
-                    
-                    if (data.subcategories && data.subcategories.length > 0) {
-                        data.subcategories.forEach(function(subcategory) {
-                            subcategorySelect.append(`<option value="${subcategory.id}">${subcategory.name}</option>`);
-                        });
-                        subcategorySelect.prop('disabled', false);
-                    } else {
-                        subcategorySelect.prop('disabled', true);
-                    }
-                },
-                error: function() {
-                    subcategorySelect.empty().append('<option value="">Select Subcategory</option>');
-                    subcategorySelect.prop('disabled', true);
-                }
+});
+
+// Load brands when Fuel Type is selected
+$('#categorySelect').on('change', function() {
+    const categoryId = $(this).val();
+    const brandSelect = $('#subcategorySelect');
+    brandSelect.html('<option value="">Loading...</option>');
+    if (!categoryId) {
+        brandSelect.html('<option value="">Select Fuel Type first</option>');
+        return;
+    }
+    $.get('/categories/' + categoryId + '/subcategories', function(data) {
+        brandSelect.html('<option value="">Select Brand</option>');
+        if (data.subcategories && data.subcategories.length > 0) {
+            data.subcategories.forEach(function(sub) {
+                const selected = '{{ old("subcategory_id") }}' == sub.id ? 'selected' : '';
+                brandSelect.append('<option value="' + sub.id + '" ' + selected + '>' + sub.name + '</option>');
             });
         } else {
-            subcategorySelect.empty().append('<option value="">Select Subcategory</option>');
-            subcategorySelect.prop('disabled', true);
+            brandSelect.html('<option value="">No brands found</option>');
         }
     });
 });
+
+if ($('#categorySelect').val()) {
+    $('#categorySelect').trigger('change');
+}
 </script>
 @endpush

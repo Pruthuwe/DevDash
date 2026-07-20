@@ -1,7 +1,7 @@
 <footer class="d-footer">
     <div class="row align-items-center justify-content-between">
         <div class="col-auto">
-            <p class="mb-0">© {{ date('Y') }} devDash. All Rights Reserved.</p>
+            <p class="mb-0">© {{ date('Y') }} Chandani Enterprises. All Rights Reserved.</p>
         </div>
         <div class="col-auto">
             <p class="mb-0">Made by <span class="text-primary-600">
@@ -26,5 +26,9 @@
 <script src="{{ asset('assets/js/lib/file-upload.js') }}"></script>
 <script src="{{ asset('assets/js/lib/iconify-icon.min.js') }}"></script>
 <script src="{{ asset('assets/js/app.js') }}"></script>
+<script src="{{ asset('assets/js/table-scroll-hint.js') }}"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
 
 @stack('scripts')

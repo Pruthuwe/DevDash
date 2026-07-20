@@ -4,8 +4,8 @@
     </button>
     <div>
         <a href="{{ route('dashboard') }}" class="sidebar-logo">
-            <img src="{{ asset('assets/images/logo.png') }}" alt="site logo" class="light-logo">
-            <img src="{{ asset('assets/images/logo-light.png') }}" alt="site logo" class="dark-logo">
+            <img src="{{ asset('assets/images/logo-icon.png') }}" alt="site logo" class="light-logo">
+            <img src="{{ asset('assets/images/logo-icon.png') }}" alt="site logo" class="dark-logo">
             <img src="{{ asset('assets/images/logo-icon.png') }}" alt="site logo" class="logo-icon">
         </a>
     </div>
@@ -21,29 +21,7 @@
             
             {{-- Inventory Management --}}
             <li class="sidebar-menu-group-title">Inventory Management</li>
-            
-            {{-- Products --}}
-            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-products')))
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="material-symbols:order-approve-sharp" class="menu-icon"></iconify-icon>
-                    <span>Products</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-products')))
-                    <li>
-                        <a href="{{ route('add.product') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Product</a>
-                    </li>
-                    @endif
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-products')))
-                    <li>
-                        <a href="{{ route('manage.products') }}"><iconify-icon icon="solar:settings-bold" class="submenu-icon"></iconify-icon> Manage Product</a>
-                    </li>
-                    @endif
-                </ul>
-            </li>
-            @endif
-            
+
             {{-- Category --}}
             @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-categories')))
             <li class="dropdown">
@@ -54,17 +32,46 @@
                 <ul class="sidebar-submenu">
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-categories')))
                     <li>
-                        <a href="{{ route('add.category') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Category</a>
+                        <a href="{{ route('add.category') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Fuel Type</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('add.subcategory') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Brand</a>
                     </li>
                     @endif
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-categories')))
                     <li>
-                        <a href="{{ route('manage.category') }}"><iconify-icon icon="solar:settings-bold" class="submenu-icon"></iconify-icon> Manage Category</a>
+                        <a href="{{ route('manage.category') }}"><iconify-icon icon="solar:settings-bold" class="submenu-icon"></iconify-icon> View All Categories</a>
                     </li>
                     @endif
                 </ul>
             </li>
             @endif
+            
+            {{-- Products --}}
+            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-products')))
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="material-symbols:order-approve-sharp" class="menu-icon"></iconify-icon>
+                    <span>Motor Bikes
+
+                    </span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-products')))
+                    <li>
+                        <a href="{{ route('add.product') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon> Add Bike</a>
+                    </li>
+                    @endif
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-products')))
+                    <li>
+                        <a href="{{ route('manage.products') }}"><iconify-icon icon="solar:settings-bold" class="submenu-icon"></iconify-icon> Manage all Bikes</a>
+                    </li>
+                    @endif
+                </ul>
+            </li>
+            @endif
+            
+            
             
             <!-- {{-- Order --}}
             <li class="dropdown">
@@ -144,6 +151,32 @@
             
             {{-- Features --}}
             <li class="sidebar-menu-group-title">Features</li>
+
+            {{-- Loan Management --}}
+@if(Auth::user()->user_type === 'admin' || (Auth::user()->role && (Auth::user()->role->permissions->contains('name', 'view-finance-companies') || Auth::user()->role->permissions->contains('name', 'view-loan-plans'))))
+<li class="dropdown">
+    <a href="javascript:void(0)">
+        <iconify-icon icon="solar:wallet-money-outline" class="menu-icon"></iconify-icon>
+        <span>Loan Management</span>
+    </a>
+    <ul class="sidebar-submenu">
+        @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-finance-companies')))
+        <li>
+            <a href="{{ route('manage.finance-companies') }}"><iconify-icon icon="solar:buildings-2-bold" class="submenu-icon"></iconify-icon> Add Finance Company</a>
+        </li>
+        @endif
+        <li>
+            <a href="{{ route('loan.calculator') }}"><iconify-icon icon="solar:calculator-outline" class="submenu-icon"></iconify-icon> Loan Calculator</a>
+        </li>
+        @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-loan-plans')))
+        <li>
+            <a href="{{ route('manage.loan-plans') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon> View All Loan Plans</a>
+        </li>
+        @endif
+    </ul>
+</li>
+@endif
+
             
             <!-- {{-- Purchase Section --}}
             @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-purchases')))
@@ -183,7 +216,148 @@
                 </ul>
             </li> -->
             
-            {{-- Customer Management --}}
+           
+            {{-- {{-- Appointment Management 
+@if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-blogs')))
+<li>
+    <a href="{{ route('manage.appointments') }}">
+        <iconify-icon icon="solar:document-text-outline" class="menu-icon"></iconify-icon>
+        <span>Appointments</span>
+    </a>
+</li>
+@endif --}}
+
+
+            {{-- ═══════════════════════════════════════════════════ --}}
+            {{-- LEAD MANAGEMENT                                     --}}
+            {{-- ═══════════════════════════════════════════════════ --}}
+         
+            {{-- ═══════════════════════════════════════════════════ --}}
+            {{-- LEAD MANAGEMENT                                     --}}
+            {{-- ═══════════════════════════════════════════════════ --}}
+
+            @php
+                $userPermNames = Auth::user()->role ? Auth::user()->role->permissions->pluck('name') : collect();
+                $isAdmin = Auth::user()->user_type === 'admin';
+
+                $canManageLeads = $isAdmin || $userPermNames->contains('view-leads');
+                $canFollowUp = $isAdmin || $userPermNames->intersect(['view-leads', 'view-leads-followup'])->isNotEmpty();
+                $canSeeLeadManagement = $canManageLeads || $canFollowUp;
+            @endphp
+            @if($canSeeLeadManagement)
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="solar:users-group-rounded-outline" class="menu-icon"></iconify-icon>
+                    <span>Lead Management</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @if($isAdmin || $userPermNames->contains('create-leads'))
+                    <li>
+                        <a href="{{ route('leads.capture') }}">
+                            <iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>
+                            Lead Capture
+                        </a>
+                    </li>
+                    @endif
+                    @if($canManageLeads)
+                    <li>
+                        <a href="{{ route('leads.list') }}">
+                            <iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>
+                            Lead List
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('leads.assignment') }}">
+                            <iconify-icon icon="solar:user-plus-bold" class="submenu-icon"></iconify-icon>
+                            Lead Assignment
+                        </a>
+                    </li>
+                    @endif
+                    @if($canFollowUp)
+                    <li>
+                        <a href="{{ route('leads.follow-up') }}">
+                            <iconify-icon icon="solar:chat-line-outline" class="submenu-icon"></iconify-icon>
+                            Lead Follow-Up
+                        </a>
+                    </li>
+                    @endif
+                </ul>
+            </li>
+            @endif
+
+            {{-- All Inquiries (Loan + Product combined) --}}
+@if(Auth::user()->user_type === 'admin' || (Auth::user()->role && (Auth::user()->role->permissions->contains('name', 'view-loan-inquiries') || Auth::user()->role->permissions->contains('name', 'view-product-enquiries'))))
+<li>
+    <a href="{{ route('manage.all-inquiries') }}">
+        <iconify-icon icon="solar:clipboard-list-outline" class="menu-icon"></iconify-icon>
+        <span>All Inquiries</span>
+    </a>
+</li>
+@endif
+
+{{-- Contact Messages --}}
+            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-contacts')))
+<li class="sidebar-menu-item">
+    <a href="{{ route('manage.contacts') }}">
+        <iconify-icon icon="solar:letter-bold-duotone" class="menu-icon"></iconify-icon>
+        <span>Contact Messages</span>
+        @php $unreadCount = \App\Models\Contact::where('status','unread')->count(); @endphp
+        @if($unreadCount > 0)
+            <span class="badge bg-danger ms-auto">{{ $unreadCount }}</span>
+        @endif
+    </a>
+</li>
+@endif
+            {{-- Blog Management --}}
+            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-blogs')))
+            <li class="dropdown">
+                <a href="javascript:void(4)">
+                    <iconify-icon icon="solar:document-text-outline" class="menu-icon"></iconify-icon>
+                    <span>Happy Customers Blogs</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-blogs')))
+                    <li>
+                        <a href="{{ route('add.blog') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Blog</a>
+                    </li>
+                    @endif
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-blogs')))
+                    <li>
+                        <a href="{{ route('manage.blogs') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Manage Blogs</a>
+                    </li>
+                    @endif
+                    
+                </ul>
+            </li>
+            @endif
+            
+            {{-- {{-- Service Management 
+@if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-services')))
+<li class="dropdown">
+    <a href="javascript:void(4)">
+        <iconify-icon icon="solar:settings-outline" class="menu-icon"></iconify-icon>
+        <span>Service Management</span>
+    </a>
+    <ul class="sidebar-submenu">
+        @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-services')))
+        <li>
+            <a href="{{ route('manage.services') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Manage Services</a>
+        </li>
+        @endif
+        @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-services')))
+        <li>
+            <a href="{{ route('add.service') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Service</a>
+        </li>
+        @endif
+        <li>
+            <a href="{{ route('manage.finance-companies') }}"><iconify-icon icon="solar:buildings-2-bold" class="submenu-icon"></iconify-icon>Finance Companies</a>
+        </li>
+    </ul>
+</li>
+@endif --}}
+
+          
+             {{-- Customer Management --}}
             @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-customers')))
             <li class="dropdown">
                 <a href="javascript:void(3)">
@@ -191,16 +365,17 @@
                     <span>Customer Management</span>
                 </a>
                 <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-customers')))
-                    <li>
-                        <a href="{{ route('manage.customers') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Manage Customers</a>
-                    </li>
-                    @endif
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-customers')))
                     <li>
                         <a href="{{ route('add.customer') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Customer</a>
                     </li>
                     @endif
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-customers')))
+                    <li>
+                        <a href="{{ route('manage.customers') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Manage Customers</a>
+                    </li>
+                    @endif
+                    
                 </ul>
             </li>
             @endif            
@@ -212,100 +387,41 @@
                     <span>Supplier Management</span>
                 </a>
                 <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-suppliers')))
-                    <li>
-                        <a href="{{ route('manage.suppliers') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Supplier Management</a>
-                    </li>
-                    @endif
                     @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-suppliers')))
                     <li>
                         <a href="{{ route('add.supplier') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Supplier</a>
                     </li>
                     @endif
-                </ul>
-            </li>
-            @endif
-            {{-- Appointment Management --}}
-            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-blogs')))
-            <li>
-                <a href="{{ route('manage.appointments') }}">
-                    <iconify-icon icon="solar:document-text-outline" class="menu-icon"></iconify-icon>
-                    <span>Appointments</span>
-                </a>
-            </li>
-            @endif
-            {{-- Blog Management --}}
-            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-blogs')))
-            <li class="dropdown">
-                <a href="javascript:void(4)">
-                    <iconify-icon icon="solar:document-text-outline" class="menu-icon"></iconify-icon>
-                    <span>Blog Management</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-blogs')))
+                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-suppliers')))
                     <li>
-                        <a href="{{ route('manage.blogs') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Manage Blogs</a>
+                        <a href="{{ route('manage.suppliers') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Supplier Management</a>
                     </li>
                     @endif
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-blogs')))
-                    <li>
-                        <a href="{{ route('add.blog') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Blog</a>
-                    </li>
-                    @endif
-                </ul>
-            </li>
-            @endif
-            
-            {{-- Service Management --}}
-            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-services')))
-            <li class="dropdown">
-                <a href="javascript:void(4)">
-                    <iconify-icon icon="solar:settings-outline" class="menu-icon"></iconify-icon>
-                    <span>Service Management</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-services')))
-                    <li>
-                        <a href="{{ route('manage.services') }}"><iconify-icon icon="solar:list-bold" class="submenu-icon"></iconify-icon>Manage Services</a>
-                    </li>
-                    @endif
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-services')))
-                    <li>
-                        <a href="{{ route('add.service') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Service</a>
-                    </li>
-                    @endif
+                    
                 </ul>
             </li>
             @endif
 
-            {{-- Settings --}}
-            @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && (Auth::user()->role->permissions->contains('name', 'view-roles') || Auth::user()->role->permissions->contains('name', 'view-users'))))
+              {{-- Settings — Admin accounts only. Not delegable via role permissions. --}}
+            @if(Auth::user()->user_type === 'admin')
             <li class="dropdown">
                 <a href="javascript:void(4)">
                     <iconify-icon icon="solar:settings-outline" class="menu-icon"></iconify-icon>
                     <span>Settings</span>
                 </a>
                 <ul class="sidebar-submenu">
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-roles')))
-                    <li>
-                        <a href="{{ route('roles.index') }}"><iconify-icon icon="solar:shield-bold" class="submenu-icon"></iconify-icon>Roles</a>
-                    </li>
-                    @endif
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'create-roles')))
                     <li>
                         <a href="{{ route('roles.create') }}"><iconify-icon icon="solar:add-circle-bold" class="submenu-icon"></iconify-icon>Add Role</a>
                     </li>
-                    @endif
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'view-users')))
+                    <li>
+                        <a href="{{ route('roles.index') }}"><iconify-icon icon="solar:shield-bold" class="submenu-icon"></iconify-icon> View Roles</a>
+                    </li>
                     <li>
                         <a href="{{ route('users.index') }}"><iconify-icon icon="solar:users-group-two-rounded-bold" class="submenu-icon"></iconify-icon>Users</a>
                     </li>
-                    @endif
-                    @if(Auth::user()->user_type === 'admin' || (Auth::user()->role && Auth::user()->role->permissions->contains('name', 'edit-users')))
                     <li>
                         <a href="{{ route('users.assign-roles') }}"><iconify-icon icon="solar:user-plus-bold" class="submenu-icon"></iconify-icon>User Assign Role</a>
                     </li>
-                    @endif
                 </ul>
             </li>
             @endif
@@ -344,7 +460,31 @@
         </ul>
     </div>
 </aside>
+<style>
+    .sidebar-menu > li {
+        margin-bottom: 6px;
+    }
 
+    .sidebar-menu > li.dropdown > a,
+    .sidebar-menu > li > a {
+        border-radius: 8px;
+    }
+
+    /* Give the arrow (::after at inset-inline-end: 0.75rem, ~1.125rem wide)
+       enough clearance so it never sits on top of the label text */
+    .sidebar-menu li.dropdown > a {
+        padding-inline-end: 2.25rem;
+    }
+
+    .sidebar-menu .sidebar-submenu > li {
+        margin-bottom: 2px;
+    }
+
+    .sidebar-menu-group-title {
+        margin-top: 14px;
+        margin-bottom: 6px;
+    }
+</style>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const dropdownLinks = document.querySelectorAll('.sidebar-menu .dropdown > a');

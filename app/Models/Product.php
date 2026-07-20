@@ -11,6 +11,10 @@ class Product extends Model
 {
     use HasFactory, SoftDeletes;
 
+    // Makes loan_calc available automatically in API JSON responses
+    // (index/show), no extra work needed in the controller.
+    protected $appends = ['loan_calc'];
+
     protected $fillable = [
         'name',
         'sku',
@@ -22,6 +26,10 @@ class Product extends Model
         'barcode',
         'price',
         'sale_price',
+        'loan_amount',   
+        'rmv',           
+        'service_charge', 
+        'interest_rate', // ✅ NEW — shop owner's rate, defaults to 1.5%
         'cost_price',
         'quantity',
         'low_stock_alert',
@@ -35,21 +43,29 @@ class Product extends Model
         'notes',
         'status',
         'is_featured',
-        'views'
+        'views',
+        'engine_spec',
+        'highlights',
+        'rating',
     ];
 
     protected $casts = [
         'gallery_images' => 'array',
-        'is_featured' => 'boolean',
-        'price' => 'decimal:2',
-        'sale_price' => 'decimal:2',
-        'cost_price' => 'decimal:2',
+        'is_featured'    => 'boolean',
+        'highlights'     => 'array',
+        'rating'         => 'decimal:1',
+        'price'          => 'decimal:2',
+        'sale_price'     => 'decimal:2',
+        'cost_price'     => 'decimal:2',
+        'loan_amount'    => 'decimal:2',  // ✅ NEW
+        'rmv'            => 'decimal:2',  // ✅ NEW
+        'service_charge' => 'decimal:2',  // ✅ NEW
+        'interest_rate'  => 'decimal:2',  // ✅ NEW
     ];
 
     protected static function boot()
     {
         parent::boot();
-
         static::creating(function ($product) {
             if (empty($product->slug)) {
                 $product->slug = Str::slug($product->name);
@@ -68,6 +84,44 @@ class Product extends Model
     public function getFinalPriceAttribute()
     {
         return $this->sale_price ?? $this->price;
+    }
+
+    // ✅ NEW — Loan calculator computed fields
+    public function getLoanCalcAttribute()
+    {
+        $sellingPrice   = floatval($this->sale_price ?? $this->price);
+        $loanAmount     = floatval($this->loan_amount ?? 0);
+        $rmv            = floatval($this->rmv ?? 10160);
+        $interestRate   = floatval($this->interest_rate ?? 1.5);
+
+        $bikeDP         = $sellingPrice - $loanAmount;
+        // Service charge is no longer recalculated here with a hardcoded
+        // 5% / Rs 25,000 cap. It uses whatever is stored on the product
+        // (set in ProductController when the product was created/updated),
+        // so this always matches what the admin actually configured.
+        $serviceCharge  = floatval($this->service_charge ?? 0);
+        $minimumDP      = $bikeDP + $serviceCharge + $rmv;
+
+        // Minimum down payment % — the brand (sub-category) overrides its
+        // parent category if it has its own value set; otherwise we fall
+        // back to the category's value, then to null if neither is set.
+        $minDownPaymentPercent = null;
+        if ($this->subcategory && $this->subcategory->min_down_payment_percent !== null) {
+            $minDownPaymentPercent = floatval($this->subcategory->min_down_payment_percent);
+        } elseif ($this->category && $this->category->min_down_payment_percent !== null) {
+            $minDownPaymentPercent = floatval($this->category->min_down_payment_percent);
+        }
+
+        return [
+            'selling_price'              => $sellingPrice,
+            'loan_amount'                => $loanAmount,
+            'bike_dp'                    => $bikeDP,
+            'service_charge'             => $serviceCharge,
+            'rmv'                        => $rmv,
+            'minimum_dp'                 => $minimumDP,
+            'interest_rate'              => $interestRate,           // ✅ NEW
+            'min_down_payment_percent'   => $minDownPaymentPercent,  // ✅ NEW
+        ];
     }
 
     public function category()

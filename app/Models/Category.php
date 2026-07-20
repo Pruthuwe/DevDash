@@ -15,6 +15,7 @@ class Category extends Model
         'parent_id',
         'description',
         'status',
+        'min_down_payment_percent', // ✅ NEW — % override; brand overrides its parent category
         'banner_image',
         'thumbnail_image',
         'icon_image',
